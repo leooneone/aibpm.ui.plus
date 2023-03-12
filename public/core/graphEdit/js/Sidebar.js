@@ -1142,11 +1142,9 @@ Sidebar.prototype.createAdvancedShapes = function()
  */
 Sidebar.prototype.addBpmnPalette = function(dir, expand)
 {
-	console.log('sidebarBPMList',sidebarBPMList)
 	for ( key in sidebarBPMList){
 		var b=sidebarBPMList[key]
-
-		console.log('b',b)
+ 
 // Avoids having to bind all functions to "this"
 	
 this.setCurrentSearchEntryLibrary('bpmn'); 

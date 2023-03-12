@@ -29,7 +29,7 @@
           <div class="ghost-step step" :style="{ transform: translateX }"></div>
         </div>
         <el-button-group>
-          <el-button size="small" class="draft-btn" @click="submit(false)">草稿</el-button>
+          <el-button size="small"  class="publish-btn" @click="submit(false)">草稿</el-button>
           <el-button size="small" class="publish-btn" @click="submit(true)">发布</el-button>
         </el-button-group>
       </header>
@@ -40,7 +40,8 @@
 
         <FlowChart ref="flowDesign" :conf="state.data.flowSetting" :fields="state.fields" v-show="state.activeStep === 'flowDesign'" />
 
-        <MyForm :conf="state.data.formSetting" ref="formDesign" @ok="onOk" v-show="state.activeStep === 'formDesign'" tabName="formDesign" />
+        <MyForm  ref="formDesign" :conf="state.data.formSetting" @ok="onOk" v-show="state.activeStep === 'formDesign'" tabName="formDesign" />
+   
       </section>
     </div>
 
@@ -58,7 +59,7 @@
 
 
 <script setup lang="ts">
-import { defineAsyncComponent, reactive, computed, onMounted, onBeforeMount, toRefs, ref, getCurrentInstance, provide } from 'vue'
+import { defineAsyncComponent, reactive, computed,  onMounted,onBeforeMount, toRefs, ref, getCurrentInstance, provide } from 'vue'
 import { WorkflowTemplateApi as TPLApi } from '/@/api/bpm/WorkflowTemplate'
 
 import { WorkflowTemplateAddInput } from '/@/api/bpm/data-contracts'
@@ -67,6 +68,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { NextLoading } from '/@/utils/loading'
 //const BasicSetting = defineAsyncComponent(() => import('./components/BasicSetting/index.vue'))
 import BasicSetting from '../components/BasicSetting/index.vue'
+import { nextTick } from 'process'
 
 const { proxy } = getCurrentInstance() as any
 const route = useRoute()
@@ -80,14 +82,24 @@ const updateFlow = (data) => {
 }
 
 const updateFormItemList = (data) => {
-  state.fields = data
+  state.fields = data||[]
 }
 const close = () => {
   window.parent.postMessage('close')
   window.close()
 }
+const getInitSetting=(settingName:string)=>{
+  return state.data[settingName]
+    
+   
+
+  
+}
 provide('updateFormItemList', updateFormItemList)
 provide('updateFlow', updateFlow)
+
+
+provide('getInitSetting', getInitSetting)
 const props = defineProps({
   title: {
     type: String,
@@ -162,7 +174,7 @@ const submit = async (isPublish: Boolean) => {
   state.data.advancedContext = JSON.stringify(resAdvanced)
 
   state.data.flowSetting = JSON.stringify(resFlow)
-
+console.log('flows',state.data.flowSetting)
   state.data.formSetting = JSON.stringify(resForm)
   state.data.isPublish = isPublish
 
@@ -182,8 +194,6 @@ const submit = async (isPublish: Boolean) => {
 
 const onOk = (form) => {
   state.data.formSetting = form
-  console.log('onOk')
-  console.log(form)
 }
 
 const translateX = computed(() => {
@@ -211,10 +221,13 @@ const exit = () => {
       // })
     })
     .catch(() => {})
-}
+} 
 
-onBeforeMount(async () => {
-  var tplId = route.query.id
+
+// 页面加载前
+  onBeforeMount(async() => {  
+  
+      var tplId = route.query.id
   if (tplId) {
     const res = await new TPLApi().get({ id: tplId })
     if (res.success) {
@@ -229,25 +242,14 @@ onBeforeMount(async () => {
       //  console.log('formData:', json.formSetting)
 
       state.data.advancedSetting = JSON.parse(res.data.advancedContext) ?? {}
-      console.log('setSetting', state.data.advancedSetting)
-      advancedSetting.value?.setSetting(state.data.advancedSetting)
-      console.log('basicSetting', state.data.basicSetting)
-      basicSetting.value?.setSetting(state.data.basicSetting)
-      console.log('formSetting', state.data.formSetting)
-      formDesign.value?.setSetting(state.data.formSetting)
-      // flowDesign.value?.setSetting(state.data.flowSetting)
-
-      //  state.isShow = true
+      
     }
-  }
+  } 
   // state.data.basicSetting={}
   // state.data.formSetting={}
 })
 
-// 页面加载前
-onMounted(() => {
-  NextLoading.done(600)
-})
+
 </script>
 
 <style lang="scss" scoped>

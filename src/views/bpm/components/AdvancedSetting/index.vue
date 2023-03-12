@@ -99,7 +99,6 @@ export default {
       return new Promise((resolve, reject) => {
         this.$refs['elFormRef'].validate((valid) => {
           if (valid) {
-            console.log('advance',this.formData)
             resolve(this.formData)
           } else {
             reject({ msg: '', target: 'advancedSetting' })
@@ -113,6 +112,12 @@ export default {
       Object.assign(this.formData, val)
     },
   },
+  watch:{
+  conf(val){
+
+    Object.assign(this.formData, val)
+  }
+},
 }
 </script>
 <style lang="scss" scoped>

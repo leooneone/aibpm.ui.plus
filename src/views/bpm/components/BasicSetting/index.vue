@@ -43,7 +43,7 @@
   </div>
 </template>
 <script lang="ts"  setup name="basice-setting">
-import { defineAsyncComponent, getCurrentInstance, reactive ,ref} from 'vue'
+import { defineAsyncComponent, getCurrentInstance, reactive ,ref,watch} from 'vue'
 
 const MySelectIcon = defineAsyncComponent(() => import('../../components/my-select-icon/index.vue'))
 const OuSelect = defineAsyncComponent(() => import('../OU/index.vue'))
@@ -117,16 +117,20 @@ const getSetting = async  () => {
  
 
 }
-const setSetting = (data) => {
-  if (typeof data === 'object' && data !== null) {
-    state.formData = data
-    state.formData.icon = data.icon
+watch(
+  ()=>props.conf,
+  (conf)=>{
+    if (typeof conf === 'object' && conf !== null) {
+    state.formData = conf
+    state.formData.icon = conf.icon
   }
-}
+
+  }
+)
+ 
 // 将这个方法暴露出去,这样父组件就可以使用了哈
 defineExpose({
-  getSetting,
-  setSetting
+  getSetting 
 })
 // watch(()=>state.initiators,
 // {

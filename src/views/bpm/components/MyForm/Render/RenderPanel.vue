@@ -43,7 +43,6 @@ const group = {
 }
 
 const componentData = computed(() => {
-  console.log('space:', props.tag, props.space)
   return {
     gutter: props.gutter ?? 5,
     justify: 'left',

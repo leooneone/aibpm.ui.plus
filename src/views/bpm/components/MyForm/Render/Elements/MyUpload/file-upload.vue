@@ -1,8 +1,8 @@
 <template>
   <div>
     <el-dialog v-model="state.showDialog" :title="title" draggable width="600px">
-      <div class="mb15">
-        <el-row :gutter="35">
+       <!--<div class="mb15">
+       <el-row :gutter="35">
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
             <el-input v-model="state.fileDirectory" placeholder="文件目录" clearable />
           </el-col>
@@ -13,7 +13,7 @@
         <div class="mt5">
           <el-alert class="my-el-alert" title="文件目录不填则默认使用本地上传格式：upload/yyyy/MM/dd" type="info" :closable="false" />
         </div>
-      </div>
+      </div>-->
       <div>
         <!-- :before-remove="() => false" -->
         <el-upload
@@ -63,7 +63,7 @@ defineProps({
 const state = reactive({
   showDialog: false,
   sureLoading: false,
-  fileDirectory: '',
+  fileDirectory: 'bpm',
   fileReName: true,
   fileList: [] as UploadFile[],
 })
@@ -102,6 +102,7 @@ const onCancel = () => {
 // 确定
 const onSure = async () => {
   uploadRef.value!.submit()
+  state.showDialog=false
 }
 
 defineExpose({
