@@ -214,6 +214,7 @@ import {
 
 import { inject, ref, reactive, getCurrentInstance, onMounted, computed, watch, nextTick, defineAsyncComponent, provide } from 'vue'
 
+import { debounce } from '/@/utils/bpm/index.js';
 const RenderPanel = defineAsyncComponent(() => import('../Render/RenderPanel.vue'))
 const PreviewPanel = defineAsyncComponent(() => import('./preview.vue'))
 const RightPanel = defineAsyncComponent(() => import('./RightPanel.vue'))
@@ -227,8 +228,7 @@ const props = defineProps({ conf: Object })
 
 const { proxy } = getCurrentInstance() as any
 const updateFlow = inject('updateFlow')
-
-const getInitSetting = inject('getInitSetting')
+ 
 const updateFormItemList = inject('updateFormItemList')
 const previewPanelRef = ref()
 const storageList = getDrawingList()
@@ -278,8 +278,7 @@ const created = () => {
 onMounted(() => {}) 
 watch(
   () => props.conf,
-  (conf) => {
-    // var conf= getInitSetting('formSetting')
+  (conf) => { 
 
     if (typeof conf === 'object' && conf !== null) {
       state.drawingList = conf.formItems || []
@@ -288,7 +287,6 @@ watch(
   }
 )
 
-created()
 
 //切换横竖屏
 const getDeviceMode = () => {
@@ -348,6 +346,7 @@ const clearPCondition = () => {
 
 //当list改变时
 const handlerListChange = (val) => {
+  console.log('handlerListChange222')
   clearPCondition()
   //是否可以用作流程条件
   const canUsedAsPCon = (conf, parent) => {
@@ -533,7 +532,7 @@ const empty = () => {
     proxy.$modal.msgWarning('尚有组件已作为流程判断条件，无法删除')
     return
   }
-  proxy.$modal.$confirm('确定要清空所有组件吗？', '提示', { type: 'warning' }).then(() => {
+  proxy.$modal.confirm('确定要清空所有组件吗？', '提示', { type: 'warning' }).then(() => {
     state.drawingList = []
     // this.idGlobal = 100;
     clearPCondition()
@@ -647,11 +646,23 @@ const updateDrawingList = (newTag, list) => {
 }
 
 provide('activeFormItem', activeFormItem)
-//provide('deleteItem', deleteItem)
-//provide('copyItem', copyItem)
+provide('deleteItem', drawingItemDelete)
+provide('copyItem', drawingItemCopy)
 provide('addPCondition', addPCondition)
 provide('delPCondition', delPCondition)
+watch(()=>state.drawingList,
+        (val)=> {
+        console.log('watch drawingList')
+        if (!val) return
+        
+         debounce( handlerListChange(), 400) // 使用了deep 所以刷新会比较频繁
+         
+      },{
+      deep: true,
+      immediate: true
+    })
 
+created()
 // 将这个方法暴露出去,这样父组件就可以使用了哈
 defineExpose({
   getSetting 

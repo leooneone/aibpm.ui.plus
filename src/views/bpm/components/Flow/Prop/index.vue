@@ -11,7 +11,7 @@
       <el-input ref="titleInput" size="mini" v-model="curNode.title" placeholder="请输入节点标签" v-show="titleInputVisible" @blur="onTitleChange"></el-input>
       
     </template>
-    <el-tabs type="border-card" style="height: calc(100vh - 160px)">
+    <el-tabs type="border-card" style="height: calc(100vh - 95px)">
       <el-tab-pane label="条件" v-if="curNode.type === 'condition'"
         ><condition ref="conditionPanel" :fields="fields" :data="curNode.condition"
       /></el-tab-pane>
@@ -26,10 +26,22 @@
       <el-tab-pane label="传阅" v-if="curNode.type === 'circulate'"
         ><circulate ref="circulatePanel" :fields="fields" :data="curNode.circulate"
       /></el-tab-pane>
-
-      <el-tab-pane label="操作权限"   
+      <el-tab-pane label="说明"  
+        > 
+        <div v-if=" curNode.type==='start'">
+          每个流程只允许一个启动节点
+    </div>
+    <div v-else-if=" curNode.type==='end'">
+      每个流程只允许一个结束节点；
+      结束节点可以有一条或者多条入向连接，但没有出向连接。
+    </div>
+    <div v-else  >
+      这里是节点说明
+    </div>
+      </el-tab-pane>
+      <!--<el-tab-pane label="操作权限"   
         ><operation ref="operationPanel"  :data="curNode.operation"
-      /></el-tab-pane>
+      /></el-tab-pane>-->
 
       <el-tab-pane label="通用" v-if="false">
         <el-select v-model="curNode.type">

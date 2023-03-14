@@ -310,9 +310,7 @@ export class NodeUtils {
       })
 
     }
-    // lst.forEach((id)=>{
-    //   this.removeLine(lines,id)
-    // })
+    //返回关联的线的id
     return lst
     // =undefined 
   }
@@ -333,8 +331,8 @@ export class NodeUtils {
   static removeLine(lines, id, nodes) {
     var indx = lines.findIndex(item => item.id === id)
     lines.splice(indx, 1)
-    //if (nodes[id])
-    //  delete nodes[id]
+    if (nodes[id])
+     delete nodes[id]
   }
   /**
 * 线变更连接节点

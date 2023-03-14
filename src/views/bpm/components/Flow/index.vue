@@ -96,7 +96,6 @@ const props = defineProps({
 const state = reactive({
   isShowApproval: true,
   enableEditing: true,
-  fields: [],
   isErrorShow: false,
   validResults: [],
   startActivityId: 0,
@@ -233,7 +232,7 @@ const addEventHandler = () => {
           } else {
             //  proxy.$modal.msg(`移除节点${item.id}`)
             ///移除线
-            removeCells(NodeUtils.removeNode(state.nodes, item.id, state.lines))
+            rmCells(NodeUtils.removeNode(state.nodes, item.id, state.lines))
             //    state.jsonData['cells']['nodes'].splice(state.jsonData['cells']['nodes'].findIndex(jsonItem => { return jsonItem.id === item.id }), 1)
           }
         } else if (item.edge) {
@@ -457,9 +456,9 @@ const openPropPanel = () => {
     proxy.$modal.msgWarning('请先选中单个节点再点编辑')
   }
 }
-const removeCells = (ids) => {
-  var cells = []
-  ids.forEach((id) => {
+const rmCells = (ids:string) => {
+  var cells = []   
+  ids.forEach((id:string) => {
     var cell = getCell(id)
     if (cell) cells.push(cell)
   })
@@ -514,8 +513,10 @@ const setCellLabel = (id, label) => {
   if (cell !== null) state.graph.cellLabelChanged(cell, label)
 }
 const activeCell = (id) => {
-  if (state.nodes[id]) state.curNode = state.nodes[id]
-  if (state.isShowApproval) openPropPanel()
+  if (state.nodes[id]) {
+    state.curNode = state.nodes[id]
+    if (state.isShowApproval) openPropPanel()
+  }
 }
 
 const updateCellStyle = (id, style) => {
@@ -746,11 +747,11 @@ onMounted(() => {
               state.curNode = undefined
               return
             } else if (evt.state.cell.edge) {
-              //   console.log('点击了连线')
+              activeCell(evt.state.cell.id)
               return
             }
-
             const cell = evt.state.cell
+
             let clickNormalType = false
 
             activeCell(cell.id)
@@ -847,6 +848,9 @@ watch(
       state.nodes = val.nodes
       parseXmlFile(val.chartData)
     }
+  },
+  {
+    immediate: true,
   }
 )
 // 将这个方法暴露出去,这样父组件就可以使用了哈

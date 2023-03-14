@@ -78,10 +78,11 @@ const MyForm = defineAsyncComponent(() => import('../components/MyForm/designer/
 const FlowChart = defineAsyncComponent(() => import('../components/Flow/index.vue'))
 
 const updateFlow = (data) => {
-  //state.fields=data
+  state.fields=data
 }
 
 const updateFormItemList = (data) => {
+  
   state.fields = data||[]
 }
 const close = () => {
@@ -174,7 +175,6 @@ const submit = async (isPublish: Boolean) => {
   state.data.advancedContext = JSON.stringify(resAdvanced)
 
   state.data.flowSetting = JSON.stringify(resFlow)
-console.log('flows',state.data.flowSetting)
   state.data.formSetting = JSON.stringify(resForm)
   state.data.isPublish = isPublish
 
