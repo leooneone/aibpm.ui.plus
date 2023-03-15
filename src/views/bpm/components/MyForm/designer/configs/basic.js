@@ -481,6 +481,7 @@ export const layoutComponents = [{
   tabPosition:'top',
   disabled: false,
   tagIcon: 'tab',
+  rowType: 'layout',
   //children:[],//{tag:'el-tab-pane',rowType:'table', label:'Tab1',value:'Tab1',children:[]}],
   children:[{  label:'Tab1',value:'Tab1' ,content:'tab1',children:[]},{  label:'Tab2',value:'Tab2' ,content:'tab2',children:[]}],
   activeName:'Tab1',

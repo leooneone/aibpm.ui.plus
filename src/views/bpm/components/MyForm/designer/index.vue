@@ -346,7 +346,6 @@ const clearPCondition = () => {
 
 //当list改变时
 const handlerListChange = (val) => {
-  console.log('handlerListChange222')
   clearPCondition()
   //是否可以用作流程条件
   const canUsedAsPCon = (conf, parent) => {
@@ -652,7 +651,6 @@ provide('addPCondition', addPCondition)
 provide('delPCondition', delPCondition)
 watch(()=>state.drawingList,
         (val)=> {
-        console.log('watch drawingList')
         if (!val) return
         
          debounce( handlerListChange(), 400) // 使用了deep 所以刷新会比较频繁

@@ -67,7 +67,7 @@ npm run dev
 
 #### 💕 特别感谢
 
-- <a href="https://github.com/zhontai/admin.ui.plus" target="_blank">中台admin</a>
+- <a href="https://github.com/zhontai" target="_blank">中台admin</a>
 - <a href="https://github.com/JakHuang/form-generator" target="_blank">form-generator</a>
 - <a href="https://github.com/SNFocus/approvalFlow" target="_blank">approvalFlow</a>
 - <a href="https://github.com/jgraph/mxgraph" target="_blank">mxgraph</a>
@@ -83,7 +83,6 @@ npm run dev
 - <a href="https://github.com/apache/echarts" target="_blank">echarts</a>
 - <a href="https://github.com/axios/axios" target="_blank">axios</a>
 - <a href="https://github.com/zenorocha/clipboard.js" target="_blank">clipboard</a>
-- <a href="https://github.com/inorganik/countUp.js" target="_blank">countUp</a>
 - <a href="https://github.com/developit/mitt" target="_blank">mitt</a>
 - <a href="https://github.com/rstacruz/nprogress" target="_blank">nprogress</a>
 - <a href="https://github.com/sindresorhus/screenfull.js" target="_blank">screenfull</a>
@@ -91,13 +90,9 @@ npm run dev
 - <a href="https://github.com/sass/sass" target="_blank">sass</a>
 - <a href="https://github.com/microsoft/TypeScript" target="_blank">typescript</a>
 - <a href="https://github.com/vitejs/vite" target="_blank">vite</a>
-- <a href="https://github.com/wangeditor-team/wangEditor" target="_blank">wangeditor</a>
 - <a href="https://github.com/fengyuanchen/cropperjs" target="_blank">cropperjs</a>
 - <a href="https://github.com/davidshimjs/qrcodejs" target="_blank">qrcodejs</a>
-- <a href="https://github.com/crabbly/Print.js" target="_blank">print-js</a>
 - <a href="https://github.com/jbaysolutions/vue-grid-layout" target="_blank">vue-grid-layout</a>
-- <a href="https://github.com/antoniandre/splitpanes" target="_blank">splitpanes</a>
-- <a href="https://github.com/hxj9102/table2excel" target="_blank">js-table2excel</a>
 
 
 #### 💌 支持作者

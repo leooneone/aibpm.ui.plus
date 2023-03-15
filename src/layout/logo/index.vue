@@ -1,10 +1,10 @@
 <template>
   <div class="layout-logo" v-if="setShowLogo" @click="onThemeConfigChange">
-    <img v-if="showLogoMini" :src="logoMini" class="layout1-logo-medium-img" />
-    <span class="my-line-1">{{ themeConfig.globalTitle }}</span>
+    <img v-if="showLogoMini" :src="logoMini" class="layout1-logo-medium-img"  style="height:120px"/>
+    <!--<span class="my-line-1">{{ themeConfig.globalTitle }}</span>-->
   </div>
   <div class="layout-logo-size" v-else @click="onThemeConfigChange">
-    <img v-if="showLogoMini" :src="logoMini" class="layout-logo-size-img" />
+    <img v-if="showLogoMini" :src="logoMini" class="layout1-logo-size-img"  />
   </div>
 </template>
 

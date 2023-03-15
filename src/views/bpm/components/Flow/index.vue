@@ -318,7 +318,6 @@ const validChart = () => {
       }
     }
   }
-
   if (findStart == 0 || findStart > 1) {
     addValidResult('流程必须包含开始节点且唯一')
   }
@@ -427,7 +426,6 @@ const validChart = () => {
     //   type: 'success',
     // })
   }
-  console.log('checkResults', checkResults)
   return checkResults
 }
 

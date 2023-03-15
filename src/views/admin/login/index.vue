@@ -2,14 +2,14 @@
   <div class="login-container flex">
     <div class="login-left">
       <div class="login-left-logo">
-        <img :src="logoMini" />
+        
         <div class="login-left-logo-text">
           <span>{{ getThemeConfig.globalViceTitle }}</span>
           <span class="login-left-logo-text-msg">{{ getThemeConfig.globalViceTitleMsg }}</span>
         </div>
       </div>
       <div class="login-left-img">
-        <img :src="loginMain" />
+        <img :src="loginMain"  />
       </div>
       <img :src="loginBg" class="login-left-waves" />
     </div>

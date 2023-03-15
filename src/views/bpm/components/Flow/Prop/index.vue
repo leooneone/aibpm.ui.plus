@@ -109,7 +109,6 @@ export default {
           this.curNode = JSON.parse(JSON.stringify(this.node))
         })
       } else {
-        console.log('---------------curnode={}---------')
         this.curNode = {}
       }
     },
