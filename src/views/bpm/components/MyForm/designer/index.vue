@@ -526,7 +526,8 @@ const preview = () => {
 }
 
 const empty = () => {
-  if (isFilledPCon()) {
+  
+  if (isFilledPCon(state.flowConditions.map(item=>item.formId))) {
     proxy.$modal.msgWarning('尚有组件已作为流程判断条件，无法删除')
     return
   }
