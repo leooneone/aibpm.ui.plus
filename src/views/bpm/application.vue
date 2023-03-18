@@ -1,13 +1,14 @@
 /**
  *Copyright: Copyright (c) 2023
  *Author:Leo
- *Version 1.0
- *Title: form-generator/Element Plus 表单解析器
- *GitHub: https://github.com/leo.one.tt/formParser
+ *GitHub: https://github.com/leooneone
  */
 
 <template>
   <section v-loading="state.loading">
+   <!--<test></test>--> 
+    
+
     <el-empty v-if="!state.loading&&state.templates.length === 0" description="没有流程模板可用"
       ><el-button class="ele-Plus" type="primary" v-auth="'api:bpm:template:control'">新建流程模板</el-button></el-empty
     >
@@ -27,7 +28,7 @@
           :class="{ 'home-media home-media-lg': k > 1, 'home-media-sm': k === 1 }"
         >
           <div class="home-card-item flex" @click="openForm(item.id)" style="cursor: pointer">
-            <div class="flex-margin flex w100" :class="` home-one-animation${k}`">
+            <div class="flex-margin flex w100"  :class="` home-one-animation${k}`">
               <div class="flex-auto">
                 <span class="font22">{{ item.name || '未命名流程' }}</span>
                 <span class="ml5 font16" :style="{ color: 'var(--next-color-danger-lighter))' }"
@@ -54,14 +55,24 @@
 </template>
  
 <script lang="ts" setup >
-import { ref, reactive, onMounted, getCurrentInstance, defineAsyncComponent } from 'vue'
+import { ref, reactive, onMounted, getCurrentInstance, defineAsyncComponent,computed } from 'vue'
 import { WorkflowTemplateApi as TPLApi } from '/@/api/bpm/WorkflowTemplate'
 
+
+import { getToken } from '/@/api/admin/http-client'
+const Test = defineAsyncComponent(() => import('./test.vue'))
 const MyForm = defineAsyncComponent(() => import('./management/myForm.vue'))
 
 const { proxy } = getCurrentInstance() as any
 const { dic_bpm_group } = proxy.$dict('bpm-group')
 const formRef = ref()
+
+const uploadAction = computed(() => {
+  return import.meta.env.VITE_API_URL + '/api/admin/file/upload-file'
+})
+const uploadHeaders = computed(() => {
+  return { Authorization: 'Bearer ' + getToken() }
+})
 const state = reactive({
   loading: true,
   pageInput: {
@@ -90,6 +101,7 @@ const getTPLs = async () => {
       return [item.groupId]
     })
   }
+
   state.loading = false
 }
 
@@ -112,7 +124,7 @@ export default defineComponent({
 $homeNavLengh: 8;
 .home-container {
   //overflow: hidden;
-  height: 100%;
+//  height: 100%;
   .home-card-one,
   .home-card-two,
   .home-card-three {

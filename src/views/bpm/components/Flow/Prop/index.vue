@@ -13,7 +13,7 @@
     </template>
     <el-tabs type="border-card" style="height: calc(100vh - 95px)">
       <el-tab-pane label="条件" v-if="curNode.type === 'condition'"
-        ><condition ref="conditionPanel" :fields="fields" :data="curNode.condition"
+        ><condition ref="conditionPanel" :fields="fields" :conditions="conditions" :data="curNode.condition"
       /></el-tab-pane>
 
       <el-tab-pane label="参与人设置" v-if="['approve','deal'].includes( curNode.type ) "
@@ -86,6 +86,7 @@ export default {
   },
   props: {
     fields: { type: Array, default: () => {} },
+    conditions: { type: Array, default: () => {} },
     node: { type: Object, default: () => {} },
   },
   data() {

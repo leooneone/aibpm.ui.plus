@@ -205,8 +205,8 @@ import { exportDefault, beautifierConf, isNumberStr, titleCase, deepClone } from
 // import CodeTypeDialog from './CodeTypeDialog'
 
 import {
-  getDrawingList,
-  saveDrawingList,
+  //getDrawingList,
+  //saveDrawingList,
   // getIdGlobal,
   // saveIdGlobal,
   getFormConf,
@@ -227,11 +227,10 @@ const formConfInDB = getFormConf()
 const props = defineProps({ conf: Object })
 
 const { proxy } = getCurrentInstance() as any
-const updateFlow = inject('updateFlow')
- 
+const isInUseByCondition = inject('isInUseByCondition')
 const updateFormItemList = inject('updateFormItemList')
 const previewPanelRef = ref()
-const storageList = getDrawingList()
+//const storageList = getDrawingList()
 //    const drawingList = [] // Array.isArray(storageList) && storageList.length ? storageList : drawingDefalut
 const state = reactive({
   isErrorShow: false,
@@ -256,7 +255,6 @@ const state = reactive({
 
   drawerSize: '490px',
   flowConditions: [],
-  bpm: { flowCondicitons: [] },
   tempActiveData: {},
 })
 
@@ -329,7 +327,7 @@ const addPCondition = (data) => {
   if (!hasCondition(data.formId)) {
     state.flowConditions.unshift(data)
   }
-  updateFlow({ list: state.drawingList, conditions: state.flowConditions }) //(this.flowConditions)
+  //updateFlow({ list: state.drawingList, conditions: state.flowConditions }) //(this.flowConditions)
 }
 //删除指定form
 const delPCondition = (formId) => {
@@ -340,7 +338,8 @@ const delPCondition = (formId) => {
 }
 //清除预置条件
 const clearPCondition = () => {
-  state.flowConditions = []
+
+  //state.flowConditions = []
 }
 //--end-----------------------流程相关 --------------------
 
@@ -367,8 +366,8 @@ const handlerListChange = (val) => {
     }
   }
   loop(state.drawingList)
-  saveDrawingList(state.drawingList)
-  updateFormItemList(state.drawingList)
+  //saveDrawingList(state.drawingList)
+  updateFormItemList(state.drawingList,state.flowConditions)
   // if (val.length === 0) this.idGlobal = 100;
 }
 /**
@@ -552,13 +551,12 @@ const createIdAndKey = (item) => {
 }
 //是否流程条件
 const isFilledPCon = (formIds) => {
-  return ///*待重新开发
-  const processCmp = this.$parent.$children.find((t) => t.isProcessCmp)
-  return processCmp && processCmp.isFilledPCon(formIds)
+  return  isInUseByCondition(formIds)
+ 
 }
 const checkColItem = (cmp) => {
   if (!cmp) return false
-  const isPcon = !!state.bpm.flowCondicitons.find((t) => t.formId == cmp.formId)
+  const isPcon = !!state.flowConditions.find((t) => t.formId == cmp.formId)
   return isPcon && isFilledPCon([cmp.formId])
 }
 // 判断是否已被流程图作为条件必填项了

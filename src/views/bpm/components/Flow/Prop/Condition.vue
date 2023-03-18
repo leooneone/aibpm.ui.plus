@@ -27,7 +27,7 @@
           <el-row :gutter="5">
             <el-col :span="8">
               <el-select v-model="data.field" :loading="state.loading" filterable @change="(value) => onChangeField(value, data)">
-                <el-option v-for="(o, index) in props.fields.filter((f) => f.proCondition)" :key="index" :label="o.label" :value="o.vModel" />
+                <el-option v-for="(o, index) in props.conditions" :key="index" :label="o.label" :value="o.vModel" />
               </el-select>
             </el-col>
 
@@ -105,6 +105,13 @@ const props = defineProps({
   // 日期操作符 operator: 'datetimerange'
   // 日期控件配置 config: {type: 'datetimerange', format:''YYYY-MM-DD HH:mm'', valueFormat:''YYYY-MM-DD HH:mm'', defaultTime : ['00:00:00', '00:00:00']}
   fields: {
+    type: Array,
+    default() {
+      return []
+    },
+  },
+
+  conditions: {
     type: Array,
     default() {
       return []
@@ -327,6 +334,7 @@ const type = (obj) => {
   }
   return map[toString.call(obj)]
 }
+defineExpose({onConfirm})
 </script>
     
     <style lang="scss" scoped>

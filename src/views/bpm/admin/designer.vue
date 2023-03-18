@@ -38,7 +38,7 @@
 
         <AdvancedSetting ref="advancedSetting" :conf="state.data.advancedSetting" v-show="state.activeStep === 'advancedSetting'" />
 
-        <FlowChart ref="flowDesign" :conf="state.data.flowSetting" :fields="state.fields" v-show="state.activeStep === 'flowDesign'" />
+        <FlowChart ref="flowDesign" :conf="state.data.flowSetting" :fields="state.fields" :conditions="state.conditions" v-show="state.activeStep === 'flowDesign'" />
 
         <MyForm  ref="formDesign" :conf="state.data.formSetting" @ok="onOk" v-show="state.activeStep === 'formDesign'" tabName="formDesign" />
    
@@ -77,13 +77,12 @@ const AdvancedSetting = defineAsyncComponent(() => import('../components/Advance
 const MyForm = defineAsyncComponent(() => import('../components/MyForm/designer/index.vue'))
 const FlowChart = defineAsyncComponent(() => import('../components/Flow/index.vue'))
 
-const updateFlow = (data) => {
-  state.fields=data
-}
+ 
 
-const updateFormItemList = (data) => {
+const updateFormItemList = (data,conditions) => {
   
   state.fields = data||[]
+  state.conditions=conditions||[]
 }
 const close = () => {
   window.parent.postMessage('close')
@@ -96,8 +95,7 @@ const getInitSetting=(settingName:string)=>{
 
   
 }
-provide('updateFormItemList', updateFormItemList)
-provide('updateFlow', updateFlow)
+provide('updateFormItemList', updateFormItemList) 
 
 
 provide('getInitSetting', getInitSetting)
@@ -115,6 +113,7 @@ const advancedSetting = ref(null)
 const state = reactive({
   isShowResult: false,
   fields: [],
+  conditions:[],
   data: { name: '', formSetting: {}, flowSetting: {}, basicSetting: {}, advancedSetting: {} },
   // 可选择诸如 $route.param，Ajax获取数据等方式自行注入
   activeStep: 'basicSetting', // 激活的步骤面板
@@ -139,6 +138,43 @@ const submitToServer = () => {
     }
   })
 }
+
+const isOk=(node)=>{
+
+  
+
+if(node.condition)
+{
+  return JSON.stringify(node.con)
+   console.log('condition',node.condition)
+
+}
+
+}
+///判断是否已经被用于流程设计器条件判断，如果是，则不能在表单设计器中删除
+const isInUseByCondition=   (ids)=>
+{ 
+  var nodes =   flowDesign.value?.getNodes() 
+  let strConditions=''
+  if(nodes)
+  { 
+    for(var key in nodes) {
+      var node =nodes[key]
+        if(node.condition)
+        {
+          strConditions+=JSON.stringify(node.condition)
+        }
+
+    }
+    
+      
+    return  ids.some(id=>strConditions.indexOf(id)!==-1)
+     
+  }
+  return false
+}
+
+provide('isInUseByCondition',isInUseByCondition)
 const submit = async (isPublish: Boolean) => {
   // basicSetting  formDesign flowDesign 返回的是Promise 因为要做校验
   // advancedSetting返回的就是值

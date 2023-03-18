@@ -4,7 +4,7 @@
       v-show="state.isPropPanel"
       style="position: absolute; top: 41px; right: 0px; z-index: 20; font-size: 12px !important; width: 640px; background-color: white"
     >
-      <NodeProp ref="propPanelRef" :node="state.curNode" :fields="props.fields" />
+      <NodeProp ref="propPanelRef" :node="state.curNode" :fields="props.fields" :conditions="props.conditions"/>
     </div>
     <div class="editLegendHeader" v-if="props.enableEditing">
       <div @click="handleThumbnail" class="legendItem">
@@ -88,8 +88,10 @@ const editorContainerRef = ref()
 
 const propPanelRef = ref()
 const props = defineProps({
+
   conf: { type: Object, default: (_) => {} },
   fields: { type: Array, default: [] },
+  conditions: { type: Array, default: [] },
   enableEditing: { type: Boolean, default: true },
 })
 
@@ -339,7 +341,6 @@ const validChart = () => {
         //   if (true) {
         //     addValidResult('存在未设置条件的循环路线，请排查', node.title)
         //   }
-        console.log('return')
         return
       }
       dicRoutine[nextId] = true
@@ -354,7 +355,6 @@ const validChart = () => {
         ///存在多条出向线必须设置条件
         lines.forEach((line: any) => {
           var nodeLine = state.nodes[line.id]
-          console.log('nodeLine', nodeLine)
           //  var outNode=state.nodes[line.fromId]
 
           var condition = -1
@@ -402,7 +402,6 @@ const validChart = () => {
           } else {
             isOk = true
 
-            console.log('return111')
             return
           }
         })
@@ -851,9 +850,10 @@ watch(
     immediate: true,
   }
 )
+const getNodes=()=>{return state.nodes}
 // 将这个方法暴露出去,这样父组件就可以使用了哈
 defineExpose({
-  getSetting,
+  getSetting,getNodes
 })
 </script>
 <style lang="scss" scoped>
