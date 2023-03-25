@@ -11,7 +11,8 @@
     "format": "npx prettier --write .",
     "install:pkg": "npm install --registry https://registry.npmmirror.com",
     "gen:admin-api": "node ./gen/gen-admin-api",
-    "gen:bpm-api": "node ./gen/gen-bpm-api"
+    "gen:bpm-api": "node ./gen/gen-bpm-api",
+    "gen:edu-api": "node ./gen/gen-edu-api"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.0.10",
@@ -30,6 +31,7 @@
     "jsplumb": "^2.15.6",
     "mitt": "^3.0.0",
     "mxgraph": "^4.2.2",
+    "npm": "^9.6.2",
     "nprogress": "^0.2.0",
     "pinia": "^2.0.28",
     "print-js": "^1.6.0",
@@ -40,6 +42,7 @@
     "splitpanes": "^3.1.5",
     "throttle-debounce": "^5.0.0",
     "vue": "^3.2.36",
+    "vue-audio-input": "^0.1.1",
     "vue-clipboard3": "^2.0.0",
     "vue-grid-layout": "^3.0.0-beta1",
     "vue-i18n": "^9.2.2",
