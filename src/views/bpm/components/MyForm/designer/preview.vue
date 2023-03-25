@@ -3,7 +3,7 @@
  *Author:Leo
  *Version 1.0
  *Title: form-generator/Element Plus 表单解析器
- *GitHub: https://github.com/leo.one.tt/aibpm
+ *GitHub: https://github.com/leooneone/aibpm.ui.plus
  */
 
 <template>

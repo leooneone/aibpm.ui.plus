@@ -4,6 +4,7 @@
  *Version 1.0 
  *Title: form-generator/Element UI表单设计及代码生成器 
  *GitHub: https://github.com/JakHuang/form-generator
+ *Modify
  */
  <template>
   <div class="right-board">
