@@ -134,21 +134,20 @@ onBeforeMount(() => {
   })
 })
 // 监听 themeConfig 配置文件的变化，更新菜单 el-scrollbar 的高度
-watch(themeConfig.value, (val) => {
-  if (val.isShowLogoChange !== val.isShowLogo) {
-    if (layoutAsideScrollbarRef.value) layoutAsideScrollbarRef.value.update()
-  }
-})
-// 监听 pinia 值的变化，动态赋值给菜单中
+// watch(themeConfig.value, (val) => {
+//   if (val.isShowLogoChange !== val.isShowLogo) {
+//     if (layoutAsideScrollbarRef.value) layoutAsideScrollbarRef.value.update()
+//   }
+// })
+// 监听 themeConfig 配置文件的变化，更新菜单 el-scrollbar 的高度
 watch(
-  pinia.state,
-  (val) => {
-    let { layout, isClassicSplitMenu } = val.themeConfig.themeConfig
-    if (layout === 'classic' && isClassicSplitMenu) return false
-    setFilterRoutes()
-  },
-  {
-    deep: true,
-  }
-)
+	() => [themeConfig.value.isShowLogoChange, themeConfig.value.isShowLogo, themeConfig.value.layout, themeConfig.value.isClassicSplitMenu],
+	([isShowLogoChange, isShowLogo, layout, isClassicSplitMenu]) => {
+		if (isShowLogoChange !== isShowLogo) {
+			if (layoutAsideScrollbarRef.value) layoutAsideScrollbarRef.value.update();
+		}
+		if (layout === 'classic' && isClassicSplitMenu) return false;
+		setFilterRoutes();
+	}
+);
 </script>

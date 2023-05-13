@@ -9,9 +9,6 @@
 
 <script lang="ts" setup>
   
-import {defineAsyncComponent} from 'vue'
-//const TestPanel = defineAsyncComponent(() => import('./audio.vue'))
-
-  const TestPanel = defineAsyncComponent(() => import('/@/views/edu/game-task/index.vue'))
-
+import {defineAsyncComponent} from 'vue' 
+  
 </script>

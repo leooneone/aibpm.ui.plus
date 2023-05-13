@@ -60,30 +60,12 @@
                 >
               </Draggable>
 
-              <div class="components-title">扩展</div>
-              <Draggable
-                class="components-draggable"
-                v-model="state.extComponents"
-                :group="{ name: 'componentsGroup', pull: 'clone', put: false }"
-                :clone="cloneComponent"
-                draggable=".components-item"
-                :sort="false"
-                @end="onEnd"
-                item-key="index"
-              >
-                <template #item="{ element, index }">
-                  <div :key="index" class="components-item" @click="addComponent(element)">
-                    <div class="components-body">
-                      <SvgIcon :name="`/assets/bpm/svg/` + element.tagIcon + `.svg`" class="svg-icon" size="18" color="var(--el-color-primary)" />
-                      {{ element.label }}
-                    </div>
-                  </div></template
-                >
-              </Draggable>
+          
 
             </div>
           </el-tab-pane>
           <el-tab-pane label="基础组件" name="common">
+            
             <div class="components-list">
               <div class="components-title">输入型组件</div>
               <Draggable
@@ -103,6 +85,26 @@
                       <SvgIcon :name="`/assets/bpm/svg/` + element.tagIcon + `.svg`" class="svg-icon" size="18" color="var(--el-color-primary)" />
                     </div></div
                 ></template>
+              </Draggable>
+              <div class="components-title">辅助组件</div>
+              <Draggable
+                class="components-draggable"
+                v-model="state.extComponents"
+                :group="{ name: 'componentsGroup', pull: 'clone', put: false }"
+                :clone="cloneComponent"
+                draggable=".components-item"
+                :sort="false"
+                @end="onEnd"
+                item-key="index"
+              >
+                <template #item="{ element, index }">
+                  <div :key="index" class="components-item" @click="addComponent(element)">
+                    <div class="components-body">
+                      <SvgIcon :name="`/assets/bpm/svg/` + element.tagIcon + `.svg`" class="svg-icon" size="18" color="var(--el-color-primary)" />
+                      {{ element.label }}
+                    </div>
+                  </div></template
+                >
               </Draggable>
 
               <div class="components-title">选择型组件</div>
@@ -259,7 +261,7 @@ const state = reactive({
   isErrorShow: false,
   validResults: [],
   // idGlobal,
-  formConf: configs.formConf,
+  formConf: configs.formConf, 
   extComponents: configs.extComponents,
   customComponents: configs.customComponents,
   inputComponents: configs.inputComponents,
@@ -526,7 +528,7 @@ const cloneChildrenOfRowFormItem = (rowFormItem) => {
         clone.vModel = `field${clone.formId}`
         clone.placeholder !== undefined && (clone.placeholder += clone.label)
       } else if (clone.layout === 'rowFormItem') {
-        delete clone.label
+        //delete clone.label 
         clone.componentName = `row${clone.formId}`
         clone.gutter = state.formConf.gutter
         cloneChildrenOfRowFormItem(clone)

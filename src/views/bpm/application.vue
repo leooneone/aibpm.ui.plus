@@ -1,7 +1,7 @@
 /**
  *Copyright: Copyright (c) 2023
  *Author:Leo
- *GitHub: https://github.com/leooneone
+ *GitHub: https://github.com/leooneone/aibpm.ui.plus
  */
 
 <template>

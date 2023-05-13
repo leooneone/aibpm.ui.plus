@@ -1241,7 +1241,7 @@ export const staticRoutes: Array<RouteRecordRaw> = [ {
   meta: {
     title: 'tests',
   },
-}, 
+},  
 {
   path: '/bpm/designer',
   name: 'designer',

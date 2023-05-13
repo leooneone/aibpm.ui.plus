@@ -8,7 +8,6 @@ import MobileOrgSelect from './MobileOrgSelect/index.vue'
 import InputTable from './InputTable/index.vue'
 import TagInput from './TagInput/index.vue' 
 import OUSelect from './OUSelect/index.vue'
-import AudioInput from './AudioInput/index.vue'
 
 //import Tinymce from './Tinymce'
 const components = [
@@ -21,8 +20,7 @@ const components = [
   MobileOrgSelect,
   OUSelect,
   InputTable,
-  TagInput,
-  AudioInput
+  TagInput
  
 
   //Tinymce 已经注册 不需要这里再加载
