@@ -17,6 +17,23 @@ export const trigger = {
 export const useableProps = [
   {
     "props": [
+      "label",
+      "tag",
+      "defaultValue",
+      "max",
+      "allow-half",
+      "show-text",
+      "show-score",
+      "disabled",
+      "required"
+    ],
+    "forceProp": {
+      "min-width": 160
+    },
+    "tag": "AudioInput"
+  },
+  {
+    "props": [
       "vModel",
       "defaultValue",
       "fieldId",

@@ -51,6 +51,7 @@ export default {
       handler(val) { 
         // const formItems = val.filter(t => t.cmpType !== 'custom')
         this.formOperates = this.initFormOperates(val, this.formOperates) 
+       
       },
       deep: true,
       immediate: true,
@@ -70,8 +71,8 @@ export default {
         const permission = target.find((t) => t.fieldId === id)
         return permission !== undefined ? permission.formOperate : defaultType
       }
-      const format = (list, parentName = '') =>
-        list.map((t) => {
+      const format = (list, parentName = '') =>{
+      return         list.map((t) => {
           const data = {
             fieldId: t.vModel,
             required: t.required,
@@ -83,6 +84,7 @@ export default {
           //子表权限
           Array.isArray(t.children) && format(t.children, t.label)
         })
+      }
       format(src)
       return res
     },

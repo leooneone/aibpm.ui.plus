@@ -9,8 +9,6 @@ import InputTable from './InputTable/index.vue'
 import TagInput from './TagInput/index.vue' 
 import OUSelect from './OUSelect/index.vue'
 
-
-
 //import Tinymce from './Tinymce'
 const components = [
   Amount,
@@ -22,7 +20,7 @@ const components = [
   MobileOrgSelect,
   OUSelect,
   InputTable,
-  TagInput,
+  TagInput
  
 
   //Tinymce 已经注册 不需要这里再加载

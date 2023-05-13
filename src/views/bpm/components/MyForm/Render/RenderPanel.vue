@@ -5,6 +5,7 @@
     :animation="200"
     :group="group"
     tag="el-row"
+    justify="center" align="middle"
     :component-data="componentData"
     class="drag-wrapper"
   >
@@ -14,8 +15,8 @@
       </el-col>
     </template>
   </draggable>
-  <el-row v-else :gutter="componentData.gutter" :style="componentData.style">
-    <el-col v-for="(element, index) in list" :span="element.span" :offset="element.offset" :push="element.push" :pull="element.pull">
+  <el-row v-else :gutter="componentData.gutter" style="display:flex;"  justify="center" align="middle" >
+    <el-col v-for="(element, index) in list"  :span="element.span" :offset="element.offset" :push="element.push" :pull="element.pull">
       <render-item :index="index" :active-id="activeId" :parent="list" :item="element" :conf="conf"> </render-item>
     </el-col>
   </el-row>
@@ -46,7 +47,7 @@ const componentData = computed(() => {
   return {
     gutter: props.gutter ?? 5,
     justify: 'left',
-    style: { 'margin-left': 0, 'min-height': '150px', width: '100%', alignContent: 'start', height: '100%' },
+    style: { 'margin-left': 0, /*'min-height': '50px',*/ width: '100%', alignContent: 'start', height: '100%' },
   }
 })
 </script>

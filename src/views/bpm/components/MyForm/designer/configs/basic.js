@@ -482,8 +482,7 @@ export const layoutComponents = [{
   disabled: false,
   tagIcon: 'tab',
   rowType: 'layout',
-  //children:[],//{tag:'el-tab-pane',rowType:'table', label:'Tab1',value:'Tab1',children:[]}],
-  children:[{  label:'Tab1',value:'Tab1' ,content:'tab1',children:[]},{  label:'Tab2',value:'Tab2' ,content:'tab2',children:[]}],
+  children:[{  label:'Tab1',value:'Tab1' ,  rowType: 'layout',layout:'rowFormItem',content:'tab1',children:[]},{ rowType: 'layout',layout:'rowFormItem', label:'Tab2',value:'Tab2' ,content:'tab2',children:[]}],
   activeName:'Tab1',
   type: 'border-card',
   justify: 'start',
@@ -496,27 +495,21 @@ export const layoutComponents = [{
 }, 
 
 {
-  label: '按钮',
-      showLabel: true,
-      changeTag: true,
-      labelWidth: null,
-      tag: 'el-button',
-      tagIcon: 'button',
-      defaultValue: undefined,
-      span: 24,
-      __slot__: {
-        default: '主要按钮'
-      },
-      layout: 'colFormItem',
-      type: 'primary',
-      icon: 'ele-Search',
-      round: false,
-      size: 'medium',
-      plain: false,
-      circle: false,
-      disabled: false,
-      document: 'https://element.eleme.cn/#/zh-CN/component/button'
-}]
+  layout: 'rowFormItem',
+  showLabel: false,
+  tag: 'table-layout',
+  disabled: false,
+  tagIcon: 'table',
+  rowType: 'layout',
+  children:[{  rowType: 'layout',layout:'rowFormItem', children:[{ rowType: 'layout',layout:'rowFormItem',colSpan:1 ,rowSpan:1,children:[],state:0}]}],
+  border:true,
+  span: 24,
+  label: '表格',
+  type:'flex'
+}, 
+            
+ 
+]
 
 export const commonComponents = [...inputComponents, ...selectComponents, ...layoutComponents]
   .map( t => Object.assign( { cmpType: 'common' }, t ) )

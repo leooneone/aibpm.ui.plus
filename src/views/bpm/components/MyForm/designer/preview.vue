@@ -75,8 +75,7 @@ const submitForm = (extPs) => {
         proxy.$modal.msgSuccess(`模拟提交成功`)
         
   })
-}
-
+} 
 provide('submitForm', submitForm)
   
 const open = async (data) => {

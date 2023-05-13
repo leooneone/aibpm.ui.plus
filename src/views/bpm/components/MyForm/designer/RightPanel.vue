@@ -52,6 +52,11 @@
        
 
           </el-form-item>
+          <el-form-item  v-if="activeData.tag==='table-layout'">
+            <el-button @click="AddTableRow">增加一行</el-button>
+           
+            <el-button @click="AddTableColumn">增加一列</el-button>
+          </el-form-item>
           <el-form-item v-if="activeData.placeholder!==undefined" label="占位提示">
             <el-input v-model="activeData.placeholder" placeholder="请输入占位提示" />
           </el-form-item>
@@ -109,11 +114,13 @@
             <el-input v-model="activeData.style.width" placeholder="请输入组件宽度" clearable />
           </el-form-item>
           <el-form-item v-if="activeData.vModel!==undefined && activeData.layout !== 'rowFormItem' && notObject(activeData.defaultValue)" label="默认值">
-            <el-input
+            <component  :is="activeData.tag" v-model="activeData.defaultValue"></component>
+            <!--<el-input
+            v-model="activeData.defaultValue"
               :value="setDefaultValue(activeData.defaultValue)"
               placeholder="请输入默认值"
               @input="onDefaultValueInput"
-            />
+            />-->
           </el-form-item>
           <el-form-item v-if="activeData.tag==='el-checkbox-group'" label="至少应选">
             <el-input-number
@@ -381,7 +388,7 @@
                 style="padding-bottom: 0"
                 icon="el-icon-circle-plus-outline"
                 type="text"
-                @click="activeData.children.push({label:'New Tab',value:(new Date()).getTime().toString(),children:[]});"
+                @click="activeData.children.push({rowType: 'layout',layout:'rowFormItem',label:'New Tab',value:(new Date()).getTime().toString(),children:[]});"
               >添加选项</el-button>
             </div>
             <el-divider />
@@ -546,7 +553,13 @@
             </el-form-item>
          
           </template>
-
+          <el-form-item label="对齐方式">
+            <el-radio-group v-model="activeData.textAlign">
+              <el-radio-button label="left">左对齐</el-radio-button>
+              <el-radio-button label="center">居中</el-radio-button>
+              <el-radio-button label="right">右对齐</el-radio-button>
+            </el-radio-group>
+          </el-form-item>
 
           <el-form-item
             v-if="activeData.size !== undefined &&
@@ -714,7 +727,7 @@
             </div>
           </template>-->
 
-          <el-divider>栅格</el-divider> 
+          <el-divider v-if="activeData.span !== undefined" >栅格</el-divider> 
           <el-form-item v-if="activeData.span !== undefined" label="表单栅格">
             <el-slider v-model="activeData.span" :max="24" :min="1" :marks="{12:''}" @change="spanChange" />
           </el-form-item>
@@ -749,6 +762,8 @@
               <el-radio-button label="top">顶部对齐</el-radio-button>
             </el-radio-group>
           </el-form-item>
+
+         
           <el-form-item label="标签宽度">
             <el-input-number v-model="formConf.labelWidth" placeholder="标签宽度" />
           </el-form-item>
@@ -1066,6 +1081,31 @@ export default {
     }
   },
   methods: {
+    AddTableRow(){ 
+      var item=this.activeData
+      var colItem = {  rowType: 'layout',layout:'rowFormItem',colSpan: 1, rowSpan: 1, children: [],state:0 }
+      var rowItem={
+        children:[]}   
+      if(  item.children.length>0)
+      {
+        for (var k = 0; k < item.children[0].children.length; k++) 
+        {
+            rowItem.children.push(JSON.parse(JSON.stringify(colItem)))
+          } 
+     item.children.splice(item.children.length, 0, rowItem)
+  }
+    },
+
+    AddTableColumn(){ 
+      var item=this.activeData
+      var colItem = { rowType: 'layout',layout:'rowFormItem', colSpan: 1, rowSpan: 1, children: [],state:0 }
+
+      for (var k = 0; k < item.children.length; k++) { 
+        item.children[k].children.push(JSON.parse(JSON.stringify(colItem)))
+      }
+
+  
+    },
     notObject(val) {
       return val === null || val === undefined || Object(val) !== val
     },
@@ -1165,7 +1205,7 @@ return(
       if (Array.isArray(val)) {
         return val.join(",");
       }
-      if (["string", "number"].indexOf(val) > -1) {
+      if (["string", "number"].indexOf(typeof val) > -1) {
         return val;
       }
       if (typeof val === "boolean") {
@@ -1173,7 +1213,8 @@ return(
       }
       return val;
     },
-    onDefaultValueInput(str) {
+    onDefaultValueInput(str) {  
+      return
       if (Array.isArray(this.activeData.defaultValue)) {
         // 数组
          

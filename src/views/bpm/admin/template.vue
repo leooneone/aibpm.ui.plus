@@ -11,7 +11,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="ele-Search" @click="onQuery"> 查询 </el-button>
-          <el-button type="success" icon="ele-Plus" @click="newBPM"> 新增 </el-button>
+          <el-button type="success" icon="ele-Plus"  v-auth="'api:bpm:template:control'" @click="newBPM"> 新增 </el-button>
         </el-form-item>
       </el-form>
     </el-card>
