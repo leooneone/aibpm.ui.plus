@@ -24,6 +24,7 @@ import { computed, ref, inject, provide, defineAsyncComponent } from 'vue'
 
 const RenderComponent = defineAsyncComponent(() => import('./RenderComponent.vue'))
 
+const changeValue=()=>{}
 const props = defineProps({
   activeId: String || Number,
   item: Object,

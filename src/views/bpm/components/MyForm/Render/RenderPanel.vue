@@ -46,7 +46,7 @@ const group = {
 const componentData = computed(() => {
   return {
     gutter: props.gutter ?? 5,
-    justify: 'left',
+    justify: 'start',
     style: { 'margin-left': 0, /*'min-height': '50px',*/ width: '100%', alignContent: 'start', height: '100%' },
   }
 })

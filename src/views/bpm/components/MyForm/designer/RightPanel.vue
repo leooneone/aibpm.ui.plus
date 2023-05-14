@@ -52,8 +52,8 @@
        
 
           </el-form-item>
-          <el-form-item  v-if="activeData.tag==='table-layout'">
-            <el-button @click="AddTableRow">增加一行</el-button>
+          <el-form-item  v-if="activeData.tag==='table-layout'" label="行列操作">
+            <el-button @click="AddTableRow"><ele-Edit></ele-Edit>增加一行</el-button>
            
             <el-button @click="AddTableColumn">增加一列</el-button>
           </el-form-item>
@@ -113,8 +113,21 @@
           <el-form-item v-if="activeData.style&&activeData.style.width!==undefined" label="组件宽度">
             <el-input v-model="activeData.style.width" placeholder="请输入组件宽度" clearable />
           </el-form-item>
+          <el-form-item v-if="activeData.fontSize!==undefined" label="字体大小">
+            <el-input v-model="activeData.fontSize" placeholder="请输入字体大小" clearable />
+          </el-form-item>
+
+
+          
           <el-form-item v-if="activeData.vModel!==undefined && activeData.layout !== 'rowFormItem' && notObject(activeData.defaultValue)" label="默认值">
-            <component  :is="activeData.tag" v-model="activeData.defaultValue"></component>
+          
+        <render-item    :item="activeData" :conf="formConf" @input="setDefault" @change="setDefault" > </render-item>
+
+            <el-input v-if="activeData.tag==='my-text'"
+            v-model="activeData.defaultValue"
+            
+              placeholder="请输入文本内容"
+            />
             <!--<el-input
             v-model="activeData.defaultValue"
               :value="setDefaultValue(activeData.defaultValue)"
@@ -553,7 +566,9 @@
             </el-form-item>
          
           </template>
-          <el-form-item label="对齐方式">
+    
+
+          <el-form-item label="对齐方式" v-if="activeData.textAlign!==undefined">
             <el-radio-group v-model="activeData.textAlign">
               <el-radio-button label="left">左对齐</el-radio-button>
               <el-radio-button label="center">居中</el-radio-button>
@@ -575,6 +590,10 @@
               <el-radio-button label="mini">迷你</el-radio-button>
             </el-radio-group>
           </el-form-item>
+          <el-form-item v-if="activeData['preWrap'] !== undefined" label="自动换行">
+            <el-switch v-model="activeData['preWrap']" />
+          </el-form-item>
+          
           <el-form-item v-if="activeData['show-word-limit'] !== undefined" label="输入统计">
             <el-switch v-model="activeData['show-word-limit']" />
           </el-form-item>
@@ -667,7 +686,7 @@
             <el-switch v-model="activeData.showChinese" />
           </el-form-item>
 
-          <el-form-item label="作为摘要">
+          <el-form-item label="作为摘要" v-if="activeData.asSummary !== undefined">
             <el-switch v-model="activeData.asSummary"  />
           </el-form-item>
 
@@ -847,8 +866,8 @@
       </div>
       <template #footer  >
       <span  class="dialog-footer">
-        <el-button @click="expDialogVisible = false;expressionTemp = []" size="mini">取 消</el-button>
-        <el-button type="primary" @click="checkExpression"  size="mini">确 定</el-button>
+        <el-button @click="expDialogVisible = false;expressionTemp = []" size="small">取 消</el-button>
+        <el-button type="primary" @click="checkExpression"  size="small">确 定</el-button>
       </span>
     </template>
     </el-dialog>
@@ -869,7 +888,9 @@ import configs from "./configs";
  
 import { saveFormConf } from "./utils/db";
 import draggable from "vuedraggable"; 
+import {defineAsyncComponent} from 'vue'
 import {mergeNumberOfExps, validExp, toRPN, calcRPN} from '/@/utils/bpm/index.js'
+const RenderItem = defineAsyncComponent(() => import('../Render/RenderComponent.vue'))
 const dateTimeFormat = {
   date: "YYYY-MM-DD",
   week: "yyyy 第 WW 周",
@@ -881,7 +902,7 @@ const dateTimeFormat = {
   datetimerange: "YYYY-MM-DD HH:mm:ss"
 };
 export default {
-  components: {
+  components: {RenderItem,
     TreeNodeDialog,
     IconsDialog,
     draggable
@@ -1081,6 +1102,9 @@ export default {
     }
   },
   methods: {
+
+    setDefault(v){this.activeData.defaultValue=v},
+    test(v){console.log('test',v)},
     AddTableRow(){ 
       var item=this.activeData
       var colItem = {  rowType: 'layout',layout:'rowFormItem',colSpan: 1, rowSpan: 1, children: [],state:0 }
@@ -1202,6 +1226,7 @@ return(
       item.value = res;
     },
     setDefaultValue(val) {
+
       if (Array.isArray(val)) {
         return val.join(",");
       }

@@ -7,8 +7,9 @@
         </template>
       </tr>
     </tbody>
-  </table>-->
-  <table class="table-layout" :ref="setRef" :config="item">
+  </table>--> 
+  <table class="table-layout" :ref="setRef" :config="item" :disabled="item.disabled">
+    <caption><span  v-if="item.showLabel">{{ item.label }} </span></caption>
     <tbody>
       <tr v-for="(row, rowIndex) in item.children" :key="rowIndex">
         <template v-for="(col, colIndex) in row.children" :key="colIndex">
@@ -16,7 +17,7 @@
         </template>
       </tr>
     </tbody>
-  </table>
+  </table> 
 </template>
 <script lang="ts" setup name="my-table-layout">
 import { inject, provide, defineAsyncComponent, reactive } from 'vue'

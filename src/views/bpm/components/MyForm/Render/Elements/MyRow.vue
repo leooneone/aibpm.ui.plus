@@ -1,6 +1,6 @@
 <template>
   <div :class="  className">
-    <span  class="component-name">{{ item.label }} </span>
+    <span  class="component-name" v-if="item.showLabel">{{ item.label }} </span>
     <render-panel
       :active-id="activeId"
       :list="item.children"

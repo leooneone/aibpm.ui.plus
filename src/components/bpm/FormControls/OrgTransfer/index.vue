@@ -20,7 +20,7 @@
             <el-input
               v-model="searchString"
               class="search-input"
-              size="mini"
+              size="small"
               style="width: 180px;"
               type="search"
               placeholder="搜索人员"
@@ -70,8 +70,8 @@
             </template>
           </el-scrollbar>
           <footer class="transfer__footer">
-            <el-button type="info" plain size="mini" @click="confirm" >确定</el-button >
-            <el-button plain size="mini" @click="closeTransfer">取消</el-button>
+            <el-button type="info" plain size="small" @click="confirm" >确定</el-button >
+            <el-button plain size="small" @click="closeTransfer">取消</el-button>
           </footer>
         </div>
         <!-- 右边穿梭框 -->

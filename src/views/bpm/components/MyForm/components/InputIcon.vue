@@ -4,7 +4,7 @@
         选择图标
         <el-input
           v-model="key"
-          size="mini"
+          size="small"
           :style="{ width: '260px' }"
           placeholder="请输入图标名称"
           prefix-icon="el-icon-search"
@@ -25,7 +25,7 @@
       </ul>
     </el-dialog>
   
-    <el-input v-model="setIcon" placeholder="请输入内容" size="mini"
+    <el-input v-model="setIcon" placeholder="请输入内容" size="small"
       >{{ dialogTableVisible }}
       <template #append>
         <el-button :icon="setIcon" @click="dialogTableVisible = true">选择</el-button>

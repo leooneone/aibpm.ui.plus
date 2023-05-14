@@ -12,7 +12,7 @@
       :on-change="onUploadChange"
       style="display: inline-block"
     >
-      <el-button class="obutton ml10" size="mini" icon="el-icon-download" plain
+      <el-button class="obutton ml10" size="small" icon="el-icon-download" plain
         >导入</el-button
       >
     </el-upload>

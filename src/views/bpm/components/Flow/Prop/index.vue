@@ -8,7 +8,7 @@
         {{ curNode.title }} 
         <el-icon style="font-size:1.5em"><ele-Edit /></el-icon>
       </span>
-      <el-input ref="titleInput" size="mini" v-model="curNode.title" placeholder="请输入节点标签" v-show="titleInputVisible" @blur="onTitleChange"></el-input>
+      <el-input ref="titleInput" size="small" v-model="curNode.title" placeholder="请输入节点标签" v-show="titleInputVisible" @blur="onTitleChange"></el-input>
       
     </template>
     <el-tabs type="border-card" style="height: calc(100vh - 95px)">

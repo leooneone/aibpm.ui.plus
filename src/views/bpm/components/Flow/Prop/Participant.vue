@@ -12,7 +12,7 @@
           <div v-else-if="approveNode.assigneeType === 'form'" class="option-box">
             <p>使用表单中的联系人作为审批人</p>
 
-            <el-select v-model="approverForm.fieldId" size="mini">
+            <el-select v-model="approverForm.fieldId" size="small">
               <el-option
                 v-for="(item, index) in contactors"
                 :key="index"
@@ -26,7 +26,7 @@
           <!--  <p>可选多人</p>
             <el-switch v-model="approverForm.optionalMultiUser" active-color="#13ce66"> </el-switch>-->
             <p>选择范围</p>
-            <el-select v-model="approverForm.optionalRange" size="mini">
+            <el-select v-model="approverForm.optionalRange" size="small">
               <el-option
                 v-for="(item, index) in rangeOptions"
                 :key="index"

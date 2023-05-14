@@ -3,6 +3,8 @@
   <my-upload v-else-if="item.tag === 'el-upload'" v-bind="$attrs" v-model="conf.model[item.vModel]"></my-upload>
   <my-radio-group v-else-if="item.tag === 'el-radio-group'" v-bind="$attrs" v-model="conf.model[item.vModel]"></my-radio-group>
   <my-checkbox-group v-else-if="item.tag === 'el-checkbox-group'" v-bind="$attrs" v-model="conf.model[item.vModel]"></my-checkbox-group>
+  
+  <my-text v-else-if="item.tag === 'my-text'"  v-bind="$attrs" v-model="conf.model[item.vModel]"></my-text>
   <component v-else :is="item.disTag??item.tag" v-bind="$attrs" :form-data="conf.model" v-model="conf.model[item.vModel]">
     <template v-for="(val, name) in item.__slot__" v-slot:[name]>
       {{ val }}
@@ -16,6 +18,7 @@ import { defineAsyncComponent, computed, ref, watch, inject, reactive, h } from 
 const MySelect = defineAsyncComponent(() => import('./Elements/MySelect/index.vue'))
 const MyUpload = defineAsyncComponent(() => import('./Elements/MyUpload/index.vue'))
 const MyRadioGroup = defineAsyncComponent(() => import('./Elements/MyRadioGroup/index.vue'))
+const MyText = defineAsyncComponent(() => import('./Elements/MyText.vue'))
 const MyCheckboxGroup = defineAsyncComponent(() => import('./Elements/MyCheckboxGroup/index.vue'))
 const props = defineProps({
   item: Object,

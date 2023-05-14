@@ -1,7 +1,7 @@
 <template>
   <div  :class="className" style="margin-left: 0" v-if="conf.mode === 'designer'" >
     <span class="component-name">{{ item.label }} </span>
- 
+
     <render-panel 
       :active-id="activeId"
       :list="item.children"

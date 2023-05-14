@@ -160,7 +160,7 @@
         </el-button-group>
       </div>
       <div id="device" ref="device">
-        <div class="outerdevice" :class="[state.deviceMode]" :style="{ width: state.drawerSize }">
+        <div class="outerdevice portrait" :style="{ width: state.drawerSize }">
           <div class="devicebody">
             <div class="devicescreen">
               <el-scrollbar class="center-scrollbar" style="">
@@ -187,9 +187,7 @@
               </el-scrollbar>
             </div>
             <div class="devicecamera" />
-            <el-tooltip effect="dark" content="切换横/竖模式" placement="top">
-              <div class="devicehomebutton" @click="deviceMode = deviceMode === 'landscape' ? 'portrait' : 'landscape'" />
-            </el-tooltip>
+         
           </div>
         </div>
       </div>
@@ -276,8 +274,7 @@ const state = reactive({
   drawerVisible: false,
   generateConf: null,
   activeData: {},
-  activeTabName: 'custom',
-  deviceMode: 'portrait',
+  activeTabName: 'custom',  
 
   drawerSize: '490px',
   flowConditions: [],
@@ -296,8 +293,7 @@ const created = () => {
   }
   state.formConf.model = {}
   state.formConf.mode = 'designer'
-  // activeFormItem(state.drawingList[0])
-  nextTick((_) => getDeviceMode())
+  // activeFormItem(state.drawingList[0]) 
 }
 onMounted(() => {}) 
 watch(
@@ -311,12 +307,7 @@ watch(
   }
 )
 
-
-//切换横竖屏
-const getDeviceMode = () => {
-  // const { clientHeight, clientWidth } = this.$refs.device
-  //state.deviceMode = clientWidth * 0.74 > clientHeight ? 'landscape' : 'portrait'
-}
+ 
 //--start-----------------------流程相关 --------------------
 const getSetting = () => {
   return new Promise((resolve, reject) => {
@@ -708,22 +699,24 @@ defineExpose({
 #device .devicecamera,
 #device .devicehomebutton {
   position: absolute;
+
 }
 
-.outerdevice {
+.outerdevice {top:20px;
   box-shadow: 0 0 13px 3px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
   margin: auto;
   &.portrait {
-    padding: 45px 25px;
-    height: 85% !important;
+    
+    padding:20px 20px;
+    height: calc( 100% - 50px ) !important;
     width: 90%;
     min-height: 560px;
   }
 
   .devicebody {
-    background-color: #fff;
-    border-radius: 10px;
+    border:1px solid #f0edfd;
+    background-color: #fff; 
     .el-scrollbar__view {
       height: 100%;
     }
@@ -731,7 +724,7 @@ defineExpose({
     .el-form {
       height: 100%; // calc(100vh - 69px);
       .el-row {
-        padding: 12px 12px 15px 1px;
+        padding: 12px 1px 12px 1px;
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
       }
@@ -741,7 +734,7 @@ defineExpose({
     background-color: white; // rgba(239, 239, 239, 0.6);
   }
   .devicecamera {
-    top: -38px;
+    top: -25px;
     left: 50%;
     background-color: #aeaeae;
     height: 10px;
@@ -750,17 +743,7 @@ defineExpose({
     margin-top: 10px;
     margin-left: -5px;
   }
-  .devicehomebutton {
-    background-color: #fff;
-    height: 30px;
-    width: 30px;
-    border-radius: 15px;
-    border: 1px solid #a8a8a8;
-    margin-top: 6px;
-    margin-left: -15px;
-    left: 50%;
-    cursor: pointer;
-  }
+   
   .el-radio-group {
     line-height: 2.5;
   }

@@ -12,7 +12,6 @@
     <MyTableLayout v-else-if="item.tag === 'table-layout'" :active-id="activeId" :item="item" :conf="conf"></MyTableLayout>
     <my-table v-else-if="item.tag === 'fc-input-table'" :active-id="activeId" :item="item" :conf="conf"></my-table>
     <my-row v-else-if="item.tag === 'el-row'" :active-id="activeId" :item="item" :conf="conf"></my-row>
-    <my-text v-else-if="item.tag === 'my-text'" :active-id="activeId" :item="item" :conf="conf"></my-text>
     <render-form-item v-else :active-id="activeId" :item="item" :conf="conf"></render-form-item>
   </div> 
 </template>
@@ -25,7 +24,6 @@ const MyRow = defineAsyncComponent(() => import('./Elements/MyRow.vue'))
 const MyTabs = defineAsyncComponent(() => import('./Elements/MyTabs.vue'))
 const MyTableLayout = defineAsyncComponent(() => import('./Elements/MyTableLayout.vue'))
 const MyTable = defineAsyncComponent(() => import('./Elements/MyTable.vue'))
-const MyText = defineAsyncComponent(() => import('./Elements/MyText.vue'))
 
 const props = defineProps({
   parent: Object,
