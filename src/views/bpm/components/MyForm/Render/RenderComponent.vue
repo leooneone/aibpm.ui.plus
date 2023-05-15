@@ -2,7 +2,7 @@
   <my-select v-if="item.tag === 'el-select'" v-bind="$attrs" v-model="conf.model[item.vModel]"></my-select>
   <my-upload v-else-if="item.tag === 'el-upload'" v-bind="$attrs" v-model="conf.model[item.vModel]"></my-upload>
   <my-radio-group v-else-if="item.tag === 'el-radio-group'" v-bind="$attrs" v-model="conf.model[item.vModel]"></my-radio-group>
-  <my-checkbox-group v-else-if="item.tag === 'el-checkbox-group'" v-bind="$attrs" v-model="conf.model[item.vModel]"></my-checkbox-group>
+  <my-checkbox-group v-else-if="item.tag === 'el-checkbox-group'" v-bind="$attrs" :item="item" :conf="conf" v-model="conf.model[item.vModel]"></my-checkbox-group>
   
   <my-text v-else-if="item.tag === 'my-text'"  v-bind="$attrs" v-model="conf.model[item.vModel]"></my-text>
   <component v-else :is="item.disTag??item.tag" v-bind="$attrs" :form-data="conf.model" v-model="conf.model[item.vModel]">
@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup name="render-component">
-import { defineAsyncComponent, computed, ref, watch, inject, reactive, h } from 'vue'
+import { defineAsyncComponent, computed, ref, watch, inject, reactive, h, toRefs } from 'vue'
 
 const MySelect = defineAsyncComponent(() => import('./Elements/MySelect/index.vue'))
 const MyUpload = defineAsyncComponent(() => import('./Elements/MyUpload/index.vue'))
@@ -27,6 +27,7 @@ const props = defineProps({
 })
 let vm = ref(props.item.defaultValue)
 if (props.conf !== undefined) {
+  console.log('props.item.defaultValue',props.item.defaultValue,props.item.tag)
   if(props.conf.model[props.item.vModel]===undefined)
     props.conf.model[props.item.vModel] = ref(props.item.defaultValue)
   vm.value = props.conf.model[props.item.vModel]

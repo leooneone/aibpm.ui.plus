@@ -119,15 +119,19 @@
 
 
           
-          <el-form-item v-if="activeData.vModel!==undefined && activeData.layout !== 'rowFormItem' && notObject(activeData.defaultValue)" label="默认值">
+          <el-form-item v-if="activeData.vModel!==undefined&&['my-select','my-radio-group','my-checkbox-group'].indexOf(activeData.tag)===-1 && activeData.layout !== 'rowFormItem' && notObject(activeData.defaultValue)" label="默认值">
+        
+        <el-input v-if="activeData.tag==='my-text'"
+        v-model="activeData.defaultValue"
+        
+          placeholder="请输入文本内容"
+        /> 
+    
           
-        <render-item    :item="activeData" :conf="formConf" @input="setDefault" @change="setDefault" > </render-item>
-
-            <el-input v-if="activeData.tag==='my-text'"
-            v-model="activeData.defaultValue"
-            
-              placeholder="请输入文本内容"
-            />
+        
+  <component v-else :is="activeData.tag"    v-model="activeData.defaultValue">
+    
+  </component>
             <!--<el-input
             v-model="activeData.defaultValue"
               :value="setDefaultValue(activeData.defaultValue)"
@@ -409,14 +413,19 @@
           <template
             v-if="['el-checkbox-group', 'el-radio-group', 'el-select'].indexOf(activeData.tag) > -1"
           >
-            <el-divider>选项</el-divider> 
-        {{ activeData.tabpanes }}
-            <draggable
+            <el-divider>选项</el-divider>  
+        <el-radio-group v-if="(activeData.tag === 'el-radio-group') || ((activeData.tag === 'el-select') && !activeData.multiple)"
+                    v-model="activeData.defaultValue" @change="emitDefaultValueChange" style="line-height:30px">
+
+                    
+       
+    <draggable
               :list="activeData.options"
               :animation="340"
               group="selectItem"
               handle=".option-drag"
             ><template #item="{element,index}">
+              <el-radio :label="element.value">
               <div  :key="index" class="select-item">
                 <div class="select-line-icon option-drag">
                   <el-icon><ele-Operation></ele-Operation></el-icon>
@@ -435,8 +444,49 @@
                 
                 <el-icon><ele-Remove></ele-Remove></el-icon> 
                 </div>
-              </div></template>
+              </div>
+              </el-radio>
+            </template>
             </draggable>
+            
+    </el-radio-group>
+
+    <el-checkbox-group v-if="(activeData.tag === 'el-checkbox-group') || ((activeData.tag === 'el-select') && activeData.multiple)"
+                    v-model="activeData.defaultValue" @change="emitDefaultValueChange" style="line-height:30px">
+
+                    
+       
+    <draggable
+              :list="activeData.options"
+              :animation="340"
+              group="selectItem"
+              handle=".option-drag"
+            ><template #item="{element,index}">
+              <el-checkbox :label="element.value">
+              <div  :key="index" class="select-item">
+                <div class="select-line-icon option-drag">
+                  <el-icon><ele-Operation></ele-Operation></el-icon>
+                </div>
+                 <el-input v-model="element.label" placeholder="选项名" size="small" /> 
+                <el-input
+                  placeholder="选项值"
+                  size="small"
+                  v-model="element.value"
+                 
+                />
+                <div
+                  class="close-btn select-line-icon"
+                  @click="activeData.options.splice(index, 1)"
+                >
+                
+                <el-icon><ele-Remove></ele-Remove></el-icon> 
+                </div>
+              </div>
+              </el-checkbox>
+            </template>
+            </draggable>
+            
+    </el-checkbox-group>
             <div style="margin-left: 20px;">
               <el-button
                 style="padding-bottom: 0"
@@ -585,9 +635,9 @@
             label="组件尺寸"
           >
             <el-radio-group v-model="activeData.size">
-              <el-radio-button label="medium">中等</el-radio-button>
+              <el-radio-button label="large">较大</el-radio-button>
+              <el-radio-button label="default">默认</el-radio-button>
               <el-radio-button label="small">较小</el-radio-button>
-              <el-radio-button label="mini">迷你</el-radio-button>
             </el-radio-group>
           </el-form-item>
           <el-form-item v-if="activeData['preWrap'] !== undefined" label="自动换行">
@@ -890,7 +940,6 @@ import { saveFormConf } from "./utils/db";
 import draggable from "vuedraggable"; 
 import {defineAsyncComponent} from 'vue'
 import {mergeNumberOfExps, validExp, toRPN, calcRPN} from '/@/utils/bpm/index.js'
-const RenderItem = defineAsyncComponent(() => import('../Render/RenderComponent.vue'))
 const dateTimeFormat = {
   date: "YYYY-MM-DD",
   week: "yyyy 第 WW 周",
@@ -902,7 +951,7 @@ const dateTimeFormat = {
   datetimerange: "YYYY-MM-DD HH:mm:ss"
 };
 export default {
-  components: {RenderItem,
+  components: {
     TreeNodeDialog,
     IconsDialog,
     draggable

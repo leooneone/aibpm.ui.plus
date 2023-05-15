@@ -208,7 +208,7 @@ export const selectComponents = [{
   tag: 'el-checkbox-group',
   tagIcon: 'checkbox',
   dataType: 'checkbox',
-  defaultValue: [],
+  defaultValue: undefined,
   span: 24,
   labelWidth: null,
   style: {},

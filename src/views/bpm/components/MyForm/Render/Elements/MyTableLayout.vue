@@ -1,5 +1,5 @@
 <template>
-<!-- <table class="table-layout" :ref="setRef" :config="item">
+<!-- <table class="table-layout"   :config="item">
     <tbody>
       <tr v-for="(row, rowIndex) in item.children" :key="rowIndex">
         <template v-for="(col, colIndex) in row.children" :key="colIndex">
@@ -8,7 +8,7 @@
       </tr>
     </tbody>
   </table>--> 
-  <table class="table-layout" :ref="setRef" :config="item" :disabled="item.disabled">
+  <table class="table-layout"   :config="item" :disabled="item.disabled">
     <caption><span  v-if="item.showLabel">{{ item.label }} </span></caption>
     <tbody>
       <tr v-for="(row, rowIndex) in item.children" :key="rowIndex">
@@ -201,11 +201,7 @@ const cellOperate = (rIdx, cIdx, comm) => {
   }
 }
 provide('cellOperate', cellOperate)
-const setRef = (el) => {
-  if (!props.conf.tableRefs) props.conf.tableRefs = {}
-  props.conf.tableRefs[props.item.vModel] = el
-  // return item.vModel
-}
+ 
 
 const className = 'drawing-layout-item'
 

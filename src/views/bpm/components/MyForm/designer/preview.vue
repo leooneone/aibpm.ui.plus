@@ -71,7 +71,7 @@ const submitForm = (extPs) => {
       approvalResult: undefined,
       isSaveOnly:false
     }
- 
+ console.log(model)
         proxy.$modal.msgSuccess(`模拟提交成功`)
         
   })
