@@ -104,9 +104,18 @@
             <br />
             <el-radio label="counterOr" class="radio-item radio-item-row">或签（一名审批人同意或拒绝即可）</el-radio>
           </el-radio-group>
+        </div> 
+       
+        <div class="section-title mb15">审批人为空时</div>
+          <el-radio-group v-model="approverForm.whenNullParticipant" class="ml-4">
+            <el-radio label="0" class="radio-item " :value="0">自动通过</el-radio>
+            
+            <el-radio label="1" class="radio-item  " :value="1">由异常管理员处理</el-radio>
+             
+          </el-radio-group>
         </div>
       </div>
-    </div>
+    
     <!-- 开始节点 -->
   </el-main>
 </template>
@@ -254,7 +263,21 @@ export default {
 .radio-item-row {
   width: 100%;
 }
-
+.section-title {
+      position: relative;
+      padding-left: 10px;
+      color: var(--el-text-color-regular);
+      &::after {
+        content: '';
+        width: 2px;
+        height: 10px;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        background: var(--el-color-primary);
+      }
+    }
 .my-row {
   padding: 0;
 
