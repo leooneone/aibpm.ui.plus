@@ -204,3 +204,22 @@ export default {
    
 }
 </script>
+
+<style lang="scss"  scoped    >
+///修复错误提示被遮挡问题
+.myForm{
+  ::v-deep { 
+  .el-form-item__content {
+    
+ 
+    .el-form-item__error{
+      position: relative !important;
+      text-align: left;
+      top:0px;
+      margin-top:2px;
+      margin-bottom:5px;
+    }
+  }
+
+}}
+</style>
