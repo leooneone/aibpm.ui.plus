@@ -30,11 +30,11 @@ export const inputComponents = [{
 },
 {
   label: '多行输入框',
-  type:'string',
+  type:'textarea',
   showLabel: true,
   tag: 'el-input',
   tagIcon: 'textarea',
-  dataType: 'textarea',
+  dataType: 'string',
   placeholder: '请输入',
   defaultValue: undefined,
   span: 24,
