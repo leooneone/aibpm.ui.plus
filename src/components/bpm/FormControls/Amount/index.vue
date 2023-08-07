@@ -11,7 +11,7 @@ export default {
   //   prop: 'value',
   //   event: 'change'
   // },
-  props: ["modelValue"  ],
+  props: ["modelValue","showChinese"  ],
   name: 'fc-amount',
   data () {
     return {

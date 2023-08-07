@@ -192,7 +192,6 @@
         </div>
       </div>
     </div>
-
     <right-panel
       :active-data="state.activeData"
       :form-conf="state.formConf"
@@ -240,7 +239,7 @@ import { inject, ref, reactive, getCurrentInstance, onMounted, computed, watch, 
 import { debounce } from '/@/utils/bpm/index.js';
 const RenderPanel = defineAsyncComponent(() => import('../Render/RenderPanel.vue'))
 const PreviewPanel = defineAsyncComponent(() => import('./preview.vue'))
-const RightPanel = defineAsyncComponent(() => import('./RightPanel.vue'))
+const RightPanel = defineAsyncComponent(() => import('./RightPanel/index.vue'))
 
 const Draggable = defineAsyncComponent(() => import('vuedraggable'))
 const emptyActiveData = { style: {}, autosize: {} }
@@ -415,9 +414,13 @@ const shouldClone = (to, from, target, event, conf) => {
   }
   return true
 }
+
+let ttt=false
 //激活form item 存储当前元素数据和Id
 const activeFormItem = (element) => {
-  if (element) {
+
+
+if (element) {
     state.activeData = element
     state.formConf.activeId = element.formId
   }
@@ -724,7 +727,9 @@ defineExpose({
     .el-form {
       height: 100%; // calc(100vh - 69px);
       .el-row {
-        padding: 12px 1px 12px 1px;
+        min-height: 20px;
+      //----------
+      //  padding: 12px 1px 12px 1px;
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
       }
