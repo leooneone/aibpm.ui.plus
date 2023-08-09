@@ -48,6 +48,7 @@
 
 <script lang="ts" setup> 
 
+import draggable from "vuedraggable"; 
 import  {defineAsyncComponent} from 'vue'
 
 const props=defineProps(['data']     )

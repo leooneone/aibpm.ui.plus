@@ -472,6 +472,24 @@ export const layoutComponents = [{
   span:24
 },
 
+{
+  layout: 'rowFormItem',
+  tag:'el-card',
+  span:24,
+  width:'100%',
+  header:'卡片名称',
+  rowType: 'layout',
+  tagIcon: 'row',
+  type: 'default',
+  justify: 'start',
+  align: 'top',
+  label: '卡片容器',
+  layoutTree: true,
+  children: [],
+  showDivider: true,
+  description:'',
+  shadow:'always'
+},
 
 {
   layout: 'rowFormItem',
