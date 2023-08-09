@@ -8,6 +8,8 @@
         <el-icon><ele-CopyDocument /></el-icon>
       </span>
     </template>
+    <my-card v-if="item.tag === 'el-card'" :active-id="activeId" :item="item" :conf="conf"></my-card>
+    <my-tabs v-else-if="item.tag === 'el-tabs'" :active-id="activeId" :item="item" :conf="conf"></my-tabs>
     <my-tabs v-if="item.tag === 'el-tabs'" :active-id="activeId" :item="item" :conf="conf"></my-tabs>
     <MyTableLayout v-else-if="item.tag === 'table-layout'" :active-id="activeId" :item="item" :conf="conf"></MyTableLayout>
     <my-table v-else-if="item.tag === 'fc-input-table'" :active-id="activeId" :item="item" :conf="conf"></my-table>
@@ -25,6 +27,7 @@ const MyTabs = defineAsyncComponent(() => import('./Elements/MyTabs.vue'))
 const MyTableLayout = defineAsyncComponent(() => import('./Elements/MyTableLayout.vue'))
 const MyTable = defineAsyncComponent(() => import('./Elements/MyTable.vue'))
 
+const MyCard = defineAsyncComponent(() => import('./Elements/MyCard.vue'))
 const props = defineProps({
   parent: Object,
   activeId: String || Number,
