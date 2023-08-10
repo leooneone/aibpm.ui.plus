@@ -2,6 +2,54 @@ import { TRUE } from "sass"
 
 export const extComponents = [ 
    
+{ 
+  orgTag:'el-table',
+  span:24,
+  stripe:true,
+  border:false,
+  size:'default',
+  fit:true,
+  showHeader:true,
+  highlight:true,
+  rowKey:'',
+  'show-summary':false,
+  tree:false,
+  cols:[{type:'',isShow:true,label:'日期',prop:'date',width:'auto',minWidth:undefined,fixed:false,align:'center',},
+  {type:'',isShow:true,label:'名称',prop:'name',width:'auto',minWidth:undefined,fixed:false,align:'center',},
+  {type:'',isShow:true,label:'地址',prop:'address',width:'auto',minWidth:undefined,fixed:false,align:'center',},
+
+],
+  tag:'ai-data-table',
+  width:'100%', 
+  checkbox:false,
+  tagIcon: 'table',
+  type: 'default',
+  justify: 'start',
+  align: 'top',
+  label: '数据表格',
+  layoutTree: true,
+  data: [ {
+    date: '2016-05-03',
+    name: 'Tom',
+    address: 'No. 189, Grove St, Los Angeles',
+  },
+  {
+    date: '2016-05-02',
+    name: 'Tom',
+    address: 'No. 189, Grove St, Los Angeles',
+  },
+  {
+    date: '2016-05-04',
+    name: 'Tom',
+    address: 'No. 189, Grove St, Los Angeles',
+  },
+  {
+    date: '2016-05-01',
+    name: 'Tom',
+    address: 'No. 189, Grove St, Los Angeles',
+  },],  
+  shadow:'always'
+},
   { 
     label: '文字',
     tag:'my-text',

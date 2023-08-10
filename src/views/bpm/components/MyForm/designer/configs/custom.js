@@ -136,7 +136,7 @@ export const customComponents=[
       type: 'table', // list
       justify: 'start',
       align: 'top',
-      label: '表格/明细',
+      label: '输入型表格',
       layoutTree: false,
       children: [],
       actionText: '添加',

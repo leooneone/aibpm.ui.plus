@@ -428,6 +428,8 @@ asSummary: false
 proCondition: false,
 asSummary: false
   },
+
+  
 {
   label: '附件',
   showLabel: true,
@@ -466,12 +468,12 @@ export const layoutComponents = [{
   align: 'top',
   label: '行容器',
   layoutTree: true,
-  children: [],
+  children:[{  span:12,children:[]},{ span:12,children:[]}],
+  
   showDivider: true,
   description:'',
   span:24
 },
-
 {
   layout: 'rowFormItem',
   tag:'el-card',
@@ -479,7 +481,7 @@ export const layoutComponents = [{
   width:'100%',
   header:'卡片名称',
   rowType: 'layout',
-  tagIcon: 'row',
+  tagIcon: 'card',
   type: 'default',
   justify: 'start',
   align: 'top',
@@ -490,6 +492,7 @@ export const layoutComponents = [{
   description:'',
   shadow:'always'
 },
+ 
 
 {
   layout: 'rowFormItem',
@@ -502,12 +505,10 @@ export const layoutComponents = [{
   rowType: 'layout',
   children:[{  label:'Tab1',value:'Tab1' ,  rowType: 'layout',layout:'rowFormItem',content:'tab1',children:[]},{ rowType: 'layout',layout:'rowFormItem', label:'Tab2',value:'Tab2' ,content:'tab2',children:[]}],
   activeName:'Tab1',
-  type: 'border-card',
-  justify: 'start',
+  type: 'border-card', 
   align: 'top',
   label: '标签页',
-  layoutTree: false, 
-  actionText: '添加',
+  layoutTree: false,  
   showDivider: true,
   defaultValue:'Tab1'
 }, 
