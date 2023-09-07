@@ -42,7 +42,7 @@
 <script lang="ts" setup> 
  
 
- import { isNumberStr,setDefaultValue } from "../../../utils/index.js";
+ import { isNumberStr } from "../../../utils/index.js";
 const props=defineProps(['data']     )
 
 const      onDefaultValueInput=(str) =>{  

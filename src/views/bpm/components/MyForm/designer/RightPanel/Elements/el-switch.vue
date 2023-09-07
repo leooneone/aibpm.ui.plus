@@ -13,14 +13,14 @@
           </el-form-item>
           <el-form-item v-if="props.data['active-value'] !== undefined" label="开启值">
             <el-input
-              :value="setDefaultValue(props.data['active-value'])"
+              :value="props.data['active-value']"
               placeholder="请输入开启值"
               @input="onSwitchValueInput($event, 'active-value')"
             />
           </el-form-item>
           <el-form-item v-if="props.data['inactive-value'] !== undefined" label="关闭值">
             <el-input
-              :value="setDefaultValue(props.data['inactive-value'])"
+              :value="props.data['inactive-value']"
               placeholder="请输入关闭值"
               @input="onSwitchValueInput($event, 'inactive-value')"
             />
@@ -30,7 +30,7 @@
 
 <script lang="ts" setup> 
 
-import { isNumberStr,setDefaultValue } from "../../utils/index.js"; 
+import { isNumberStr } from "../../utils/index.js"; 
 
 const props=defineProps(['data']     )
  
