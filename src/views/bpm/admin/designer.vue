@@ -44,37 +44,26 @@
    
       </section>
     </div>
-
-    <el-dialog v-model="isErrorShow" title="验证提示" center>
-      <el-alert type="error" v-for="item in validResults" :title="item" style="margin-bottom: 10px"></el-alert>
-
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="isErrorShow = false">知道了</el-button>
-        </span>
-      </template>
-    </el-dialog>
+ 
   </section>
 </template>
 
 
-<script setup lang="ts">
-import { defineAsyncComponent, reactive, computed,  onMounted,onBeforeMount, toRefs, ref, getCurrentInstance, provide } from 'vue'
+<script  lang="ts" setup>
+import { defineAsyncComponent, reactive, computed,   onBeforeMount,   ref, getCurrentInstance, provide } from 'vue'
 import { WorkflowTemplateApi as TPLApi } from '/@/api/bpm/WorkflowTemplate'
-
-import { WorkflowTemplateAddInput } from '/@/api/bpm/data-contracts'
-import { ElMessage, ElNotification, ElMessageBox } from 'element-plus'
-import { useRoute, useRouter } from 'vue-router'
-import { NextLoading } from '/@/utils/loading'
-//const BasicSetting = defineAsyncComponent(() => import('./components/BasicSetting/index.vue'))
-import BasicSetting from '../components/BasicSetting/index.vue'
-import { nextTick } from 'process'
+ 
+import {    ElMessageBox } from 'element-plus'
+import { useRoute } from 'vue-router' 
+ 
 
 const { proxy } = getCurrentInstance() as any
 const route = useRoute()
-const AdvancedSetting = defineAsyncComponent(() => import('../components/AdvancedSetting/index.vue'))
 
 const MyForm = defineAsyncComponent(() => import('../components/MyForm/designer/index.vue'))
+import BasicSetting from '../components/BasicSetting/index.vue'
+const AdvancedSetting = defineAsyncComponent(() => import('../components/AdvancedSetting/index.vue'))
+
 const FlowChart = defineAsyncComponent(() => import('../components/Flow/index.vue'))
 
  

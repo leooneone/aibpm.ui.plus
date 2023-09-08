@@ -62,14 +62,12 @@
   </el-drawer>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-import Permission from './Permission.vue'
-import Operation from './Operation.vue'
-import Participant from './Participant.vue'
-import Condition from './Condition.vue'
-import Circulate from './Circulate.vue'
+<script lang="ts"> 
+ import Permission from './Permission.vue'
+ import Operation from './Operation.vue'
+ import Participant from './Participant.vue'
+ import Condition from './Condition.vue'
+ import Circulate from './Circulate.vue'
 
 import { ClickOutside } from 'element-plus'
 export default {

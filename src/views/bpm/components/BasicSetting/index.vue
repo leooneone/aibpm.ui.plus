@@ -164,15 +164,13 @@ defineExpose({
   margin: auto;
   background: #fff;
   padding: 16px;
-  & > {
-    & > {
-      & > .el-form--label-top {
+ 
+        :deep(.el-form--label-top){
         .el-form-item__label {
           padding-bottom: 0;
         }
       }
-    }
-  }
+    
 }
 </style>>
 

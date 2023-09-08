@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section class="my-condition">
     <el-switch v-model="props.data.isDefault" active-text="默认/其他条件" inactive-text="指定条件"></el-switch>
     <el-empty v-if="props.data.isDefault" description="无需配置条件"></el-empty>
     <el-tree
@@ -95,8 +95,7 @@
 </template>
     
     <script lang="ts" setup>
-import { reactive, ref, watch, defineAsyncComponent } from 'vue'
-import { WorkflowTemplateApi as TPLApi } from '/@/api/bpm/WorkflowTemplate'
+import { reactive,  watch } from 'vue' 
 
 const props = defineProps({
   // {field: '', label: '', value: '', type: 'string', config: {type: '', format:'', valueFormat:''}}
@@ -338,7 +337,8 @@ defineExpose({onConfirm})
 </script>
     
     <style lang="scss" scoped>
-.my-search-filter :deep {
+.my-condition{
+:deep(.my-search-filter)  {
   .el-tree-node__content {
     height: 30px;
     align-items: stretch;
@@ -378,6 +378,6 @@ defineExpose({onConfirm})
   .el-date-editor--datetimerange.el-input__inner {
     width: 280px;
   }
-}
+}}
 </style>
     

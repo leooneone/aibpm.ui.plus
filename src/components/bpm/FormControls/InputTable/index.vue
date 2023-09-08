@@ -451,7 +451,7 @@ export default {
   }
 }
 
-///.fc-table-box.table  >>>
+ 
 ///
 .fc-table-box-parent {
   :deep(.fc-table-box.list .list-row .row-item.error) .el-input__inner {

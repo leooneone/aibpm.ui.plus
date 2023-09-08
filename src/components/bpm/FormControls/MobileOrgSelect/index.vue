@@ -100,7 +100,7 @@ export default defineComponent({
     return {
       tags:[{id:1,name:'AAA'},{id:2,name:'BBB'}],
       data:[],
-      tabKeys:[],
+      tabKeys:[] as Array<string>,
       show: false,
       innerValue: {},
       selectedData: [],
@@ -115,17 +115,15 @@ export default defineComponent({
   watch:{
     modelValue: {
     immediate: true,
-    handler(val, oldVal) {
-      this.tabKeys = [] 
+    handler(val) {
+      this.tabKeys = []  
         var that =this
         this.tabList.forEach((key:string) => {
-          console.log(key)
           that.tabKeys.push(key)
         }  )
       window.console.log('----------------')
         if(!val) return
         this.reloadCmpData()
-      console.log(val);
     }
   },
      
@@ -188,7 +186,7 @@ export default defineComponent({
       })
 
       // transfer 可能还未加载成功
-      this.$nextTick(_ => {
+      this.$nextTick(() => {
         this.initSelectedData()
       })
     },
@@ -205,17 +203,12 @@ export default defineComponent({
       }, [])
 
 
-    console.log('initSelectedData')
-    console.log(this.tabKeys)
-    console.log(this.selectedData)
-    console.log(this.innerValue)
     },
 
       
     onClose (item:Object) { 
       const list = this.innerValue[item.tabKey]
-      window.leo=this.innerValue
-      window.leo1=list
+   
       const index = list.findIndex(t =>t.id=== item.id)
       index > -1 && list.splice(index, 1)
       this.initSelectedData()
@@ -256,7 +249,7 @@ export default defineComponent({
     padding-right:  1rem;
     vertical-align:  middle;
 
-    >>> .el-tag__close{
+    :deep(.el-tag__close){
       position: absolute;
       right: 2px;
       top: 50%;

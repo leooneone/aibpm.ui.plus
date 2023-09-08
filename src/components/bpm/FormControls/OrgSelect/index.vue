@@ -118,7 +118,7 @@ export default {
         this.innerValue[key] = this.value && this.value[key] ? JSON.parse(JSON.stringify(this.value[key])) : []
       })
       // transfer 可能还未加载成功
-      this.$nextTick(_ => {
+      this.$nextTick(() => {
         this.initSelectedData()
       })
     },
@@ -190,7 +190,7 @@ export default {
     padding-right:  1rem;
     vertical-align:  middle;
 
-    >>> .el-tag__close{
+    :deep(.el-tag__close){
       position: absolute;
       right: 2px;
       top: 50%;

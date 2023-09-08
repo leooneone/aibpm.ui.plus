@@ -109,8 +109,7 @@ export default {
 	}
 }
 .icon-dialog {
-	::v-deep {
-		.el-dialog {
+	:deep(.el-dialog) {
 			border-radius: 8px;
 			margin-bottom: 0;
 			margin-top: 4vh !important;
@@ -128,7 +127,7 @@ export default {
 				overflow: auto;
 			}
 		}
-	}
+	
 }
 
 </style>

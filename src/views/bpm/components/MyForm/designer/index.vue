@@ -207,7 +207,7 @@
   </div>
 
   <el-dialog v-model="state.isErrorShow" title="验证提示">
-    <el-alert type="error" v-for="item in state.validResults" :title="item" style="margin-bottom: 10px"></el-alert>
+    <el-alert type="error" v-for="(item,index) in state.validResults" :key="index" :title="item" style="margin-bottom: 10px"></el-alert>
 
     <template #footer>
       <span class="dialog-footer">
@@ -215,7 +215,8 @@
       </span>
     </template>
   </el-dialog>
-  <PreviewPanel ref="previewPanelRef" />
+  <PreviewPanel ref="previewPanelRef" ></PreviewPanel>
+  
 </template>
 
 <script lang="ts" setup >
@@ -225,7 +226,7 @@
 // import FormDrawer from './FormDrawer'
 
 import configs from './configs'
-import { exportDefault, beautifierConf, isNumberStr, titleCase, deepClone } from './utils/index'
+import { deepClone } from './utils/index'
 // import CodeTypeDialog from './CodeTypeDialog'
 
 import {
@@ -244,7 +245,6 @@ const PreviewPanel = defineAsyncComponent(() => import('./preview.vue'))
 const RightPanel = defineAsyncComponent(() => import('./RightPanel/index.vue'))
 
 const Draggable = defineAsyncComponent(() => import('vuedraggable'))
-const emptyActiveData = { style: {}, autosize: {} }
 
 const formConfInDB = getFormConf()
 // const idGlobal = getIdGlobal();

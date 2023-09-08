@@ -208,8 +208,8 @@ export default {
 <style lang="scss"  scoped    >
 ///修复错误提示被遮挡问题
 .myForm{
-  ::v-deep { 
-  .el-form-item__content {
+  :deep( 
+  .el-form-item__content) {
     
  
     .el-form-item__error{
@@ -221,5 +221,5 @@ export default {
     }
   }
 
-}}
+}
 </style>

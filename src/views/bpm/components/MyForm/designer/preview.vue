@@ -33,7 +33,7 @@
 
 </template>
  
-<script lang="ts" setup>
+<script lang="ts" setup name="preview">
 import { ref, reactive, onMounted, getCurrentInstance, defineAsyncComponent, provide } from 'vue'
   
 const FormParser = defineAsyncComponent(() => import('/@/views/bpm/components/MyForm/designer/FormParser.vue'))

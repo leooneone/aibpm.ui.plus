@@ -240,7 +240,7 @@ export default {
           const nodes = res.map((t) => ({ nodeId: conf.nodeId(t), ...t }));
           resolve(nodes);
         })
-        .then((res) => {
+        .then(() => {
           for (const tabKey of this.tabKeys) {
             const tree = this.$refs[tabKey][0];
             this.aloneCheckedData[tabKey].forEach((data) => {
@@ -308,7 +308,7 @@ export default {
     removeAll() {
       for (const type of this.tabKeys) {
         const tree = this.$refs[type][0];
-        tree.getCheckedKeys().forEach((key) => {
+        tree.getCheckedKeys().forEach(() => {
           tree.setCheckedKeys([]);
         });
         this.selectedData[type] = [];
@@ -409,7 +409,7 @@ export default {
     },
 
     tabList: {
-      handler(val) {
+      handler() {
         this.dataInit(); // tablist 比show 延后
       },
       immediate: true,
@@ -595,7 +595,8 @@ export default {
   overflow: hidden;
   font-size: 14px;
 
-  >>> .el-scrollbar__view{
+  
+  :deep(.el-scrollbar__view){
     height: 100%;
   }
 

@@ -41,9 +41,11 @@
     />
     <el-dialog v-model="state.isErrorShow" title="流程设计器验证">
       <el-alert
-        :type="item.type || 'error'"
+        
         show-icon
-        v-for="item in state.validResults"
+        v-for="(item, index) in state.validResults"
+        :type="item.type || 'error'"
+        :key="index"
         :title="`【` + (item.group || '全局') + `】` + item.msg"
         style="margin-bottom: 10px"
         :closable="false"
@@ -60,19 +62,17 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { inject, ref, reactive, getCurrentInstance, onMounted, computed, watch, nextTick, defineAsyncComponent, provide } from 'vue'
+import {   ref, reactive, getCurrentInstance, onMounted, watch, nextTick, defineAsyncComponent, provide } from 'vue'
 
-const SaveTopology = defineAsyncComponent(() => import('./SaveTopology/index.vue'))
-const EditCellProperty = defineAsyncComponent(() => import('./EditCellProperty/index.vue'))
-const NodeProp = defineAsyncComponent(() => import('./Prop/index.vue'))
-const ImportFile = defineAsyncComponent(() => import('./ImportFile/index.vue'))
+ const SaveTopology = defineAsyncComponent(() => import('./SaveTopology/index.vue'))
+ const EditCellProperty = defineAsyncComponent(() => import('./EditCellProperty/index.vue'))
+ const NodeProp = defineAsyncComponent(() => import('./Prop/index.vue'))
+ const ImportFile = defineAsyncComponent(() => import('./ImportFile/index.vue'))
 import './styles/reset.css'
 import './styles/grapheditor.css'
 
 import coordinateSvg from '/@/assets/coordinate.svg'
-import editSvg from '/@/assets/edit.svg'
-import saveSvg from '/@/assets/save.svg'
-
+ 
 import { NodeUtils } from './nodeUtils.js'
 
 interface NodeInfo {
@@ -89,9 +89,9 @@ const editorContainerRef = ref()
 const propPanelRef = ref()
 const props = defineProps({
 
-  conf: { type: Object, default: (_) => {} },
-  fields: { type: Array, default: [] },
-  conditions: { type: Array, default: [] },
+  conf: { type: Object, default: () => {} },
+  fields: { type: Array, default: ()=>[] },
+  conditions: { type: Array, default:()=> [] },
   enableEditing: { type: Boolean, default: true },
 })
 
@@ -99,7 +99,7 @@ const state = reactive({
   isShowApproval: true,
   enableEditing: true,
   isErrorShow: false,
-  validResults: [],
+  validResults: [] as any,
   startActivityId: 0,
   nodes: {},
   lines: [],
@@ -108,7 +108,7 @@ const state = reactive({
   curCellType: '',
   ///是否使用属性面板
   isPropPanel: true,
-  graph: null,
+  graph: null as any,
   saveCurrentTopo: false,
   cellProperty: false,
   importFile: false,
@@ -118,7 +118,7 @@ const state = reactive({
 })
 
 // 修改节点文本内容
-const textValueChange = (value) => {
+const textValueChange = (value:any) => {
   var cells = state.graph.getSelectionCells()
   state.graph.cellLabelChanged(cells[0], value)
 }
@@ -133,9 +133,8 @@ const addEventHandler = () => {
   // });
   // state.graph.addListener(mxEvent.VERTEX_START_MOVE, (sender, evt) => {
   //   console.log('VERTEX_START_MOVE', sender, evt);
-  // });
-  var that = this
-  state.graph.addListener(mxEvent.CELLS_ADDED, (sender, evt) => {
+  // }); 
+  state.graph.addListener(mxEvent.CELLS_ADDED, (sender:any, evt:any) => {
     const cell = evt.properties.cells[0]
 
     if (state.graph.isPart(cell)) {
@@ -154,14 +153,12 @@ const addEventHandler = () => {
   // 画布平移事件
   // state.graph.addListener(mxEvent.PAN, (sender, evt) => {
   //   console.log('画布平移了', sender, evt)
-  // })
-  var that = this
+  // }) 
   var cellLabelChanged = state.graph.cellLabelChanged
   state.graph.cellLabelChanged = function (cell, newValue, autoSize) {
     if (state.nodes[cell.id].title !== newValue) state.nodes[cell.id].title = newValue
     cellLabelChanged.apply(this, arguments)
-  }
-  var that = this
+  } 
   // state.graph.addListener(mxEvent.DOUBLE_CLICK, function(sender, evt){
   //   var cell = evt.getProperty('cell');
 
@@ -462,7 +459,7 @@ const rmCells = (ids:string) => {
 
   state.graph.removeCells(cells)
 }
-const addCell = (cell, defineType) => {
+const addCell = (cell:any, defineType:any) => {
   if (cell !== undefined) {
     var id = cell.id
 
