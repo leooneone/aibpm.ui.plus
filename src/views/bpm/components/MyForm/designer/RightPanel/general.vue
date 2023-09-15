@@ -9,8 +9,8 @@
   <el-alert v-if="props.data.description" type="info">{{ props.data.description }}</el-alert>
   <el-form-item v-if="props.data.label !== undefined" label="标题">
     <el-input v-model="props.data.label" placeholder="请输入标题" />
-  </el-form-item>
-  <el-form-item label="默认值" v-if="props.data.layout==undefined" >
+  </el-form-item> 
+  <el-form-item label="默认值" v-if="props.data.layout!==undefined&&!props.data.customDefaultValue" >
     <el-input v-if="props.data.tag === 'my-text'" v-model="props.data.defaultValue" placeholder="请输入文本内容" />
 
     <component v-else :is="props.data.tag" v-model="props.data.defaultValue"> </component>

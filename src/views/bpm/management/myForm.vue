@@ -32,12 +32,17 @@
       :key="index"
       :type=" getType(activity)"
       :icon="getIcon(activity)"
-      :timestamp="activity.startTime"
+      :timestamp="activity.finishTime"
     > 
-        <h4> {{ activity.title }}</h4>
-        <p>{{ activity.participant }} <el-tag :type="getType(activity)">{{ getState(activity)}}</el-tag> </p>
+        <h4> {{ activity.title }} </h4>
+        <p>开始时间: {{activity.startTime}}</p>
+        <p>参与人：{{ activity.participant }}  
+        </p>
+        <p>
  
-     {{ activity.comment }}
+        处理结果： <el-tag style="float:right" :type="getType(activity)">{{ getState(activity)}}</el-tag>{{ activity.comment }}
+        
+       </p>
     </el-timeline-item>
   </el-timeline> 
     </tempate></el-tab-pane>
@@ -56,7 +61,11 @@
           <template #default="{ row }">
             <el-tag disable-transitions :type="vnDisplayType[row.state&127].toLowerCase()">{{ vnActivityState[row.state] }}</el-tag> 
           </template>
-        </el-table-column>  <el-table-column prop="comment" label="意见" show-overflow-tooltip width="120"></el-table-column>
+        </el-table-column>  <el-table-column prop="comment" label="意见" show-overflow-tooltip width="120">
+          <template #default="{ row }">
+          {{getState(row)}} row.comment
+        </template>
+        </el-table-column>
       </el-table>
 
     </tempate></el-tab-pane>
@@ -112,14 +121,15 @@ const state = reactive({
   conf:JSON.parse(JSON.stringify(defautConf))
 })
 const getState = (item) => {
+
  if(['已取消','已完成'].includes(vnActivityState[item.state]))
  { 
-    if (item.state === nvActivityState['已完成']) {
-    if (item.approvalResult === nvApprovalResult['True']) return '同意 ' + item.finishTime
-    else if (item.approvalResult === nvApprovalResult['False']) return '不同意 ' + item.finishTime
-    else return '完成于 ' + item.finishTime
+    if (vnActivityState[item.state]=== '已完成') {
+    if (item.approvalResult === nvApprovalResult['True']) return '同意 ' 
+    else if (item.approvalResult === nvApprovalResult['False']) return '不同意 ' 
+    else return '已完成 ' 
   }  else 
-  return  vnActivityState[item.state] + item.finishTime
+  return  vnActivityState[item.state]
 
 }
   else  return  vnActivityState[item.state]
@@ -164,7 +174,8 @@ const submitForm =  (extPs) => {
       }else{
         if(res.code === '-1')
         {
-          openOptional()
+
+          openOptional(ps)
           state.optional = res.data.optional ||{range:[]}
         }else 
           proxy.$modal.msgError(res.msg)
@@ -181,10 +192,10 @@ provide('submitForm', submitForm)
 const openApprove = () => {
   approvePanelRef.value.open()
 }
-const openOptional=()=>{
+const openOptional=(ps)=>{
 
 
-  optionalPanelRef.value.open()
+  optionalPanelRef.value.open(ps)
 }
 const open = async (ps) => {
   state.loading = true

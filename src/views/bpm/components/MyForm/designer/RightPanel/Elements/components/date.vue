@@ -165,5 +165,5 @@ const dateOptions=computed( ()=>{
 			display: none;
 		}
 	}
-}
+
 </style>

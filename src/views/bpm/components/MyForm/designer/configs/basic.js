@@ -122,7 +122,8 @@ export const selectComponents = [{
   required: true,
   filterable: false,
   multiple: false,
-
+  ///
+  customDefaultValue:true,
   
   options: [{
     label: '选项一',
