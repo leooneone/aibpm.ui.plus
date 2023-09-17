@@ -453,7 +453,8 @@ asSummary: false
   regList: [],
   changeTag: true,
   proCondition: false,
-  asSummary: false
+  asSummary: false,
+  span:24
 },
 
 ]

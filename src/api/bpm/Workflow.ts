@@ -19,11 +19,13 @@ export class WorkflowApi<SecurityDataType = unknown> extends HttpClient<Security
    *
    * @tags workflow
    * @name GetState
+   * @summary 强制swagger导出 displaytype
    * @request GET:/api/bpm/workflow/get-state
    * @secure
    */
   getState = (
     query?: {
+      /** 查询类型 */
       Type?: QueryType
       /** @format int64 */
       TemplateId?: number
@@ -47,11 +49,13 @@ export class WorkflowApi<SecurityDataType = unknown> extends HttpClient<Security
    *
    * @tags workflow
    * @name Open
+   * @summary 根据模板ID 启动流程
    * @request GET:/api/bpm/workflow/open
    * @secure
    */
   open = (
     query?: {
+      /** 查询类型 */
       Type?: QueryType
       /** @format int64 */
       TemplateId?: number
@@ -75,6 +79,7 @@ export class WorkflowApi<SecurityDataType = unknown> extends HttpClient<Security
    *
    * @tags workflow
    * @name Statstics
+   * @summary 流程统计信息
    * @request POST:/api/bpm/workflow/statstics
    * @secure
    */

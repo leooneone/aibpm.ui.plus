@@ -12,6 +12,7 @@
 import { AxiosResponse } from 'axios'
 import {
   PageInputTemplateGetPageDto,
+  ResultOutputIListString,
   ResultOutputListWorkflowTemplateListOutput,
   ResultOutputPageOutputWorkflowTemplateListOutput,
   ResultOutputString,
@@ -49,8 +50,32 @@ export class WorkflowTemplateApi<SecurityDataType = unknown> extends HttpClient<
    * No description
    *
    * @tags workflow-template
+   * @name GetList
+   * @summary 获取可用业务列表
+   * @request GET:/api/bpm/workflow-template/get-list
+   * @secure
+   */
+  getList = (
+    query?: {
+      /** @format int64 */
+      id?: number
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<ResultOutputIListString, any>({
+      path: `/api/bpm/workflow-template/get-list`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    })
+  /**
+   * No description
+   *
+   * @tags workflow-template
    * @name Get
-   * @summary 根据版本号获取
+   * @summary 获取流程模板
    * @request GET:/api/bpm/workflow-template/get
    * @secure
    */
@@ -74,6 +99,7 @@ export class WorkflowTemplateApi<SecurityDataType = unknown> extends HttpClient<
    *
    * @tags workflow-template
    * @name ListPublished
+   * @summary 已发布模板列表
    * @request POST:/api/bpm/workflow-template/list-published
    * @secure
    */
@@ -90,6 +116,7 @@ export class WorkflowTemplateApi<SecurityDataType = unknown> extends HttpClient<
    *
    * @tags workflow-template
    * @name GetPage
+   * @summary 查询模板列表
    * @request POST:/api/bpm/workflow-template/get-page
    * @secure
    */
@@ -108,6 +135,7 @@ export class WorkflowTemplateApi<SecurityDataType = unknown> extends HttpClient<
    *
    * @tags workflow-template
    * @name Save
+   * @summary 保存模板,名称相同则增加新版本，不同则新增
    * @request POST:/api/bpm/workflow-template/save
    * @secure
    */

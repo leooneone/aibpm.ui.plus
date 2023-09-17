@@ -9,7 +9,10 @@
  * ---------------------------------------------------------------
  */
 
-/** @format int32 */
+/**
+ * Activity State 比較合適
+ * @format int32
+ */
 export type ActivityState = 132 | 258 | 385 | 515 | 646 | 773 | 902 | 1029
 export const nvActivityState = { 等待: '132', 待办: '258', 待阅: '385', 已完成: '515', 已取消: '646', 草稿: '773', 超时: '902', 跳过: '1029' }
 export const vnActivityState = {
@@ -23,13 +26,28 @@ export const vnActivityState = {
   '1029': '跳过',
 }
 
-/** @format int32 */
-export type ActivityType = 0 | 1 | 2 | 3 | 4 | 5 | 6
-export const nvActivityType = { Copy: '0', Condition: '1', Start: '2', End: '3', Deal: '4', Approve: '5', ParallelGW: '6' }
-export const vnActivityType = { '0': 'Copy', '1': 'Condition', '2': 'Start', '3': 'End', '4': 'Deal', '5': 'Approve', '6': 'ParallelGW' }
+/**
+ * ActivityType 常用活動類型
+ * @format int32
+ */
+export type ActivityType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
+export const nvActivityType = { Copy: '0', Condition: '1', Start: '2', End: '3', Deal: '4', Approve: '5', ParallelGW: '6', ExclusiveGW: '7' }
+export const vnActivityType = {
+  '0': 'Copy',
+  '1': 'Condition',
+  '2': 'Start',
+  '3': 'End',
+  '4': 'Deal',
+  '5': 'Approve',
+  '6': 'ParallelGW',
+  '7': 'ExclusiveGW',
+}
 
+/** 高级设置 */
 export interface AdvancedSettingModel {
+  /** 审批人去重 */
   autoRepeat?: boolean
+  /** 发起人审批时自动通过 */
   myAuditAutoPass?: boolean
   approve?: ApproveSetting
 }
@@ -99,14 +117,40 @@ export interface ApiEntity {
   permissions?: PermissionEntity[] | null
 }
 
-/** @format int32 */
+/**
+ * 审批结果
+ * @format int32
+ */
 export type ApprovalResult = 0 | 1 | -1
 export const nvApprovalResult = { False: '0', True: '1', NA: '-1' }
 export const vnApprovalResult = { '0': 'False', '1': 'True', '-1': 'NA' }
 
 export interface ApproveSetting {
+  /** 审批意见提示 */
   remarkTip?: string | null
+  /** 审批意见是否必填 */
   remarkRequired?: boolean
+}
+
+/** 流程分组 */
+export interface BPMSettingEntity {
+  /** @format int64 */
+  id?: number
+  adminName?: string | null
+  /** @format int64 */
+  adminId?: number
+  /** 用户 */
+  admin?: UserEntity
+  referenceNoSetting?: ReferenceNoSetting
+}
+
+/** 修改 */
+export interface BPMSettingUpdateInput {
+  /** @format int64 */
+  id?: number
+  /** @format int64 */
+  adminId?: number
+  referenceNoSetting?: ReferenceNoSetting
 }
 
 export interface BaseSetting {
@@ -190,7 +234,10 @@ export const vnDataType = {
   '23': 'CustomPostgreSQL',
 }
 
-/** @format int32 */
+/**
+ * 显示类型与UI匹配 枚举|DispayType.类型
+ * @format int32
+ */
 export type DisplayType = 1 | 2 | 3 | 4 | 5 | 6
 export const nvDisplayType = { Default: '1', Primary: '2', Success: '3', Info: '4', Warning: '5', Danger: '6' }
 export const vnDisplayType = { '1': 'Default', '2': 'Primary', '3': 'Success', '4': 'Info', '5': 'Warning', '6': 'Danger' }
@@ -257,12 +304,12 @@ export interface EmployeeSelectDto {
   /** @format int64 */
   id?: number
   name?: string | null
-  type?: string | null
 }
 
 /** 添加 */
 export interface InstanceAddInput {
   basicSetting?: BaseSetting
+  /** 高级设置 */
   advancedSetting?: AdvancedSettingModel
   formModel?: string | null
   processData?: string | null
@@ -271,14 +318,25 @@ export interface InstanceAddInput {
 }
 
 export interface InstanceDataInput {
-  /** @format int64 */
+  /**
+   * 节点人员处理该节点时 所在的组织
+   * @format int64
+   */
   ouId?: number
-  /** @format int64 */
+  /**
+   * 工作项Id
+   * @format int64
+   */
   workItemId?: number
+  /** 活动节点Id */
   activityCode?: string | null
   form?: Record<string, any>
-  /** @format int64 */
+  /**
+   * 模板Id
+   * @format int64
+   */
   templateId?: number
+  /** 查询类型 */
   type?: QueryType
   optionalParticipants?: Record<string, Participant[]>
   /**
@@ -292,12 +350,15 @@ export interface InstanceDataInput {
    */
   version?: number
   comment?: string | null
+  /** 审批结果 */
   approvalResult?: ApprovalResult
+  /** 是否仅保存 */
   isSaveOnly?: boolean
 }
 
 export interface InstanceGetOutput {
   basicSetting?: BaseSetting
+  /** 高级设置 */
   advancedSetting?: AdvancedSettingModel
   formModel?: string | null
   processData?: string | null
@@ -313,8 +374,11 @@ export interface InstanceGetOutput {
    * @format int64
    */
   version?: number
+  /** 主属部门 */
   ouName?: string | null
+  /** 附属部门 */
   ouNames?: string[] | null
+  /** 组织角色 */
   roleName?: string | null
   referenceNo?: string | null
   /** @format date-time */
@@ -326,7 +390,9 @@ export interface InstanceGetOutput {
 }
 
 export interface InstanceGetPageDto {
+  /** 是否经办 */
   isHandled?: boolean
+  /** 流程状态 */
   state?: InstanceState
 }
 
@@ -342,10 +408,11 @@ export interface InstanceListOutput {
   /** @format int64 */
   groupId?: number
   departmentName?: string | null
+  /** 流程状态 */
   state?: InstanceState
   /** 发起人 */
   initiator?: string | null
-  /** 标题 */
+  /** 角色 */
   role?: string | null
   /**
    * 接收时间
@@ -357,12 +424,16 @@ export interface InstanceListOutput {
 export interface InstanceOutput {
   form?: string | null
   model?: string | null
+  /** Activities? */
   items?: WorkItemOutput[] | null
   instance?: InstanceGetOutput
   template?: WorkflowTemplateGetOutput
 }
 
-/** @format int32 */
+/**
+ * 流程状态
+ * @format int32
+ */
 export type InstanceState = 132 | 258 | 387 | 517 | 646 | 774 | 902
 export const nvInstanceState = { 未初始化: '132', 运行中: '258', 已完成: '387', 已取消: '517', 异常: '646', 挂起: '774', 超时: '902' }
 export const vnInstanceState = { '132': '未初始化', '258': '运行中', '387': '已完成', '517': '已取消', '646': '异常', '774': '挂起', '902': '超时' }
@@ -370,6 +441,7 @@ export const vnInstanceState = { '132': '未初始化', '258': '运行中', '387
 /** 修改 */
 export interface InstanceUpdateInput {
   basicSetting?: BaseSetting
+  /** 高级设置 */
   advancedSetting?: AdvancedSettingModel
   formModel?: string | null
   processData?: string | null
@@ -866,10 +938,38 @@ export type PermissionType = 1 | 2 | 3
 export const nvPermissionType = { Group: '1', Menu: '2', Dot: '3' }
 export const vnPermissionType = { '1': 'Group', '2': 'Menu', '3': 'Dot' }
 
-/** @format int32 */
+/**
+ * 查询类型
+ * @format int32
+ */
 export type QueryType = 1 | 2 | 3
 export const nvQueryType = { WorkItem: '1', Template: '2', Instance: '3' }
 export const vnQueryType = { '1': 'WorkItem', '2': 'Template', '3': 'Instance' }
+
+export interface ReferenceNoSetting {
+  format?: string | null
+  dateFormat?: string | null
+  /** @format int32 */
+  length?: number
+  type?: ReferenceNoType
+}
+
+/** @format int32 */
+export type ReferenceNoType = 0 | 1
+export const nvReferenceNoType = { Global: '0', ByTemplate: '1' }
+export const vnReferenceNoType = { '0': 'Global', '1': 'ByTemplate' }
+
+/** 结果输出 */
+export interface ResultOutputBPMSettingEntity {
+  /** 是否成功标记 */
+  success?: boolean
+  /** 编码 */
+  code?: string | null
+  /** 消息 */
+  msg?: string | null
+  /** 流程分组 */
+  data?: BPMSettingEntity
+}
 
 /** 结果输出 */
 export interface ResultOutputDisplayType {
@@ -879,7 +979,20 @@ export interface ResultOutputDisplayType {
   code?: string | null
   /** 消息 */
   msg?: string | null
+  /** 显示类型与UI匹配 枚举|DispayType.类型 */
   data?: DisplayType
+}
+
+/** 结果输出 */
+export interface ResultOutputIListString {
+  /** 是否成功标记 */
+  success?: boolean
+  /** 编码 */
+  code?: string | null
+  /** 消息 */
+  msg?: string | null
+  /** 数据 */
+  data?: string[] | null
 }
 
 /** 结果输出 */
@@ -1472,6 +1585,7 @@ export interface TemplateGetOutput {
 }
 
 export interface TemplateGetPageDto {
+  /** 名称 */
   name?: string | null
   states?: TemplateState[] | null
 }
@@ -2182,6 +2296,7 @@ export interface ViewEntity {
 
 export interface WorkItemGetOutput {
   basicSetting?: BaseSetting
+  /** 高级设置 */
   advancedSetting?: AdvancedSettingModel
   formData?: string | null
   processData?: string | null
@@ -2200,8 +2315,10 @@ export interface WorkItemGetOutput {
 }
 
 export interface WorkItemGetPageDto {
+  /** 其他人那里没有经过我的 */
   isMyself?: boolean
   name?: string | null
+  /** Activity State 比較合適 */
   state?: ActivityState
 }
 
@@ -2214,6 +2331,7 @@ export interface WorkItemGetPageOutput {
   /** 参考号 */
   referenceNo?: string | null
   ouName?: string | null
+  /** Activity State 比較合適 */
   state?: ActivityState
   /** 发起人 */
   initiator?: string | null
@@ -2230,17 +2348,21 @@ export interface WorkItemGetPageOutput {
   instanceName?: string | null
   instanceId?: string | null
   workflowTemplateId?: string | null
+  /** 参与人，本该处理该工作项的人 */
   participant?: string | null
+  /** 实际执行人（管理/委托代办人员） */
   executor?: string | null
 }
 
 export interface WorkItemOutput {
+  /** ActivityType 常用活動類型 */
   type?: ActivityType
   comment?: string | null
   /** @format date-time */
   finishTime?: string
   /** @format date-time */
   startTime?: string
+  /** Activity State 比較合適 */
   state?: ActivityState
   title?: string | null
   activityName?: string | null
@@ -2285,6 +2407,7 @@ export interface WorkflowTemplateUpdateInput {
   formSetting?: string | null
   advancedContext?: string | null
   basicContext?: string | null
+  /** 是否发布 */
   isPublish?: boolean
   /** @format int64 */
   id?: number

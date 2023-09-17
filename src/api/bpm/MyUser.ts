@@ -36,6 +36,7 @@ export class MyUserApi<SecurityDataType = unknown> extends HttpClient<SecurityDa
    *
    * @tags my-user
    * @name GetUser
+   * @summary 查询用户
    * @request GET:/api/bpm/my-user/get-user
    * @secure
    */

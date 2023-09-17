@@ -1,6 +1,6 @@
  <template>
   <el-dialog v-model="state.visible" title="发起人自选" width="50%">
-    {{ state.formData }}
+
     <el-form label-position="top" ref="elFormRef" :model="state.formData" :rules="state.rules">
       <el-form-item :label="`[` + props.optional.name + `]参与人设置`" prop="optionalParticipants">
         <ou-select

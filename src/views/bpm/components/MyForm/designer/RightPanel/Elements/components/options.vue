@@ -9,8 +9,7 @@
 
   <el-radio-group
     v-if="props.data.tag === 'el-radio-group' || (props.data.tag === 'el-select' && !props.data.multiple)"
-    v-model="props.data.defaultValue"
-    @change="emitDefaultValueChange"
+    v-model="props.data.defaultValue" 
     style="line-height: 30px"
   >
     <draggable :list="props.data.options" :animation="340" group="selectItem" handle=".option-drag"
@@ -32,9 +31,8 @@
   </el-radio-group>
 
   <el-checkbox-group
-    v-if="props.data.tag === 'el-checkbox-group' || (props.data.tag === 'el-select' && props.data.multiple)"
-    v-model="props.data.defaultValue"
-    @change="emitDefaultValueChange"
+    
+    v-model="props.data.defaultValue" 
     style="line-height: 30px"
   >
     <draggable :list="props.data.options" :animation="340" group="selectItem" handle=".option-drag"

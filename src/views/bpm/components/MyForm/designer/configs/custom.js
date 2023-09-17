@@ -136,13 +136,14 @@ export const customComponents=[
       type: 'table', // list
       justify: 'start',
       align: 'top',
-      label: '输入型表格',
+      label: '子表单',
       layoutTree: false,
       children: [],
       actionText: '添加',
       tableConf: {},
       'show-summary': true,
-      defaultValue: []
+      defaultValue: [],
+      span:24
     },
   ]
 

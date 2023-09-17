@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-time-picker v-model="timeRange" v-bind="{...$props, ...$attrs}" v-on="$listeners" ></el-time-picker>
+    <el-time-picker v-model="timeRange" v-bind="$attrs" is-range ></el-time-picker>
     <div v-if="showDuration" class="explain-text">时长: {{duration}}</div>
   </div>
 </template>
@@ -12,7 +12,8 @@ export default {
   //   prop: 'value',
   //   event: 'change'
   // },
-  props:["modelValue", "cmpType", "showDuration", "tag", "tagIcon", "defaultValue", "labelWidth", "clearable", "is-range", "range-separator", "start-placeholder", "end-placeholder", "format", "value-format", "regList", "changeTag", "proCondition", "asSummary", "fieldId", "renderKey", "layout", "value"],
+  props:["modelValue",  "showDuration",  
+   "defaultValue" ],
   name: 'fc-time-duration',
   data(){
     return {

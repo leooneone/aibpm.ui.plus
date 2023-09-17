@@ -29,6 +29,13 @@
             </template>
             </el-input>
           </el-form-item>
+          <el-form-item  v-if="props.data.action !== undefined" label="上传地址">
+            <el-input v-model="props.data.action" placeholder="请输入上传地址">
+               
+            </el-input>
+          </el-form-item>
+
+          
         <el-form-item
             v-if="props.data.tag === 'el-upload' && props.data.multiple !== undefined"
             label="多选文件"

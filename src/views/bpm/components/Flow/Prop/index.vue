@@ -13,19 +13,25 @@
     </template>
     <el-tabs type="border-card" style="height: calc(100vh - 95px)">
       <el-tab-pane label="条件" v-if="curNode.type === 'condition'"
-        ><condition ref="conditionPanel" :fields="fields" :conditions="conditions" :data="curNode.condition"
+        ><condition-panel ref="conditionPanel" :fields="fields" :conditions="conditions" :data="curNode.condition"
       /></el-tab-pane>
 
       <el-tab-pane label="参与人设置" v-if="['approve','deal'].includes( curNode.type ) "
-        ><participant ref="approvePanel" :fields="fields" :data="curNode.approve"
+        ><participant-panel ref="approvePanel" :fields="fields" :data="curNode.approve"
       /></el-tab-pane>
       <el-tab-pane label="表单权限" v-if="['approve','start','deal'].includes( curNode.type ) "
-        ><permission ref="permissionPanel" :fields="fields" :data="curNode.permission"
+        ><permission-panel ref="permissionPanel" :fields="fields" :data="curNode.permission"
       /></el-tab-pane>
 
       <el-tab-pane label="传阅" v-if="curNode.type === 'circulate'"
-        ><circulate ref="circulatePanel" :fields="fields" :data="curNode.circulate"
+        ><circulate-panel ref="circulatePanel" :fields="fields" :data="curNode.circulate"
       /></el-tab-pane>
+      <el-tab-pane label="操作设置"  
+        
+        ><operation-panel ref="operationPanel"  :data="curNode.operation"
+      ></operation-panel>
+      
+      </el-tab-pane>
       <el-tab-pane label="说明"  
         > 
         <div v-if=" curNode.type==='start'">
@@ -63,11 +69,11 @@
 </template>
 
 <script lang="ts"> 
- import Permission from './Permission.vue'
- import Operation from './Operation.vue'
- import Participant from './Participant.vue'
- import Condition from './Condition.vue'
- import Circulate from './Circulate.vue'
+ import PermissionPanel from './Permission.vue'
+ import OperationPanel from './Operation.vue'
+ import ParticipantPanel from './Participant.vue'
+ import ConditionPanel from './Condition.vue' 
+ import CirculatePanel from './Circulate.vue'
 
 import { ClickOutside } from 'element-plus'
 export default {
@@ -76,11 +82,11 @@ export default {
     ClickOutside,
   },
   components: {
-    Permission,
-    Participant,
-    Condition,
-    Circulate,
-    Operation
+    PermissionPanel,
+    ParticipantPanel,
+    ConditionPanel,
+    CirculatePanel,
+    OperationPanel
   },
   props: {
     fields: { type: Array, default: () => {} },
@@ -129,6 +135,7 @@ export default {
       this.node.permission = this.$refs['permissionPanel']?.onConfirm()
       this.node.condition = this.$refs['conditionPanel']?.onConfirm()
       this.node.circulate = this.$refs['circulatePanel']?.onConfirm()
+      this.node.operation = this.$refs['operationPanel']?.onConfirm()
       console.log('  panel confirmed')
       this.close()
     },

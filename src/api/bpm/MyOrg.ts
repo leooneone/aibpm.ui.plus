@@ -45,6 +45,7 @@ export class MyOrgApi<SecurityDataType = unknown> extends HttpClient<SecurityDat
    *
    * @tags my-org
    * @name RemoveEmployees
+   * @summary 移除组织内员工
    * @request DELETE:/api/bpm/my-org/remove-employees
    * @secure
    */
@@ -66,6 +67,7 @@ export class MyOrgApi<SecurityDataType = unknown> extends HttpClient<SecurityDat
    *
    * @tags my-org
    * @name GetEmployees
+   * @summary 查找员工
    * @request GET:/api/bpm/my-org/get-employees
    * @secure
    */

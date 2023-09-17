@@ -94,7 +94,7 @@
   </section>
 </template>
     
-    <script lang="ts" setup>
+    <script lang="ts" setup name="condition">
 import { reactive,  watch } from 'vue' 
 
 const props = defineProps({

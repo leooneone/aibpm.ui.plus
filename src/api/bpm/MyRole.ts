@@ -56,6 +56,7 @@ export class MyRoleApi<SecurityDataType = unknown> extends HttpClient<SecurityDa
    *
    * @tags my-role
    * @name JoinEmployees
+   * @summary 添加员工
    * @request POST:/api/bpm/my-role/join-employees
    * @secure
    */
@@ -73,6 +74,7 @@ export class MyRoleApi<SecurityDataType = unknown> extends HttpClient<SecurityDa
    *
    * @tags my-role
    * @name GetEmployeeIds
+   * @summary 查找指定角色的员工Id
    * @request GET:/api/bpm/my-role/get-employee-ids
    * @secure
    */
@@ -96,6 +98,7 @@ export class MyRoleApi<SecurityDataType = unknown> extends HttpClient<SecurityDa
    *
    * @tags my-role
    * @name GetEmployees
+   * @summary 查找指定角色的员工
    * @request GET:/api/bpm/my-role/get-employees
    * @secure
    */

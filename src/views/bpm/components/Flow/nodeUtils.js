@@ -253,8 +253,7 @@ export class NodeUtils {
    * 添加条件分支 branch 
    * @param { Object } data - 目标节点所在节点数据，在该节点最后添加分支节点
    */
-  static appendBranch1(data, isBottomBtnOfBranch) {
-    console.log(data)
+  static appendBranch1(data, isBottomBtnOfBranch) { 
     // isBottomBtnOfBranch 用户点击的是分支树下面的按钮
     let nodeData = data
     // 由于conditionNodes是数组 不能添加下级分支 故在两个分支树之间添加一个不会显示的正常节点 兼容此种情况

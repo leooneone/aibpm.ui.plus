@@ -9,7 +9,6 @@
  * ---------------------------------------------------------------
  */
 
-
 import { AxiosResponse } from 'axios'
 import {
   InstanceAddInput,
@@ -51,6 +50,7 @@ export class InstanceApi<SecurityDataType = unknown> extends HttpClient<Security
    *
    * @tags instance
    * @name Page
+   * @summary 流程实例分页查询
    * @request POST:/api/bpm/instance/page
    * @secure
    */

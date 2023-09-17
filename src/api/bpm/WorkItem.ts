@@ -26,6 +26,7 @@ export class WorkItemApi<SecurityDataType = unknown> extends HttpClient<Security
    *
    * @tags work-item
    * @name Activate
+   * @summary 激活工作项
    * @request POST:/api/bpm/work-item/activate
    * @secure
    */
@@ -48,6 +49,7 @@ export class WorkItemApi<SecurityDataType = unknown> extends HttpClient<Security
    *
    * @tags work-item
    * @name Suspend
+   * @summary 暂停工作项
    * @request POST:/api/bpm/work-item/suspend
    * @secure
    */
@@ -70,6 +72,7 @@ export class WorkItemApi<SecurityDataType = unknown> extends HttpClient<Security
    *
    * @tags work-item
    * @name Cancel
+   * @summary 取消工作项
    * @request POST:/api/bpm/work-item/cancel
    * @secure
    */
@@ -91,7 +94,30 @@ export class WorkItemApi<SecurityDataType = unknown> extends HttpClient<Security
    * No description
    *
    * @tags work-item
+   * @name CancelInstance
+   * @request POST:/api/bpm/work-item/cancel-instance
+   * @secure
+   */
+  cancelInstance = (
+    query?: {
+      /** @format int64 */
+      instanceId?: number
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<AxiosResponse, any>({
+      path: `/api/bpm/work-item/cancel-instance`,
+      method: 'POST',
+      query: query,
+      secure: true,
+      ...params,
+    })
+  /**
+   * No description
+   *
+   * @tags work-item
    * @name Resume
+   * @summary 恢复工作项
    * @request POST:/api/bpm/work-item/resume
    * @secure
    */
@@ -114,6 +140,7 @@ export class WorkItemApi<SecurityDataType = unknown> extends HttpClient<Security
    *
    * @tags work-item
    * @name Adustify
+   * @summary 调整工作项
    * @request POST:/api/bpm/work-item/adustify
    * @secure
    */
@@ -136,13 +163,15 @@ export class WorkItemApi<SecurityDataType = unknown> extends HttpClient<Security
    *
    * @tags work-item
    * @name Urge
+   * @summary 催单
    * @request POST:/api/bpm/work-item/urge
    * @secure
    */
   urge = (
     query?: {
       /** @format int64 */
-      itemId?: number
+      instanceId?: number
+      message?: string
     },
     params: RequestParams = {}
   ) =>
@@ -158,6 +187,7 @@ export class WorkItemApi<SecurityDataType = unknown> extends HttpClient<Security
    *
    * @tags work-item
    * @name Get
+   * @summary 获取工作项
    * @request GET:/api/bpm/work-item/get
    * @secure
    */
@@ -197,6 +227,7 @@ export class WorkItemApi<SecurityDataType = unknown> extends HttpClient<Security
    *
    * @tags work-item
    * @name Page
+   * @summary 工作项分页
    * @request POST:/api/bpm/work-item/page
    * @secure
    */
@@ -239,6 +270,7 @@ export class WorkItemApi<SecurityDataType = unknown> extends HttpClient<Security
    *
    * @tags work-item
    * @name GetInstance
+   * @summary 获取实例及相关信息
    * @request GET:/api/bpm/work-item/get-instance
    * @secure
    */
@@ -262,6 +294,7 @@ export class WorkItemApi<SecurityDataType = unknown> extends HttpClient<Security
    *
    * @tags work-item
    * @name Submit
+   * @summary 工作项提交
    * @request POST:/api/bpm/work-item/submit
    * @secure
    */
@@ -272,29 +305,6 @@ export class WorkItemApi<SecurityDataType = unknown> extends HttpClient<Security
       body: data,
       secure: true,
       type: ContentType.Json,
-      ...params,
-    })
-  /**
-   * No description
-   *
-   * @tags work-item
-   * @name CancelWorkItem
-   * @request POST:/api/bpm/work-item/cancel-work-item
-   * @secure
-   */
-  cancelWorkItem = (
-    query?: {
-      /** @format int64 */
-      itemId?: number
-      comment?: string
-    },
-    params: RequestParams = {}
-  ) =>
-    this.request<AxiosResponse, any>({
-      path: `/api/bpm/work-item/cancel-work-item`,
-      method: 'POST',
-      query: query,
-      secure: true,
       ...params,
     })
 }
