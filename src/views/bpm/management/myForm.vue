@@ -26,21 +26,29 @@
 
     </el-tab-pane>
     <el-tab-pane name="record" label="审批记录"  v-if="state.conf.items.length>0" > <tempate >
-      <el-timeline >
-    <el-timeline-item size="large" 
+      <el-timeline style="font-size:0.8em" >
+    <el-timeline-item 
       v-for="(activity, index) in state.conf.items"
       :key="index"
       :type=" getType(activity)"
-      :icon="getIcon(activity)"
-      :timestamp="activity.finishTime"
-    > 
-        <h4> {{ activity.title }} </h4>
+      :icon="getIcon(activity)" 
+    >  
+        <h5> {{ activity.title }} </h5>
         <p>开始时间: {{activity.startTime}}</p>
         <p>参与人：{{ activity.participant }}  
         </p>
+        
+        <p v-if="dayjs(activity.finishTime).year()>2020">
+           完成时间：{{ activity.finishTime }}
+        
+       </p>
         <p>
- 
-        处理结果： <el-tag style="float:right" :type="getType(activity)">{{ getState(activity)}}</el-tag>{{ activity.comment }}
+        处理结果： <el-tag :type="getType(activity)">
+           {{ getState(activity)}}</el-tag> 
+          </p>
+         
+           <p v-if="!!activity.comment">
+           处理意见：{{ activity.comment }}
         
        </p>
     </el-timeline-item>
@@ -52,8 +60,8 @@
         <el-table-column prop="name" label="操作人" show-overflow-tooltip width="120"></el-table-column>
         <el-table-column prop="startTime" label="开始时间" show-overflow-tooltip width="120"></el-table-column>
         <el-table-column prop="finishTime" label="完成时间" show-overflow-tooltip width="120">
-          <template #default="{ row }">
-        {{ ['已取消','已完成'].includes(vnActivityState[row.state])?row.finishTime:''}}
+          <template #default="{ row }" > 
+            <span v-show="dayjs(row.finishTime).year()>2020">{{dayjs(row.finishTime).format('YYYY-MM-DD HH:mm')  }}</span> 
           </template>
 
         </el-table-column>
@@ -63,7 +71,7 @@
           </template>
         </el-table-column>  <el-table-column prop="comment" label="意见" show-overflow-tooltip width="120">
           <template #default="{ row }">
-          {{getState(row)}} row.comment
+         {{row.comment}}
         </template>
         </el-table-column>
       </el-table>
@@ -90,7 +98,7 @@
 import { ref, reactive, onMounted, getCurrentInstance, defineAsyncComponent, provide } from 'vue'
   import {  vnDisplayType, ActivityState,vnActivityState,nvActivityState,nvApprovalResult } from '/@/api/bpm/data-contracts'
 import { WorkflowApi } from '/@/api/bpm/Workflow'
-
+import dayjs from 'dayjs'
 const FormParser = defineAsyncComponent(() => import('/@/views/bpm/components/MyForm/designer/FormParser.vue'))
 const ApprovePanel = defineAsyncComponent(() => import('./approvePanel.vue'))
 const OptionalPanel = defineAsyncComponent(() => import('./optionalPanel.vue'))
@@ -100,7 +108,6 @@ const approvePanelRef = ref()
 const optionalPanelRef = ref()
 
 const { proxy } = getCurrentInstance() as any
-const props = defineProps({})
 const defautConf={
     id: undefined,
     data: [],
@@ -108,7 +115,7 @@ const defautConf={
       //    "field2": "选项二", "field1": [ "2023-01-03", "2023-01-17" ], "field1673928917578": 49, "field1673928939297": 4, "field1673928918984": true, "field1673928936079": 16, "field1673928921016": 1, "field1673928930234": "gdfg郭德纲"
     },
     activity: {},
-  }
+  } 
 const state = reactive({
   drawerSize: '390px',
   title: '表单标题',
@@ -122,34 +129,30 @@ const state = reactive({
 })
 const getState = (item) => {
 
- if(['已取消','已完成'].includes(vnActivityState[item.state]))
- { 
-    if (vnActivityState[item.state]=== '已完成') {
-    if (item.approvalResult === nvApprovalResult['True']) return '同意 ' 
-    else if (item.approvalResult === nvApprovalResult['False']) return '不同意 ' 
-    else return '已完成 ' 
-  }  else 
-  return  vnActivityState[item.state]
-
-}
-  else  return  vnActivityState[item.state]
+    return  vnActivityState[item.state]
  
 }
 const getType = (item) => {
-  
+ 
   if(vnDisplayType[item.state&127])
    return  vnDisplayType[item.state&127].toLowerCase()
+
     
 }
 const getIcon = (item) => {
-  if (vnActivityState[item.state]==="已完成") {
-    //已经完成
-    if (item.approvalResult === '1') return `ele-CircleCheck`
-    else if (item.approvalResult === '-1') return ''
-    else if (item.approvalResult === '0') return `ele-CircleClose`
-  } else {
+  var state=item.state&127
+   switch(state)
+   {
+    case 6:
+      return `ele-CircleClose` 
+    case 3:
+      return `ele-CircleCheck`
+     
+   }
+   
+
     return 'ele-Loading'
-  }
+  
 }
 const submitForm =  (extPs) => {
   formRef.value.submitForm(async(model) => {
@@ -217,7 +220,6 @@ const open = async (ps) => {
     state.conf.approveSetting=res.data.approveSetting??{}
     state.isShow = true
      
-    console.log('modelAA',state.conf.model )
   }
   state.loading = false
 }

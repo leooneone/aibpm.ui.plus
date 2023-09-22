@@ -141,7 +141,7 @@ if(node.condition)
 
 }
 ///判断是否已经被用于流程设计器条件判断，如果是，则不能在表单设计器中删除
-const isInUseByCondition=   (ids)=>
+const isInUsed=   (ids)=>
 { 
   var nodes =   flowDesign.value?.getNodes() 
   let strConditions=''
@@ -163,7 +163,7 @@ const isInUseByCondition=   (ids)=>
   return false
 }
 
-provide('isInUseByCondition',isInUseByCondition)
+provide('isInUsed',isInUsed)
 const submit = async (isPublish: Boolean) => {
   // basicSetting  formDesign flowDesign 返回的是Promise 因为要做校验
   // advancedSetting返回的就是值

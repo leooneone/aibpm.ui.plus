@@ -251,7 +251,7 @@ const formConfInDB = getFormConf()
 const props = defineProps({ conf: Object })
 
 const { proxy } = getCurrentInstance() as any
-const isInUseByCondition = inject('isInUseByCondition')
+const isInUsed = inject('isInUsed')
 const updateFormItemList = inject('updateFormItemList')
 const previewPanelRef = ref()
 //const storageList = getDrawingList()
@@ -574,7 +574,7 @@ const createIdAndKey = (item) => {
 }
 //是否流程条件
 const isFilledPCon = (formIds) => {
-  return  isInUseByCondition(formIds)
+  return  isInUsed(formIds)
  
 }
 const checkColItem = (cmp) => {

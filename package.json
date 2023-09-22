@@ -14,7 +14,7 @@
     "gen:bpm-api": "node ./gen/gen-bpm-api"
   },
   "dependencies": {
-    "@codemirror/lang-javascript": "^6.1.9",
+    "@codemirror/lang-javascript": "^6.1@.9",
     "@codemirror/theme-one-dark": "^6.1.2",
     "@codemirror/view": "^6.16.0",
     "@element-plus/icons-vue": "^2.0.10",
