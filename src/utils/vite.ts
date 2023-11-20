@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 export interface ViteEnv {
   VITE_PORT: number
   VITE_OPEN: boolean
+  VITE_COMPRESSION: boolean
   VITE_PUBLIC_PATH: string
   VITE_API_URL: string
 }
@@ -31,7 +32,7 @@ export function loadEnv(mode: string): ViteEnv {
     let realName = (process.env as any)[envName].replace(/\\n/g, '\n')
     realName = realName === 'true' ? true : realName === 'false' ? false : realName
     if (envName === 'VITE_PORT') realName = Number(realName)
-    if (envName === 'VITE_OPEN') realName = Boolean(realName)
+    if (envName === 'VITE_OPEN' || envName === 'VITE_COMPRESSION') realName = Boolean(realName)
     if (envName === 'VITE_PROXY') {
       try {
         realName = JSON.parse(realName)

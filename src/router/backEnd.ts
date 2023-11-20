@@ -1,5 +1,4 @@
 import { RouteRecordRaw } from 'vue-router'
-// import { storeToRefs } from 'pinia'
 import pinia from '/@/stores/index'
 import { useUserInfo } from '/@/stores/userInfo'
 import { useRequestOldRoutes } from '/@/stores/requestOldRoutes'
@@ -11,7 +10,6 @@ import { useTagsViewRoutes } from '/@/stores/tagsViewRoutes'
 // import { useMenuApi } from '/@/api/menu/index'
 import { AuthApi } from '/@/api/admin/Auth'
 import { listToTree } from '/@/utils/tree'
-import { getToken } from '/@/api/admin/http-client'
 
 // 后端控制路由
 
@@ -39,9 +37,8 @@ export async function initBackEndControlRoutes() {
   // 界面 loading 动画开始执行
   if (window.nextLoading === undefined) NextLoading.start()
   // 无 token 停止执行下一步
-  if (!getToken()) return false
+  if (!useUserInfo().getToken()) return false
   // 触发初始化用户信息 pinia
-  // https://gitee.com/lyt-top/vue-next-admin/issues/I5F1HP
   await useUserInfo().setUserInfos()
   // 获取路由菜单数据
   const menus = await getBackEndControlRoutes()
@@ -61,7 +58,7 @@ export async function initBackEndControlRoutes() {
   // 添加动态路由
   await setAddRoute()
   // 设置路由到 pinia routesList 中（已处理成多级嵌套路由）及缓存多级嵌套数组处理后的一维数组
-  await setFilterMenuAndCacheTagsViewRoutes()
+  setFilterMenuAndCacheTagsViewRoutes()
 }
 
 /**
@@ -115,10 +112,10 @@ export async function setAddRoute() {
  * @returns 返回后端路由菜单数据
  */
 export async function getBackEndControlRoutes() {
-  const res = await new AuthApi().getUserInfo()
-  if (res?.success && (res?.data?.menus?.length as number) > 0) {
+  const res = await new AuthApi().getUserMenus().catch(() => {})
+  if (res?.success && (res?.data?.length as number) > 0) {
     const menus = [] as any
-    res.data?.menus?.forEach((menu) => {
+    res.data?.forEach((menu) => {
       menus.push({
         id: menu.id,
         parentId: menu.parentId,
@@ -137,9 +134,14 @@ export async function getBackEndControlRoutes() {
           status: 1,
           remark: null,
           order: menu.sort,
+          isDir: !menu.viewPath,
         },
       })
+      
+    
     })
+    
+   
     const menuTree = listToTree(menus)
     return menuTree
   } else {
@@ -174,7 +176,10 @@ export function setBackEndControlRefreshRoutes() {
 export function backEndComponent(routes: any) {
   if (!routes) return
   return routes.map((item: any) => {
+    
     if (item.component) item.component = dynamicImport(dynamicViewsModules, item.component as string)
+    
+   
     item.children && backEndComponent(item.children)
     return item
   })
@@ -187,11 +192,15 @@ export function backEndComponent(routes: any) {
  * @returns 返回处理成函数后的 component
  */
 export function dynamicImport(dynamicViewsModules: Record<string, Function>, component: string) {
-  const keys = Object.keys(dynamicViewsModules)
+
+  const keys = Object.keys(dynamicViewsModules) 
   const matchKeys = keys.filter((key) => {
     const k = key.replace(/..\/views|../, '')
+    if(key.indexOf('bpm/admin/setting')!==-1&&( k.startsWith(`${component}`) || k.startsWith(`/${component}`)))
+  console.log('key',key,`${component}`,`/${component}`, k.startsWith(`${component}`) || k.startsWith(`/${component}`))
     return k.startsWith(`${component}`) || k.startsWith(`/${component}`)
   })
+
   if (matchKeys?.length === 1) {
     const matchKey = matchKeys[0]
     return dynamicViewsModules[matchKey]

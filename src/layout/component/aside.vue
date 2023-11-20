@@ -12,7 +12,6 @@
 <script setup lang="ts" name="layoutAside">
 import { defineAsyncComponent, reactive, computed, watch, onBeforeMount, ref } from 'vue'
 import { storeToRefs } from 'pinia'
-import pinia from '/@/stores/index'
 import { useRoutesList } from '/@/stores/routesList'
 import { useThemeConfig } from '/@/stores/themeConfig'
 import { useTagsViewRoutes } from '/@/stores/tagsViewRoutes'
@@ -56,9 +55,9 @@ const setCollapseStyle = computed(() => {
       return [asideBrColor, 'layout-aside-mobile', 'layout-aside-mobile-close']
     }
   } else {
-    if (layout === 'columns') {
-      // 分栏布局，菜单收起时宽度给 0px
-      if (isCollapse) return [asideBrColor, 'layout-aside-pc-0']
+    if (layout === 'columns' || layout === 'classic') {
+      // 分栏布局、经典布局，菜单收起时宽度给 1px，防止切换动画消失
+      if (isCollapse) return [asideBrColor, 'layout-aside-pc-1']
       else return [asideBrColor, 'layout-aside-pc-220']
     } else {
       // 其它布局给 64px
@@ -107,7 +106,8 @@ const onAsideEnterLeave = (bool: Boolean) => {
   let { layout } = themeConfig.value
   if (layout !== 'columns') return false
   if (!bool) mittBus.emit('restoreDefault')
-  stores.setColumnsMenuHover(bool)
+  // 开启 `分栏菜单鼠标悬停预加载` 才设置，防止 columnsAside.vue 监听 pinia.state
+  if (themeConfig.value.isColumnsMenuHoverPreload) stores.setColumnsMenuHover(bool)
 }
 // 页面加载前
 onBeforeMount(() => {
@@ -118,36 +118,49 @@ onBeforeMount(() => {
   mittBus.on('setSendColumnsChildren', (res: MittMenu) => {
     state.menuList = res.children
   })
+  // 开启经典布局分割菜单时，设置菜单数据
   mittBus.on('setSendClassicChildren', (res: MittMenu) => {
     let { layout, isClassicSplitMenu } = themeConfig.value
     if (layout === 'classic' && isClassicSplitMenu) {
+      // 经典布局分割菜单只有一项子级时，收起左侧导航菜单
+      // res.children.length <= 1 ? (themeConfig.value.isCollapse = true) : (themeConfig.value.isCollapse = false)
+      // 经典布局分割菜单无子级时，收起左侧导航菜单
+      !res.children || res.children.length < 1 ? (themeConfig.value.isCollapse = true) : (themeConfig.value.isCollapse = false)
       state.menuList = []
       state.menuList = res.children
     }
   })
+  // 开启经典布局分割菜单时，重新处理菜单数据
   mittBus.on('getBreadcrumbIndexSetFilterRoutes', () => {
     setFilterRoutes()
   })
+  // 监听窗口大小改变时(适配移动端)
   mittBus.on('layoutMobileResize', (res: LayoutMobileResize) => {
     initMenuFixed(res.clientWidth)
     closeLayoutAsideMobileMode()
   })
 })
 // 监听 themeConfig 配置文件的变化，更新菜单 el-scrollbar 的高度
-// watch(themeConfig.value, (val) => {
-//   if (val.isShowLogoChange !== val.isShowLogo) {
-//     if (layoutAsideScrollbarRef.value) layoutAsideScrollbarRef.value.update()
-//   }
-// })
+watch(themeConfig.value, (val) => {
+  if (val.isShowLogoChange !== val.isShowLogo) {
+    if (layoutAsideScrollbarRef.value) layoutAsideScrollbarRef.value.update()
+  }
+})
 // 监听 themeConfig 配置文件的变化，更新菜单 el-scrollbar 的高度
 watch(
-	() => [themeConfig.value.isShowLogoChange, themeConfig.value.isShowLogo, themeConfig.value.layout, themeConfig.value.isClassicSplitMenu],
-	([isShowLogoChange, isShowLogo, layout, isClassicSplitMenu]) => {
-		if (isShowLogoChange !== isShowLogo) {
-			if (layoutAsideScrollbarRef.value) layoutAsideScrollbarRef.value.update();
-		}
-		if (layout === 'classic' && isClassicSplitMenu) return false;
-		setFilterRoutes();
-	}
-);
+  () => [themeConfig.value.isShowLogoChange, themeConfig.value.isShowLogo, themeConfig.value.layout, themeConfig.value.isClassicSplitMenu],
+  ([isShowLogoChange, isShowLogo, layout, isClassicSplitMenu]) => {
+    if (isShowLogoChange !== isShowLogo) {
+      if (layoutAsideScrollbarRef.value) layoutAsideScrollbarRef.value.update()
+    }
+    if (layout === 'classic' && isClassicSplitMenu) return false
+  }
+)
+// 监听用户权限切换，用于演示 `权限管理 -> 前端控制 -> 页面权限` 权限切换不生效
+watch(
+  () => routesList.value,
+  () => {
+    setFilterRoutes()
+  }
+)
 </script>

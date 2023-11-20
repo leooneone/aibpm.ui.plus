@@ -99,9 +99,9 @@ const state = reactive({
 const openDialog = (type: string, row: RowDeptType) => {
   if (type === 'edit') {
     row.deptLevel = ['vueNextAdmin']
-    row.person = 'lyt'
+    row.person = 'user'
     row.phone = '12345678910'
-    row.email = 'vueNextAdmin@123.com'
+    row.email = 'user@126.com'
     state.ruleForm = row
     state.dialog.title = '修改部门'
     state.dialog.submitTxt = '修 改'

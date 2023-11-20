@@ -1,7 +1,10 @@
 // 字体图标 url
 const cssCdnUrlList: Array<string> = [
+  //兼容国内项目
   '//at.alicdn.com/t/c/font_2298093_rnp72ifj3ba.css',
-  '//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css',
+  '//cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css',
+  //兼容国内外项目
+  //'//cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css',
 ]
 // 第三方 js url
 const jsCdnUrlList: Array<string> = []

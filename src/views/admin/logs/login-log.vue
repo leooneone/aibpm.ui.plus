@@ -1,6 +1,6 @@
 <template>
-  <div style="padding: 0px 0px 8px 8px">
-    <el-card shadow="never" :body-style="{ paddingBottom: '0' }" style="margin-top: 8px">
+  <div class="my-layout">
+    <el-card class="mt8" shadow="never" :body-style="{ paddingBottom: '0' }">
       <el-form :model="state.filterModel" :inline="true" @submit.stop.prevent>
         <el-form-item prop="name">
           <el-input v-model="state.filterModel.createdUserName" placeholder="登录账户" @keyup.enter="onQuery" />
@@ -11,9 +11,9 @@
       </el-form>
     </el-card>
 
-    <el-card shadow="never" style="margin-top: 8px">
+    <el-card class="my-fill mt8" shadow="never">
       <el-table v-loading="state.loading" :data="state.loginLogListData" row-key="id" style="width: 100%">
-        <el-table-column prop="createdUserName" label="操作账号" width="100">
+        <el-table-column prop="createdUserName" label="登录账号" width="100">
           <template #default="{ row }"> {{ row.createdUserName }}<br />{{ row.nickName }} </template>
         </el-table-column>
         <el-table-column prop="ip" label="IP地址" width="130" />
@@ -45,7 +45,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="admin/loginLog">
 import { reactive, onMounted } from 'vue'
 import { LoginLogListOutput, PageInputLogGetPageDto } from '/@/api/admin/data-contracts'
 import { LoginLogApi } from '/@/api/admin/LoginLog'
@@ -77,10 +77,12 @@ const formatterTime = (row: any, column: any, cellValue: any) => {
 const onQuery = async () => {
   state.loading = true
   state.pageInput.filter = state.filterModel
-  const res = await new LoginLogApi().getPage(state.pageInput)
+  const res = await new LoginLogApi().getPage(state.pageInput).catch(() => {
+    state.loading = false
+  })
 
   state.loginLogListData = res?.data?.list ?? []
-  state.total = res.data?.total ?? 0
+  state.total = res?.data?.total ?? 0
   state.loading = false
 }
 
@@ -93,14 +95,6 @@ const onCurrentChange = (val: number) => {
   state.pageInput.currentPage = val
   onQuery()
 }
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'admin/loginLog',
-})
 </script>
 
 <style scoped lang="scss"></style>

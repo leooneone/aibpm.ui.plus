@@ -1,11 +1,10 @@
 <template>
   <div class="svg-demo-container layout-pd">
     <el-card shadow="hover" header="svgIcon：演示（支持本地svg）">
-      <SvgIcon name="ele-Basketball" color="#09f" :size="30" />
       <SvgIcon name="iconfont icon-shuju1" color="red" :size="30" />
       <SvgIcon name="ele-Trophy" color="var(--el-color-primary)" :size="30" />
       <SvgIcon name="fa fa-flag-checkered" color="#09f" :size="30" />
-      <SvgIcon class="ml5"  name="/assets/add.svg" :size="30" color="" />
+      <SvgIcon class="ml5" :name="logoMini" :size="30" color="" />
     </el-card>
     <el-card shadow="hover" header="svgIcon：参数" class="mt15">
       <el-table :data="state.tableData" style="width: 100%">
@@ -21,7 +20,7 @@
 
 <script setup lang="ts" name="example/makeSvgDemo">
 import { reactive } from 'vue'
-import logoMini from '/@/assets/add.svg'
+import logoMini from '/@/assets/logo-mini.svg'
 
 // 定义变量内容
 const state = reactive({

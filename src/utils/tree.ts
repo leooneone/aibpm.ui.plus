@@ -106,6 +106,43 @@ export function treeToList(
 }
 
 /**
+* @description: 树形列表过滤父级或者子级数据
+* @example
+filterTree(cloneDeep(tree), keyword)
+
+filterTree(cloneDeep(tree), keyword, {
+  children: 'children',
+  filterWhere: (item: any, filterword: string) => {
+    return item.name?.toLocaleLowerCase().indexOf(filterword) > -1
+  },
+})
+*/
+export function filterTree(tree: any = [], keyword: string, options = {}) {
+  const { children, filterWhere } = Object.assign(
+    {
+      children: 'children',
+      filterWhere: (item: any, word: string) => {
+        return item.name?.toLocaleLowerCase().indexOf(word) > -1
+      },
+    },
+    options || {}
+  )
+
+  return tree.filter((item: any) => {
+    if (filterWhere(item, keyword)) {
+      return true
+    }
+
+    if (item[children]) {
+      item[children] = filterTree(item[children], keyword, { children, filterWhere })
+      return item[children].length > 0
+    }
+
+    return false
+  })
+}
+
+/**
 * @description: 树形列表转列表包含子级
 * @example
 treeToListWithChildren(cloneDeep(tree))

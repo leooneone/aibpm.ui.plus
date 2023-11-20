@@ -1,6 +1,14 @@
 <template>
   <div>
-    <el-dialog v-model="state.showDialog" destroy-on-close :title="title" draggable width="600px">
+    <el-dialog
+      v-model="state.showDialog"
+      destroy-on-close
+      :title="title"
+      draggable
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      width="600px"
+    >
       <el-form :model="form" ref="formRef" size="default" label-width="80px">
         <el-row :gutter="35">
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
@@ -26,7 +34,6 @@
                 :data="state.apiTreeData"
                 node-key="id"
                 :props="{ label: 'path' }"
-                default-expand-all
                 render-after-expand
                 fit-input-width
                 clearable
@@ -36,6 +43,7 @@
                 collapse-tags-tooltip
                 :filter-node-method="onApiFilterNode"
                 class="w100"
+                :default-expanded-keys="state.expandRowKeys"
                 @current-change="onApiCurrentChange"
               >
                 <template #default="{ data }">
@@ -86,14 +94,14 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="admin/permission/permission-dot-form">
 import { reactive, toRefs, getCurrentInstance, ref, PropType } from 'vue'
 import { PermissionListOutput, PermissionUpdateDotInput, ApiListOutput } from '/@/api/admin/data-contracts'
 import { PermissionApi } from '/@/api/admin/Permission'
 import { ApiApi } from '/@/api/admin/Api'
-import { listToTree } from '/@/utils/tree'
+import { listToTree, treeToList } from '/@/utils/tree'
 import eventBus from '/@/utils/mitt'
-import { trimStart, replace } from 'lodash-es'
+import { trimStart, replace, cloneDeep } from 'lodash-es'
 
 defineProps({
   title: {
@@ -114,6 +122,7 @@ const state = reactive({
   sureLoading: false,
   form: { enabled: true } as PermissionUpdateDotInput,
   apiTreeData: [] as ApiListOutput[],
+  expandRowKeys: [] as number[],
 })
 
 const { form } = toRefs(state)
@@ -133,8 +142,14 @@ const open = async (row: any = {}) => {
 
   await getApis()
 
+  state.expandRowKeys = treeToList(cloneDeep(state.apiTreeData))
+    .filter((a: ApiListOutput) => a.parentId === 0)
+    .map((a: ApiListOutput) => a.id) as number[]
+
   if (row.id > 0) {
-    const res = await new PermissionApi().getDot({ id: row.id })
+    const res = await new PermissionApi().getDot({ id: row.id }).catch(() => {
+      proxy.$modal.closeLoading()
+    })
 
     if (res?.success) {
       let formData = res.data as PermissionUpdateDotInput
@@ -179,9 +194,13 @@ const onSure = () => {
     let res = {} as any
     state.form.parentId = state.form.parentId && state.form.parentId > 0 ? state.form.parentId : undefined
     if (state.form.id != undefined && state.form.id > 0) {
-      res = await new PermissionApi().updateDot(state.form, { showSuccessMessage: true })
+      res = await new PermissionApi().updateDot(state.form, { showSuccessMessage: true }).catch(() => {
+        state.sureLoading = false
+      })
     } else {
-      res = await new PermissionApi().addDot(state.form, { showSuccessMessage: true })
+      res = await new PermissionApi().addDot(state.form, { showSuccessMessage: true }).catch(() => {
+        state.sureLoading = false
+      })
     }
 
     state.sureLoading = false
@@ -195,14 +214,6 @@ const onSure = () => {
 
 defineExpose({
   open,
-})
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'admin/permission/permission-dot-form',
 })
 </script>
 

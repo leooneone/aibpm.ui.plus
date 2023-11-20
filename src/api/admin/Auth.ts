@@ -9,12 +9,15 @@
  * ---------------------------------------------------------------
  */
 
-import { AxiosResponse } from 'axios'
 import {
   AuthLoginInput,
+  AuthMobileLoginInput,
   ResultOutputAuthGetPasswordEncryptKeyOutput,
   ResultOutputAuthGetUserInfoOutput,
-  ResultOutputCaptchaOutput,
+  ResultOutputAuthGetUserPermissionsOutput,
+  ResultOutputAuthUserProfileDto,
+  ResultOutputBoolean,
+  ResultOutputListAuthUserMenuDto,
   ResultOutputObject,
 } from './data-contracts'
 import { ContentType, HttpClient, RequestParams } from './http-client'
@@ -32,6 +35,57 @@ export class AuthApi<SecurityDataType = unknown> extends HttpClient<SecurityData
   getPasswordEncryptKey = (params: RequestParams = {}) =>
     this.request<ResultOutputAuthGetPasswordEncryptKeyOutput, any>({
       path: `/api/admin/auth/get-password-encrypt-key`,
+      method: 'GET',
+      secure: true,
+      format: 'json',
+      ...params,
+    })
+  /**
+   * No description
+   *
+   * @tags auth
+   * @name GetUserProfile
+   * @summary 查询用户个人信息
+   * @request GET:/api/admin/auth/get-user-profile
+   * @secure
+   */
+  getUserProfile = (params: RequestParams = {}) =>
+    this.request<ResultOutputAuthUserProfileDto, any>({
+      path: `/api/admin/auth/get-user-profile`,
+      method: 'GET',
+      secure: true,
+      format: 'json',
+      ...params,
+    })
+  /**
+   * No description
+   *
+   * @tags auth
+   * @name GetUserMenus
+   * @summary 查询用户菜单列表
+   * @request GET:/api/admin/auth/get-user-menus
+   * @secure
+   */
+  getUserMenus = (params: RequestParams = {}) =>
+    this.request<ResultOutputListAuthUserMenuDto, any>({
+      path: `/api/admin/auth/get-user-menus`,
+      method: 'GET',
+      secure: true,
+      format: 'json',
+      ...params,
+    })
+  /**
+   * No description
+   *
+   * @tags auth
+   * @name GetUserPermissions
+   * @summary 查询用户权限列表
+   * @request GET:/api/admin/auth/get-user-permissions
+   * @secure
+   */
+  getUserPermissions = (params: RequestParams = {}) =>
+    this.request<ResultOutputAuthGetUserPermissionsOutput, any>({
+      path: `/api/admin/auth/get-user-permissions`,
       method: 'GET',
       secure: true,
       format: 'json',
@@ -74,6 +128,25 @@ export class AuthApi<SecurityDataType = unknown> extends HttpClient<SecurityData
       ...params,
     })
   /**
+   * No description
+   *
+   * @tags auth
+   * @name MobileLogin
+   * @summary 手机号登录
+   * @request POST:/api/admin/auth/mobile-login
+   * @secure
+   */
+  mobileLogin = (data: AuthMobileLoginInput, params: RequestParams = {}) =>
+    this.request<ResultOutputObject, any>({
+      path: `/api/admin/auth/mobile-login`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    })
+  /**
  * No description
  *
  * @tags auth
@@ -101,46 +174,17 @@ export class AuthApi<SecurityDataType = unknown> extends HttpClient<SecurityData
    * No description
    *
    * @tags auth
-   * @name GetCaptcha
-   * @summary 获取验证数据
-   * @request GET:/api/admin/auth/get-captcha
+   * @name IsCaptcha
+   * @summary 是否开启验证码
+   * @request GET:/api/admin/auth/is-captcha
    * @secure
    */
-  getCaptcha = (params: RequestParams = {}) =>
-    this.request<ResultOutputCaptchaOutput, any>({
-      path: `/api/admin/auth/get-captcha`,
+  isCaptcha = (params: RequestParams = {}) =>
+    this.request<ResultOutputBoolean, any>({
+      path: `/api/admin/auth/is-captcha`,
       method: 'GET',
       secure: true,
       format: 'json',
-      ...params,
-    })
-  /**
-   * No description
-   *
-   * @tags auth
-   * @name CheckCaptcha
-   * @summary 检查验证数据
-   * @request GET:/api/admin/auth/check-captcha
-   * @secure
-   */
-  checkCaptcha = (
-    query?: {
-      /** 校验唯一标识 */
-      Token?: string
-      /** 缓存键 */
-      CaptchaKey?: string
-      /** 删除缓存 */
-      DeleteCache?: boolean
-      /** 数据 */
-      Data?: string
-    },
-    params: RequestParams = {}
-  ) =>
-    this.request<AxiosResponse, any>({
-      path: `/api/admin/auth/check-captcha`,
-      method: 'GET',
-      query: query,
-      secure: true,
       ...params,
     })
 }

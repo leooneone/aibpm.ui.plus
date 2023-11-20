@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia'
-//import Cookies from 'js-cookie'
-import { Session } from '/@/utils/storage'
 import { AuthApi } from '/@/api/admin/Auth'
-import { clearToken } from '/@/api/admin/http-client'
+import { merge } from 'lodash-es'
+import { Local } from '/@/utils/storage'
+// import { Session } from '/@/utils/storage'
+
+export const adminTokenKey = 'admin-token'
 
 /**
  * 用户信息
@@ -11,6 +13,7 @@ import { clearToken } from '/@/api/admin/http-client'
 export const useUserInfo = defineStore('userInfo', {
   state: (): UserInfosState => ({
     userInfos: {
+      token: Local.get(adminTokenKey) || '',
       userName: '',
       photo: '',
       time: 0,
@@ -20,26 +23,39 @@ export const useUserInfo = defineStore('userInfo', {
   }),
   actions: {
     async setUserInfos() {
-      // 存储用户信息到浏览器缓存
-      if (Session.get('userInfo')) {
-        this.userInfos = Session.get('userInfo')
-      } else {
-        const userInfos: any = await this.getApiUserInfo()
-        this.userInfos = userInfos
-      }
+      const userInfos = <UserInfos>await this.getApiUserInfo().catch(() => {})
+      merge(this.userInfos, userInfos)
     },
-    async setUserName(userName: string) {
+    setUserName(userName: string) {
       this.userInfos.userName = userName
     },
-    async setPhoto(photo: string) {
+    setPhoto(photo: string) {
       this.userInfos.photo = photo
     },
-    // 模拟接口数据
-    // https://gitee.com/lyt-top/vue-next-admin/issues/I5F1HP
+    setToken(token: string) {
+      this.userInfos.token = token
+      Local.set(adminTokenKey, token)
+    },
+    getToken() {
+      const token = Local.get(adminTokenKey)
+      this.userInfos.token = token
+      return token
+    },
+    removeToken() {
+      this.userInfos.token = ''
+      Local.remove(adminTokenKey)
+    },
+    clear() {
+      this.userInfos.token = ''
+      Local.remove(adminTokenKey)
+      window.requests = []
+      window.location.reload()
+    },
+    //查询用户信息
     async getApiUserInfo() {
       return new Promise((resolve, reject) => {
         new AuthApi()
-          .getUserInfo()
+          .getUserPermissions()
           .then((res) => {
             if (res?.success) {
               const user = res.data?.user
@@ -50,9 +66,10 @@ export const useUserInfo = defineStore('userInfo', {
                 roles: [],
                 authBtnList: res.data?.permissions,
               }
+              // Session.set('userInfo', userInfos)
               resolve(userInfos)
             } else {
-              clearToken()
+              this.clear()
             }
           })
           .catch((err) => {

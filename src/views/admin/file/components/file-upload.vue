@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog v-model="state.showDialog" :title="title" draggable width="600px">
+    <el-dialog v-model="state.showDialog" :title="title" draggable :close-on-click-modal="false" :close-on-press-escape="false" width="600px">
       <div class="mb15">
         <el-row :gutter="35">
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
@@ -24,7 +24,13 @@
           drag
           multiple
           :auto-upload="false"
+          :before-upload="
+            () => {
+              state.token = storesUserInfo.getToken()
+            }
+          "
           :on-success="onSuccess"
+          :on-error="onError"
         >
           <el-icon class="el-icon--upload"><ele-UploadFilled /></el-icon>
           <div class="el-upload__text">拖拽上传或<em>点击上传</em></div>
@@ -44,12 +50,14 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="admin/file/upload">
 import { ref, reactive, computed } from 'vue'
-import { UploadFile, UploadFiles } from 'element-plus'
-import { getToken } from '/@/api/admin/http-client'
-import type { UploadInstance } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import type { UploadInstance, UploadProps, UploadFile } from 'element-plus'
 import eventBus from '/@/utils/mitt'
+import { useUserInfo } from '/@/stores/userInfo'
+
+const storesUserInfo = useUserInfo()
 
 const uploadRef = ref<UploadInstance>()
 
@@ -66,6 +74,7 @@ const state = reactive({
   fileDirectory: '',
   fileReName: true,
   fileList: [] as UploadFile[],
+  token: storesUserInfo.getToken(),
 })
 
 const uploadAction = computed(() => {
@@ -73,16 +82,33 @@ const uploadAction = computed(() => {
 })
 
 const uploadHeaders = computed(() => {
-  return { Authorization: 'Bearer ' + getToken() }
+  return { Authorization: 'Bearer ' + state.token }
 })
 
 // 打开对话框
-const open = async (row: any = {}) => {
+const open = async () => {
   state.showDialog = true
 }
 
+//上传失败
+const onError: UploadProps['onError'] = (error) => {
+  let message = ''
+  if (error.message) {
+    try {
+      message = JSON.parse(error.message)?.msg
+    } catch (err) {
+      message = error.message || ''
+    }
+  }
+  if (message)
+    ElMessage({
+      message: message,
+      type: 'error',
+    })
+}
+
 // 上传成功
-const onSuccess = (response: any, uploadFile: UploadFile, uploadFiles: UploadFiles) => {
+const onSuccess: UploadProps['onSuccess'] = (response) => {
   if (response?.success) {
     eventBus.emit('refreshFile')
   }
@@ -105,14 +131,6 @@ const onSure = async () => {
 
 defineExpose({
   open,
-})
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'admin/file/upload',
 })
 </script>
 

@@ -33,9 +33,9 @@ const pagesFormRulesTwoRef = ref()
 const pagesFormRulesThreeRef = ref()
 const state = reactive({
   formRulesOneData: {
-    name: 'lyt',
-    email: 'lyt123@.com',
-    autograph: 'lyt123456',
+    name: 'user',
+    email: 'user@126.com',
+    autograph: 'user123456',
     occupation: '1',
   },
 })

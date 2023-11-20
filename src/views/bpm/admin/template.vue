@@ -69,8 +69,7 @@ import {
   ResultOutputPageOutputWorkflowTemplateListOutput,
   PageInputWorkflowTemplateEntity,
   vnTemplateState,
-  nvTemplateState,
-  vnDisplayType,
+  nvTemplateState, 
 } from '/@/api/bpm/data-contracts'
 import { WorkflowTemplateApi as TPLApi } from '/@/api/bpm/WorkflowTemplate'
 import dayjs from 'dayjs'

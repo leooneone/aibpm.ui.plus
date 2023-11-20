@@ -2,7 +2,7 @@
   <div class="layout-footer pb15">
     <div class="layout-footer-warp">
       <div>AIBPM</div>
-      <div class="mt5">Copyright © 2022 AILICLOUD All rights reserved.</div>
+      <div class="mt5">Copyright © 2022 AIBPM All rights reserved.</div>
     </div>
   </div>
 </template>

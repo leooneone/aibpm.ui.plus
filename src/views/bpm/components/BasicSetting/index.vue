@@ -1,10 +1,12 @@
 <template>
-  <div class="setting-container">
+  <div class="setting-container"> 
     <el-form ref="elFormRef" :model="state.formData" :rules="state.rules" size="medium" label-width="100px" label-position="top">
+     
       <el-form-item label="流程名称" prop="name">
         <el-input v-model="state.formData.name" placeholder="请输入流程名称" clearable :style="{ width: '100%' }"> </el-input>
       </el-form-item>
       <el-form-item label="选择分组" prop="groupId">
+     
         <el-select v-model="state.formData.groupId" placeholder="请选择选择分组" clearable :style="{ width: '100%' }">
           <el-option v-for="(item, index) in bpm_group" :key="index" :label="item.label" :value="item.value" :disabled="item.disabled"></el-option>
         </el-select>
@@ -23,7 +25,7 @@
                 :value="1" 
               ></el-option>
             </el-select>
-        <ou-select ref="ouSelectRef" v-if="state.formData.range===1" v-model="state.formData.initiators" :tabs="['user', 'role', 'org']" multiple> 默认所有人</ou-select>
+        <AiOuSelect ref="ouSelectRef" v-if="state.formData.range===1" v-model="state.formData.initiators" :tabs="['user', 'role', 'org']" multiple> 默认所有人</AiOuSelect>
       </el-form-item>
       <el-form-item label="模板图标" prop="icon">
         <my-select-icon v-model="state.formData.icon" clearable />
@@ -45,12 +47,11 @@
 <script lang="ts"  setup name="basice-setting">
 import { defineAsyncComponent, getCurrentInstance, reactive ,ref,watch} from 'vue'
 
-const MySelectIcon = defineAsyncComponent(() => import('../../components/my-select-icon/index.vue'))
-const OuSelect = defineAsyncComponent(() => import('../OU/index.vue'))
-
+const MySelectIcon = defineAsyncComponent(() => import('../MySelectIcon/index.vue'))
+//const OuSelect = defineAsyncComponent(() => import('../OU/index.vue'))
+//import {AiOuSelect} from 'ai-bpm'
 const { proxy } = getCurrentInstance();
 const {   bpm_group  } = proxy.$dict("bpm-group"); 
-
 
 const defaultForm={
     name: '',

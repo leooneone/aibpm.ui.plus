@@ -1,6 +1,6 @@
 <template>
-  <div style="padding: 0px 0px 8px 8px">
-    <el-card shadow="never" :body-style="{ paddingBottom: '0' }" style="margin-top: 8px">
+  <div class="my-layout">
+    <el-card class="mt8" shadow="never" :body-style="{ paddingBottom: '0' }">
       <el-form :model="state.filterModel" :inline="true" @submit.stop.prevent>
         <el-form-item prop="name">
           <el-input v-model="state.filterModel.createdUserName" placeholder="操作账号" @keyup.enter="onQuery" />
@@ -11,27 +11,22 @@
       </el-form>
     </el-card>
 
-    <el-card shadow="never" style="margin-top: 8px">
-      <el-table v-loading="state.loading" :data="state.oprationLogListData" row-key="id" style="width: 100%">
+    <el-card class="my-fill mt8" shadow="never">
+      <el-table ref="tableRef" v-loading="state.loading" :data="state.oprationLogListData" row-key="id" style="width: 100%">
         <el-table-column prop="createdUserName" label="操作账号" width="100">
           <template #default="{ row }"> {{ row.createdUserName }}<br />{{ row.nickName }} </template>
         </el-table-column>
         <el-table-column prop="ip" label="IP地址" width="130" />
-        <el-table-column prop="apiLabel" label="操作名称" width />
-        <el-table-column prop="apiPath" label="操作接口" width />
+        <el-table-column prop="apiLabel" label="操作名称" min-width="220" />
+        <el-table-column prop="apiPath" label="操作接口" min-width="260" />
         <el-table-column prop="elapsedMilliseconds" label="耗时(毫秒)" width="100" />
         <el-table-column prop="status" label="操作状态" width="80">
           <template #default="{ row }">
             <el-tag :type="row.status ? 'success' : 'danger'" disable-transitions>{{ row.status ? '成功' : '失败' }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="登录状态" width="80">
-          <template #default="{ row }">
-            <el-tag :type="row.status ? 'success' : 'danger'" disable-transitions>{{ row.status ? '成功' : '失败' }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="createdTime" label="登录时间" :formatter="formatterTime" width="160" />
-        <el-table-column prop="msg" label="登录消息" width="" />
+        <el-table-column prop="createdTime" label="操作时间" :formatter="formatterTime" width="160" />
+        <el-table-column prop="msg" label="操作消息" width="" />
       </el-table>
       <div class="my-flex my-flex-end" style="margin-top: 20px">
         <el-pagination
@@ -50,11 +45,14 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-import { reactive, onMounted } from 'vue'
+<script lang="ts" setup name="admin/oprationLog">
+import { reactive, onMounted, ref } from 'vue'
 import { OprationLogListOutput, PageInputLogGetPageDto } from '/@/api/admin/data-contracts'
 import { OprationLogApi } from '/@/api/admin/OprationLog'
 import dayjs from 'dayjs'
+import type { TableInstance } from 'element-plus'
+
+const tableRef = ref<TableInstance>()
 
 const state = reactive({
   loading: false,
@@ -82,10 +80,12 @@ const formatterTime = (row: any, column: any, cellValue: any) => {
 const onQuery = async () => {
   state.loading = true
   state.pageInput.filter = state.filterModel
-  const res = await new OprationLogApi().getPage(state.pageInput)
+  const res = await new OprationLogApi().getPage(state.pageInput).catch(() => {
+    state.loading = false
+  })
 
   state.oprationLogListData = res?.data?.list ?? []
-  state.total = res.data?.total ?? 0
+  state.total = res?.data?.total ?? 0
   state.loading = false
 }
 
@@ -94,18 +94,11 @@ const onSizeChange = (val: number) => {
   onQuery()
 }
 
-const onCurrentChange = (val: number) => {
+const onCurrentChange = async (val: number) => {
   state.pageInput.currentPage = val
-  onQuery()
+  await onQuery()
+  tableRef.value?.setScrollTop(0)
 }
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'admin/oprationLog',
-})
 </script>
 
 <style scoped lang="scss"></style>

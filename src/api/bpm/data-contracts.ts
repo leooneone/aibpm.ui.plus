@@ -191,7 +191,7 @@ export const nvDataScope = { All: '1', DeptWithChild: '2', Dept: '3', Self: '4',
 export const vnDataScope = { '1': 'All', '2': 'DeptWithChild', '3': 'Dept', '4': 'Self', '5': 'Custom' }
 
 /** @format int32 */
-export type DataType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23
+export type DataType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25
 export const nvDataType = {
   MySql: '0',
   SqlServer: '1',
@@ -213,10 +213,12 @@ export const nvDataType = {
   Custom: '17',
   ClickHouse: '18',
   GBase: '19',
-  CustomOracle: '20',
-  CustomSqlServer: '21',
-  CustomMySql: '22',
-  CustomPostgreSQL: '23',
+  QuestDb: '20',
+  Xugu: '21',
+  CustomOracle: '22',
+  CustomSqlServer: '23',
+  CustomMySql: '24',
+  CustomPostgreSQL: '25',
 }
 export const vnDataType = {
   '0': 'MySql',
@@ -239,10 +241,12 @@ export const vnDataType = {
   '17': 'Custom',
   '18': 'ClickHouse',
   '19': 'GBase',
-  '20': 'CustomOracle',
-  '21': 'CustomSqlServer',
-  '22': 'CustomMySql',
-  '23': 'CustomPostgreSQL',
+  '20': 'QuestDb',
+  '21': 'Xugu',
+  '22': 'CustomOracle',
+  '23': 'CustomSqlServer',
+  '24': 'CustomMySql',
+  '25': 'CustomPostgreSQL',
 }
 
 /**
@@ -749,23 +753,6 @@ export interface PageInputTemplateGetPageDto {
 }
 
 /** 分页信息输入 */
-export interface PageInputUserGetPageDto {
-  /**
-   * 当前页标
-   * @format int32
-   */
-  currentPage?: number
-  /**
-   * 每页大小
-   * @format int32
-   */
-  pageSize?: number
-  dynamicFilter?: DynamicFilterInfo
-  /** 用户分页查询条件 */
-  filter?: UserGetPageDto
-}
-
-/** 分页信息输入 */
 export interface PageInputWorkItemGetPageDto {
   /**
    * 当前页标
@@ -804,17 +791,6 @@ export interface PageOutputRoleGetPageOutput {
 }
 
 /** 分页信息输出 */
-export interface PageOutputUserGetPageOutput {
-  /**
-   * 数据总数
-   * @format int64
-   */
-  total?: number
-  /** 数据 */
-  list?: UserGetPageOutput[] | null
-}
-
-/** 分页信息输出 */
 export interface PageOutputWorkItemGetPageOutput {
   /**
    * 数据总数
@@ -846,6 +822,14 @@ export interface Participant {
   /** @format int64 */
   nodeId?: number
 }
+
+/**
+ * 密码加密类型
+ * @format int32
+ */
+export type PasswordEncryptType = 0 | 1
+export const nvPasswordEncryptType = { MD5Encrypt32: '0', PasswordHasher: '1' }
+export const vnPasswordEncryptType = { '0': 'MD5Encrypt32', '1': 'PasswordHasher' }
 
 /** 权限 */
 export interface PermissionEntity {
@@ -949,6 +933,71 @@ export type PermissionType = 1 | 2 | 3
 export const nvPermissionType = { Group: '1', Menu: '2', Dot: '3' }
 export const vnPermissionType = { '1': 'Group', '2': 'Menu', '3': 'Dot' }
 
+/** 套餐 */
+export interface PkgEntity {
+  /**
+   * 主键Id
+   * @format int64
+   */
+  id?: number
+  /**
+   * 创建者Id
+   * @format int64
+   */
+  createdUserId?: number | null
+  /**
+   * 创建者
+   * @maxLength 50
+   */
+  createdUserName?: string | null
+  /**
+   * 创建时间
+   * @format date-time
+   */
+  createdTime?: string | null
+  /**
+   * 修改者Id
+   * @format int64
+   */
+  modifiedUserId?: number | null
+  /**
+   * 修改者
+   * @maxLength 50
+   */
+  modifiedUserName?: string | null
+  /**
+   * 修改时间
+   * @format date-time
+   */
+  modifiedTime?: string | null
+  /** 是否删除 */
+  isDeleted?: boolean
+  /**
+   * 父级Id
+   * @format int64
+   */
+  parentId?: number
+  /** 子级列表 */
+  childs?: PkgEntity[] | null
+  /** 名称 */
+  name?: string | null
+  /** 编码 */
+  code?: string | null
+  /** 说明 */
+  description?: string | null
+  /** 启用 */
+  enabled?: boolean
+  /**
+   * 排序
+   * @format int32
+   */
+  sort?: number
+  /** 租户列表 */
+  tenants?: TenantEntity[] | null
+  /** 权限列表 */
+  permissions?: PermissionEntity[] | null
+}
+
 /**
  * 查询类型
  * @format int32
@@ -1004,18 +1053,6 @@ export interface ResultOutputIListString {
   msg?: string | null
   /** 数据 */
   data?: string[] | null
-}
-
-/** 结果输出 */
-export interface ResultOutputIListUserPermissionsOutput {
-  /** 是否成功标记 */
-  success?: boolean
-  /** 编码 */
-  code?: string | null
-  /** 消息 */
-  msg?: string | null
-  /** 数据 */
-  data?: UserPermissionsOutput[] | null
 }
 
 /** 结果输出 */
@@ -1104,6 +1141,18 @@ export interface ResultOutputListRoleGetListOutput {
 }
 
 /** 结果输出 */
+export interface ResultOutputListRoleGetRoleUserListOutput {
+  /** 是否成功标记 */
+  success?: boolean
+  /** 编码 */
+  code?: string | null
+  /** 消息 */
+  msg?: string | null
+  /** 数据 */
+  data?: RoleGetRoleUserListOutput[] | null
+}
+
+/** 结果输出 */
 export interface ResultOutputListUserEntity {
   /** 是否成功标记 */
   success?: boolean
@@ -1113,18 +1162,6 @@ export interface ResultOutputListUserEntity {
   msg?: string | null
   /** 数据 */
   data?: UserEntity[] | null
-}
-
-/** 结果输出 */
-export interface ResultOutputListUserGetRoleUserListOutput {
-  /** 是否成功标记 */
-  success?: boolean
-  /** 编码 */
-  code?: string | null
-  /** 消息 */
-  msg?: string | null
-  /** 数据 */
-  data?: UserGetRoleUserListOutput[] | null
 }
 
 /** 结果输出 */
@@ -1187,18 +1224,6 @@ export interface ResultOutputPageOutputRoleGetPageOutput {
 }
 
 /** 结果输出 */
-export interface ResultOutputPageOutputUserGetPageOutput {
-  /** 是否成功标记 */
-  success?: boolean
-  /** 编码 */
-  code?: string | null
-  /** 消息 */
-  msg?: string | null
-  /** 分页信息输出 */
-  data?: PageOutputUserGetPageOutput
-}
-
-/** 结果输出 */
 export interface ResultOutputPageOutputWorkItemGetPageOutput {
   /** 是否成功标记 */
   success?: boolean
@@ -1254,40 +1279,6 @@ export interface ResultOutputTemplateGetOutput {
   /** 消息 */
   msg?: string | null
   data?: TemplateGetOutput
-}
-
-/** 结果输出 */
-export interface ResultOutputUserEntity {
-  /** 是否成功标记 */
-  success?: boolean
-  /** 编码 */
-  code?: string | null
-  /** 消息 */
-  msg?: string | null
-  /** 用户 */
-  data?: UserEntity
-}
-
-/** 结果输出 */
-export interface ResultOutputUserGetBasicOutput {
-  /** 是否成功标记 */
-  success?: boolean
-  /** 编码 */
-  code?: string | null
-  /** 消息 */
-  msg?: string | null
-  data?: UserGetBasicOutput
-}
-
-/** 结果输出 */
-export interface ResultOutputUserGetOutput {
-  /** 是否成功标记 */
-  success?: boolean
-  /** 编码 */
-  code?: string | null
-  /** 消息 */
-  msg?: string | null
-  data?: UserGetOutput
 }
 
 /** 结果输出 */
@@ -1500,6 +1491,18 @@ export interface RoleGetPageOutput {
   createdTime?: string | null
 }
 
+export interface RoleGetRoleUserListOutput {
+  /**
+   * 主键Id
+   * @format int64
+   */
+  id?: number
+  /** 姓名 */
+  name?: string | null
+  /** 手机号 */
+  mobile?: string | null
+}
+
 /** 设置数据范围 */
 export interface RoleSetDataScopeInput {
   /**
@@ -1559,25 +1562,8 @@ export interface RoleUpdateInput {
  * @format int32
  */
 export type Sex = 0 | 1 | 2
-export const nvSex = { Unknown: '0', Male: '1', Female: '2' }
-export const vnSex = { '0': 'Unknown', '1': 'Male', '2': 'Female' }
-
-/** 员工添加 */
-export interface StaffAddInput {
-  /** 工号 */
-  jobNumber?: string | null
-  /** 职位 */
-  position?: string | null
-  /** 性别 */
-  sex?: Sex
-  /**
-   * 入职时间
-   * @format date-time
-   */
-  entryTime?: string | null
-  /** 个人简介 */
-  introduce?: string | null
-}
+export const nvSex = { 未知: '0', 男: '1', 女: '2' }
+export const vnSex = { '0': '未知', '1': '男', '2': '女' }
 
 export interface TemplateGetOutput {
   /** 名称 */
@@ -1645,23 +1631,20 @@ export interface TenantEntity {
   modifiedTime?: string | null
   /** 是否删除 */
   isDeleted?: boolean
-  /** 企业名称 */
-  name?: string | null
-  /** 编码 */
-  code?: string | null
-  /** 姓名 */
-  realName?: string | null
-  /** 手机号码 */
-  phone?: string | null
-  /** 邮箱地址 */
-  email?: string | null
   /**
    * 授权用户
    * @format int64
    */
-  userId?: number | null
+  userId?: number
   /** 用户 */
   user?: UserEntity
+  /**
+   * 授权部门
+   * @format int64
+   */
+  orgId?: number
+  /** 组织架构 */
+  org?: OrgEntity
   /** 租户类型 */
   tenantType?: TenantType
   /** 数据库注册键 */
@@ -1673,6 +1656,8 @@ export interface TenantEntity {
   enabled?: boolean
   /** 说明 */
   description?: string | null
+  /** 套餐列表 */
+  pkgs?: PkgEntity[] | null
 }
 
 /**
@@ -1682,90 +1667,6 @@ export interface TenantEntity {
 export type TenantType = 1 | 2
 export const nvTenantType = { Platform: '1', Tenant: '2' }
 export const vnTenantType = { '1': 'Platform', '2': 'Tenant' }
-
-/** 添加 */
-export interface UserAddInput {
-  /**
-   * 账号
-   * @minLength 1
-   */
-  userName: string
-  /**
-   * 姓名
-   * @minLength 1
-   */
-  name: string
-  /** 手机号 */
-  mobile?: string | null
-  /** 邮箱 */
-  email?: string | null
-  /** 角色Ids */
-  roleIds?: number[] | null
-  /** 所属部门Ids */
-  orgIds?: number[] | null
-  /**
-   * 主属部门Id
-   * @format int64
-   */
-  orgId?: number
-  /**
-   * 直属主管Id
-   * @format int64
-   */
-  managerUserId?: number | null
-  /** 直属主管姓名 */
-  managerUserName?: string | null
-  /** 员工添加 */
-  staff?: StaffAddInput
-  /**
-   * 密码
-   * @minLength 1
-   */
-  password: string
-  /** 用户状态 */
-  status?: UserStatus
-}
-
-/** 添加会员 */
-export interface UserAddMemberInput {
-  /**
-   * 账号
-   * @minLength 1
-   */
-  userName: string
-  /** 姓名 */
-  name?: string | null
-  /** 手机号 */
-  mobile?: string | null
-  /** 邮箱 */
-  email?: string | null
-  /**
-   * 密码
-   * @minLength 1
-   */
-  password: string
-  /** 用户状态 */
-  status?: UserStatus
-}
-
-/** 修改密码 */
-export interface UserChangePasswordInput {
-  /**
-   * 旧密码
-   * @minLength 1
-   */
-  oldPassword: string
-  /**
-   * 新密码
-   * @minLength 1
-   */
-  newPassword: string
-  /**
-   * 确认新密码
-   * @minLength 1
-   */
-  confirmPassword: string
-}
 
 /** 用户 */
 export interface UserEntity {
@@ -1817,6 +1718,8 @@ export interface UserEntity {
   userName?: string | null
   /** 密码 */
   password?: string | null
+  /** 密码加密类型 */
+  passwordEncryptType?: PasswordEncryptType
   /** 姓名 */
   name?: string | null
   /** 手机号 */
@@ -1845,128 +1748,14 @@ export interface UserEntity {
   status?: UserStatus
   /** 用户类型 */
   type?: UserType
+  /** 启用 */
+  enabled?: boolean
   /** 角色列表 */
   roles?: RoleEntity[] | null
   /** 部门列表 */
   orgs?: OrgEntity[] | null
   /** 用户员工 */
   staff?: UserStaffEntity
-}
-
-export interface UserGetBasicOutput {
-  /** 头像 */
-  avatar?: string | null
-  /** 姓名 */
-  name?: string | null
-  /** 昵称 */
-  nickName?: string | null
-  /** 手机号 */
-  mobile?: string | null
-  /** 邮箱 */
-  email?: string | null
-}
-
-export interface UserGetOrgDto {
-  /** @format int64 */
-  id?: number
-  name?: string | null
-}
-
-export interface UserGetOutput {
-  /**
-   * 账号
-   * @minLength 1
-   */
-  userName: string
-  /**
-   * 姓名
-   * @minLength 1
-   */
-  name: string
-  /** 手机号 */
-  mobile?: string | null
-  /** 邮箱 */
-  email?: string | null
-  /**
-   * 主属部门Id
-   * @format int64
-   */
-  orgId?: number
-  /**
-   * 直属主管Id
-   * @format int64
-   */
-  managerUserId?: number | null
-  /** 直属主管姓名 */
-  managerUserName?: string | null
-  /** 员工添加 */
-  staff?: StaffAddInput
-  /**
-   * 主键Id
-   * @format int64
-   */
-  id: number
-  /** 角色列表 */
-  roles?: UserGetRoleDto[] | null
-  /** 部门列表 */
-  orgs?: UserGetOrgDto[] | null
-  /** 所属部门Ids */
-  orgIds?: number[] | null
-  /** 角色Ids */
-  roleIds?: number[] | null
-}
-
-/** 用户分页查询条件 */
-export interface UserGetPageDto {
-  /**
-   * 部门Id
-   * @format int64
-   */
-  orgId?: number | null
-}
-
-export interface UserGetPageOutput {
-  /**
-   * 主键Id
-   * @format int64
-   */
-  id?: number
-  /** 账号 */
-  userName?: string | null
-  /** 姓名 */
-  name?: string | null
-  /** 手机号 */
-  mobile?: string | null
-  /** 邮箱 */
-  email?: string | null
-  /** 用户类型 */
-  type?: UserType
-  /** 角色 */
-  roleNames?: string[] | null
-  /** 是否主管 */
-  isManager?: boolean
-  roles?: RoleEntity[] | null
-  /**
-   * 创建时间
-   * @format date-time
-   */
-  createdTime?: string | null
-}
-
-export interface UserGetRoleDto {
-  /** @format int64 */
-  id?: number
-  name?: string | null
-}
-
-export interface UserGetRoleUserListOutput {
-  /**
-   * 主键Id
-   * @format int64
-   */
-  id?: number
-  /** 姓名 */
-  name?: string | null
 }
 
 /** 用户所属部门 */
@@ -2024,22 +1813,6 @@ export interface UserOrgEntity {
   isManager?: boolean
 }
 
-export interface UserPermissionsOutput {
-  httpMethods?: string | null
-  path?: string | null
-}
-
-/** 重置密码 */
-export interface UserResetPasswordInput {
-  /**
-   * 主键Id
-   * @format int64
-   */
-  id?: number
-  /** 密码 */
-  password?: string | null
-}
-
 /** 用户角色 */
 export interface UserRoleEntity {
   /**
@@ -2076,22 +1849,6 @@ export interface UserRoleEntity {
   roleId?: number
   /** 角色 */
   role?: RoleEntity
-}
-
-/** 设置主管 */
-export interface UserSetManagerInput {
-  /**
-   * 用户Id
-   * @format int64
-   */
-  userId?: number
-  /**
-   * 部门Id
-   * @format int64
-   */
-  orgId?: number
-  /** 是否主管 */
-  isManager?: boolean
 }
 
 /** 用户员工 */
@@ -2149,6 +1906,8 @@ export interface UserStaffEntity {
    * @format date-time
    */
   entryTime?: string | null
+  /** 企业微信名片 */
+  workWeChatCard?: string | null
   /** 个人简介 */
   introduce?: string | null
 }
@@ -2157,9 +1916,9 @@ export interface UserStaffEntity {
  * 用户状态
  * @format int32
  */
-export type UserStatus = 0 | 1 | 2 | 3
-export const nvUserStatus = { Enabled: '0', Disabled: '1', WaitChangePasssword: '2', WaitActive: '3' }
-export const vnUserStatus = { '0': 'Enabled', '1': 'Disabled', '2': 'WaitChangePasssword', '3': 'WaitActive' }
+export type UserStatus = 2 | 3
+export const nvUserStatus = { WaitChangePasssword: '2', WaitActive: '3' }
+export const vnUserStatus = { '2': 'WaitChangePasssword', '3': 'WaitActive' }
 
 /**
  * 用户类型
@@ -2168,78 +1927,6 @@ export const vnUserStatus = { '0': 'Enabled', '1': 'Disabled', '2': 'WaitChangeP
 export type UserType = 0 | 1 | 10 | 100
 export const nvUserType = { Member: '0', DefaultUser: '1', TenantAdmin: '10', PlatformAdmin: '100' }
 export const vnUserType = { '0': 'Member', '1': 'DefaultUser', '10': 'TenantAdmin', '100': 'PlatformAdmin' }
-
-/** 更新基本信息 */
-export interface UserUpdateBasicInput {
-  /**
-   * 姓名
-   * @minLength 1
-   */
-  name: string
-  /** 昵称 */
-  nickName?: string | null
-}
-
-/** 修改 */
-export interface UserUpdateInput {
-  /**
-   * 账号
-   * @minLength 1
-   */
-  userName: string
-  /**
-   * 姓名
-   * @minLength 1
-   */
-  name: string
-  /** 手机号 */
-  mobile?: string | null
-  /** 邮箱 */
-  email?: string | null
-  /** 角色Ids */
-  roleIds?: number[] | null
-  /** 所属部门Ids */
-  orgIds?: number[] | null
-  /**
-   * 主属部门Id
-   * @format int64
-   */
-  orgId?: number
-  /**
-   * 直属主管Id
-   * @format int64
-   */
-  managerUserId?: number | null
-  /** 直属主管姓名 */
-  managerUserName?: string | null
-  /** 员工添加 */
-  staff?: StaffAddInput
-  /**
-   * 主键Id
-   * @format int64
-   */
-  id: number
-}
-
-/** 修改会员 */
-export interface UserUpdateMemberInput {
-  /**
-   * 账号
-   * @minLength 1
-   */
-  userName: string
-  /** 姓名 */
-  name?: string | null
-  /** 手机号 */
-  mobile?: string | null
-  /** 邮箱 */
-  email?: string | null
-  /**
-   * 主键Id
-   * @format int64
-   */
-  id: number
-}
 
 /** 视图管理 */
 export interface ViewEntity {

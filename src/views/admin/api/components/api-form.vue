@@ -1,6 +1,14 @@
 <template>
   <div>
-    <el-dialog v-model="state.showDialog" destroy-on-close :title="title" draggable width="600px">
+    <el-dialog
+      v-model="state.showDialog"
+      destroy-on-close
+      :title="title"
+      draggable
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      width="600px"
+    >
       <el-form :model="form" ref="formRef" size="default" label-width="80px">
         <el-row :gutter="35">
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
@@ -42,6 +50,11 @@
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
             <el-form-item label="接口描述" prop="description">
               <el-input v-model="form.description" clearable />
+            </el-form-item>
+          </el-col>
+          <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
+            <el-form-item label="排序">
+              <el-input-number v-model="form.sort" />
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
@@ -120,9 +133,13 @@ const onSure = () => {
     let res = {} as any
     state.form.parentId = state.form.parentId && state.form.parentId > 0 ? state.form.parentId : undefined
     if (state.form.id != undefined && state.form.id > 0) {
-      res = await new ApiApi().update(state.form, { showSuccessMessage: true })
+      res = await new ApiApi().update(state.form, { showSuccessMessage: true }).catch(() => {
+        state.sureLoading = false
+      })
     } else {
-      res = await new ApiApi().add(state.form, { showSuccessMessage: true })
+      res = await new ApiApi().add(state.form, { showSuccessMessage: true }).catch(() => {
+        state.sureLoading = false
+      })
     }
 
     state.sureLoading = false

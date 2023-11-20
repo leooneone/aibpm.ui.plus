@@ -256,9 +256,9 @@ const initChartsCenterOne = () => {
           },
         },
         data: [
-          { name: 'vue-next-admin', value: 520 },
-          { name: 'lyt', value: 520 },
-          { name: 'next-admin', value: 500 },
+          { name: 'admin.ui.plus', value: 520 },
+          { name: 'xiaoxue', value: 520 },
+          { name: 'zhontai-admin', value: 500 },
           { name: '更名', value: 420 },
           { name: '智慧农业', value: 520 },
           { name: '男神', value: 2.64 },

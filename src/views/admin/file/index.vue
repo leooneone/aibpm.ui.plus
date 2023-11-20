@@ -1,6 +1,6 @@
 <template>
-  <div style="padding: 0px 0px 8px 8px">
-    <el-card shadow="never" :body-style="{ paddingBottom: '0' }" style="margin-top: 8px">
+  <div class="my-layout">
+    <el-card class="mt8" shadow="never" :body-style="{ paddingBottom: '0' }">
       <el-form :model="state.filterModel" :inline="true" @submit.stop.prevent>
         <el-form-item prop="name">
           <el-input v-model="state.filterModel.fileName" placeholder="文件名" @keyup.enter="onQuery" />
@@ -12,7 +12,7 @@
       </el-form>
     </el-card>
 
-    <el-card shadow="never" style="margin-top: 8px">
+    <el-card class="my-fill mt8" shadow="never">
       <el-table v-loading="state.loading" :data="state.fileListData" row-key="id" style="width: 100%">
         <el-table-column prop="fileName" label="文件名" min-width="220">
           <template #default="{ row }">
@@ -92,8 +92,8 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-import { ref, reactive, onMounted, onUnmounted, defineAsyncComponent, computed, getCurrentInstance } from 'vue'
+<script lang="ts" setup name="admin/file">
+import { ref, reactive, onMounted, onBeforeMount, defineAsyncComponent, computed, getCurrentInstance } from 'vue'
 import { PageInputFileGetPageDto, FileGetPageOutput } from '/@/api/admin/data-contracts'
 import { FileApi } from '/@/api/admin/File'
 import dayjs from 'dayjs'
@@ -136,12 +136,13 @@ const previewImglist = computed(() => {
 
 onMounted(() => {
   onQuery()
+  eventBus.off('refreshFile')
   eventBus.on('refreshFile', async () => {
     onQuery()
   })
 })
 
-onUnmounted(() => {
+onBeforeMount(() => {
   eventBus.off('refreshFile')
 })
 
@@ -155,10 +156,12 @@ const getInitialIndex = (imgUrl: string) => {
 
 const onQuery = async () => {
   state.loading = true
-  const res = await new FileApi().getPage({ ...state.pageInput, filter: state.filterModel })
+  const res = await new FileApi().getPage({ ...state.pageInput, filter: state.filterModel }).catch(() => {
+    state.loading = false
+  })
 
   state.fileListData = res?.data?.list ?? []
-  state.total = res.data?.total ?? 0
+  state.total = res?.data?.total ?? 0
   state.loading = false
 }
 
@@ -185,14 +188,6 @@ const onDelete = (row: FileGetPageOutput) => {
     })
     .catch(() => {})
 }
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'admin/file',
-})
 </script>
 
 <style scoped lang="scss">

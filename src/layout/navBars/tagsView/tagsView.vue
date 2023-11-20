@@ -52,10 +52,10 @@ import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import Sortable from 'sortablejs'
 import { ElMessage } from 'element-plus'
 import { storeToRefs } from 'pinia'
-import pinia from '/@/stores/index'
 import { useTagsViewRoutes } from '/@/stores/tagsViewRoutes'
 import { useThemeConfig } from '/@/stores/themeConfig'
 import { useKeepALiveNames } from '/@/stores/keepAliveNames'
+import { useRoutesList } from '/@/stores/routesList'
 import { Session } from '/@/utils/storage'
 import { isObjectValueEqual } from '/@/utils/arrayOperation'
 import other from '/@/utils/other'
@@ -72,8 +72,10 @@ const tagsUlRef = ref()
 const stores = useTagsViewRoutes()
 const storesThemeConfig = useThemeConfig()
 const storesTagsViewRoutes = useTagsViewRoutes()
+const storesRoutesList = useRoutesList()
 const { themeConfig } = storeToRefs(storesThemeConfig)
 const { tagsViewRoutes } = storeToRefs(storesTagsViewRoutes)
+const { routesList } = storeToRefs(storesRoutesList)
 const storesKeepALiveNames = useKeepALiveNames()
 const route = useRoute()
 const router = useRouter()
@@ -111,7 +113,6 @@ const isActive = (v: RouteItem) => {
       return v.url ? v.url === state.routeActive : v.path === state.routeActive
     } else {
       // 通过 name 传参，params 取值，刷新页面参数消失
-      // https://gitee.com/lyt-top/vue-next-admin/issues/I51RS9
       return v.path === state.routePath
     }
   }
@@ -188,9 +189,11 @@ const singleAddTagsView = (path: string, to?: RouteToFrom) => {
 }
 // 1、添加 tagsView：未设置隐藏（isHide）也添加到在 tagsView 中（可开启多标签详情，单标签详情）
 const addTagsView = (path: string, to?: RouteToFrom) => {
+  if (to?.meta?.isDir) {
+    return
+  }
   // 防止拿取不到路由信息
   nextTick(async () => {
-    // 修复：https://gitee.com/lyt-top/vue-next-admin/issues/I3YX6G
     let item: RouteItem
     if (to?.meta?.isDynamic) {
       // 动态路由（xxx/:id/:name"）：参数不同，开启多个 tagsview
@@ -316,7 +319,6 @@ const openCurrenFullscreen = async (path: string) => {
 }
 // 当前项右键菜单点击，拿 `当前点击的路由路径` 对比 `tagsView 路由数组`，取当前点击项的详细路由信息
 // 防止 tagsView 非当前页演示时，操作异常
-// https://gitee.com/lyt-top/vue-next-admin/issues/I61VS9
 const getCurrentRouteItem = (item: RouteItem): any => {
   let resItem: RouteToFrom = {}
   state.tagsViewList.forEach((v: RouteItem) => {
@@ -382,10 +384,17 @@ const onMousedownMenu = (v: RouteItem, e: MouseEvent) => {
 const onTagsClick = (v: RouteItem, k: number) => {
   state.tagsRefsIndex = k
   router.push(v)
+  // 分栏布局时，收起/展开菜单
+  // if (getThemeConfig.value.layout === 'columns') {
+  //   const item: RouteItem = routesList.value.find((r: RouteItem) => r.path.indexOf(`/${v.path.split('/')[1]}`) > -1)
+  //   !item.children ? (getThemeConfig.value.isCollapse = true) : (getThemeConfig.value.isCollapse = false)
+  // }
+  if (getThemeConfig.value.layout === 'columns') {
+    const item: RouteItem = routesList.value.find((r: RouteItem) => r.path.indexOf(`/${v.path.split('/')[1]}`) > -1)
+    item.meta?.isHide ? (getThemeConfig.value.isCollapse = true) : (getThemeConfig.value.isCollapse = false)
+  }
 }
 // 处理 url，地址栏链接有参数时，tagsview 右键菜单刷新功能失效问题，感谢 @ZzZz-RIPPER、@dejavuuuuu
-// https://gitee.com/lyt-top/vue-next-admin/issues/I5K3YO
-// https://gitee.com/lyt-top/vue-next-admin/issues/I61VS9
 const transUrlParams = (v: RouteItem) => {
   let params = v.query && Object.keys(v.query).length > 0 ? v.query : v.params
   if (!params) return ''
@@ -513,7 +522,7 @@ const initSortable = async () => {
     },
   })
 }
-// 拖动问题，https://gitee.com/lyt-top/vue-next-admin/issues/I3ZRRI
+// 拖动问题
 const onSortableResize = async () => {
   await initSortable()
   if (other.isMobile()) state.sortable.el && state.sortable.destroy()
@@ -522,7 +531,7 @@ const onSortableResize = async () => {
 onBeforeMount(() => {
   // 初始化，防止手机端直接访问时还可以拖拽
   onSortableResize()
-  // 拖动问题，https://gitee.com/lyt-top/vue-next-admin/issues/I3ZRRI
+  // 拖动问题
   window.addEventListener('resize', onSortableResize)
   // 监听非本页面调用 0 刷新当前，1 关闭当前，2 关闭其它，3 关闭全部 4 当前页全屏
   mittBus.on('onCurrentContextmenuClick', (data: RouteItem) => {
@@ -578,9 +587,12 @@ onBeforeRouteUpdate(async (to) => {
 })
 // 监听路由的变化，动态赋值给 tagsView
 watch(
-  pinia.state,
+  () => tagsViewRoutes.value,
   (val) => {
-    if (val.tagsViewRoutes.tagsViewRoutes.length === state.tagsViewRoutesList.length) return false
+    if (val.length === state.tagsViewRoutesList.length) {
+      tagsViewmoveToCurrentTag()
+      return false
+    }
     getTagsViewRoutes()
   },
   {

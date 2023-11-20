@@ -9,27 +9,10 @@
  * ---------------------------------------------------------------
  */
 
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from 'axios'
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, RawAxiosRequestHeaders, ResponseType } from 'axios'
 import { ElLoading, ElMessage, LoadingOptions } from 'element-plus'
-import { Local, Session } from '/@/utils/storage'
-
-export const adminTokenKey = 'admin-token'
-
-// 获得token
-export const getToken = () => {
-  return Local.get(adminTokenKey)
-}
-// 设置token
-export const setToken = (token: any) => {
-  return Local.set(adminTokenKey, token)
-}
-// 清除token
-export const clearToken = () => {
-  Local.remove(adminTokenKey)
-  Session.remove('token')
-  window.requests = []
-  window.location.reload()
-}
+import { storeToRefs } from 'pinia'
+import { useUserInfo } from '/@/stores/userInfo'
 
 export type QueryParamsType = Record<string | number, any>
 
@@ -116,7 +99,7 @@ export class HttpClient<SecurityDataType = unknown> {
         ...((method && this.instance.defaults.headers[method.toLowerCase() as keyof HeadersDefaults]) || {}),
         ...(params1.headers || {}),
         ...((params2 && params2.headers) || {}),
-      },
+      } as RawAxiosRequestHeaders,
     }
   }
 
@@ -202,7 +185,7 @@ export class HttpClient<SecurityDataType = unknown> {
     if (error.message.includes('Network')) message = window.navigator.onLine ? '服务端异常' : '您已断网'
 
     if (message) {
-      ElMessage.error({ message })
+      ElMessage.error({ message, grouping: true })
     }
   }
 
@@ -211,9 +194,11 @@ export class HttpClient<SecurityDataType = unknown> {
    * @param {*} config
    */
   protected async refreshToken(config: any) {
-    const token = getToken()
+    const storesUseUserInfo = useUserInfo()
+    const { userInfos } = storeToRefs(storesUseUserInfo)
+    const token = userInfos.value.token
     if (!token) {
-      clearToken()
+      storesUseUserInfo.clear()
       return Promise.reject(config)
     }
 
@@ -241,19 +226,19 @@ export class HttpClient<SecurityDataType = unknown> {
       .then((res) => {
         if (res?.success) {
           const token = res.data.token
-          setToken(token)
+          storesUseUserInfo.setToken(token)
           if (window.requests?.length > 0) {
             window.requests.forEach((apiRequest) => apiRequest())
             window.requests = []
           }
           return this.instance(config)
         } else {
-          clearToken()
+          storesUseUserInfo.clear()
           return Promise.reject(res)
         }
       })
       .catch((error) => {
-        clearToken()
+        storesUseUserInfo.clear()
         return Promise.reject(error)
       })
       .finally(() => {
@@ -291,8 +276,9 @@ export class HttpClient<SecurityDataType = unknown> {
    * 生成每个请求的唯一key
    */
   protected getPendingKey(config: AxiosRequestConfig) {
-    let { data } = config
-    const { url, method, params, headers } = config
+    let { data, headers } = config
+    headers = headers as RawAxiosRequestHeaders
+    const { url, method, params } = config
     if (typeof data === 'string') data = JSON.parse(data)
     return [url, method, headers && headers.Authorization ? headers.Authorization : '', JSON.stringify(params), JSON.stringify(data)].join('&')
   }
@@ -349,7 +335,8 @@ export class HttpClient<SecurityDataType = unknown> {
           }
         }
 
-        const accessToken = getToken()
+        const { userInfos } = storeToRefs(useUserInfo())
+        const accessToken = userInfos.value.token
         config.headers!['Authorization'] = `Bearer ${accessToken}`
         return config
       },
@@ -366,11 +353,11 @@ export class HttpClient<SecurityDataType = unknown> {
         const data = res.data
         if (data.success) {
           if (showSuccessMessage) {
-            ElMessage.success({ message: data.msg ? data.msg : '操作成功' })
+            ElMessage.success({ message: data.msg ? data.msg : '操作成功', grouping: true })
           }
         } else {
           if (showErrorMessage) {
-            ElMessage.error({ message: data.msg ? data.msg : '操作失败' })
+            ElMessage.error({ message: data.msg ? data.msg : '操作失败', grouping: true })
           }
           // return Promise.reject(res)
         }
@@ -401,7 +388,7 @@ export class HttpClient<SecurityDataType = unknown> {
         headers: {
           ...(requestParams.headers || {}),
           ...(type && type !== ContentType.FormData ? { 'Content-Type': type } : {}),
-        },
+        } as RawAxiosRequestHeaders,
         params: query,
         responseType: responseFormat,
         data: body,

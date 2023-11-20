@@ -12,10 +12,6 @@
                 <br />
                 <div>3、设置国际化后，去顶栏切换语言查看演示效果</div>
                 <br />
-                <div>
-                  4、 <a href="https://gitee.com/q7but" target="_black">感谢@q7but</a>、
-                  <a href="https://gitee.com/lyt-top/vue-next-admin/pulls/22/files" target="_black">!22 add 添加自定义 tagVIewName 拓展,支持国际化</a>
-                </div>
               </template>
             </el-alert>
             <el-input v-model="state.tagsViewName" placeholder="请输入tagsView 名称" clearable class="mb15" style="width: 400px"></el-input>

@@ -1,9 +1,17 @@
 <template>
   <div>
-    <el-dialog v-model="state.showDialog" destroy-on-close :title="title" draggable width="769px">
+    <el-dialog
+      v-model="state.showDialog"
+      destroy-on-close
+      :title="title"
+      draggable
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      width="769px"
+    >
       <el-form ref="formRef" :model="form" size="default" label-width="80px">
         <el-row :gutter="35">
-          <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
+          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
             <el-form-item label="企业名称" prop="name" :rules="[{ required: true, message: '请输入企业名称', trigger: ['blur', 'change'] }]">
               <el-input v-model="form.name" autocomplete="off" />
             </el-form-item>
@@ -11,6 +19,23 @@
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
             <el-form-item label="企业编码" prop="code" :rules="[{ required: true, message: '请输入企业编码', trigger: ['blur', 'change'] }]">
               <el-input v-model="form.code" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+          <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
+            <!-- :rules="[{ required: true, message: '请选择套餐', trigger: ['change'] }]" -->
+            <el-form-item label="套餐" prop="pkgIds">
+              <el-select
+                v-model="form.pkgIds"
+                placeholder="请选择套餐"
+                clearable
+                multiple
+                collapse-tags
+                collapse-tags-tooltip
+                filterable
+                class="w100"
+              >
+                <el-option v-for="item in state.pkgData" :key="item.id" :label="item.name" :value="item.id" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
@@ -27,10 +52,15 @@
                 { validator: testMobile, trigger: ['blur', 'change'] },
               ]"
             >
-              <el-input v-model="form.phone" autocomplete="off" maxlength="11" />
+              <el-input v-model="form.phone" autocomplete="off" maxlength="11" @blur="onBlurMobile" />
             </el-form-item>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+          <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
+            <el-form-item label="账号" prop="userName" :rules="[{ required: true, message: '请输入管理员账号', trigger: ['blur', 'change'] }]">
+              <el-input v-model="form.userName" autocomplete="off" />
+            </el-form-item>
+          </el-col>
+          <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
             <el-form-item label="邮箱" prop="email" :rules="[{ validator: testEmail, trigger: ['blur', 'change'] }]">
               <el-input v-model="form.email" autocomplete="off" />
             </el-form-item>
@@ -52,11 +82,12 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="admin/tenant/form">
 import { reactive, toRefs, getCurrentInstance, ref } from 'vue'
-import { TenantAddInput, TenantUpdateInput } from '/@/api/admin/data-contracts'
+import { TenantAddInput, TenantUpdateInput, PkgGetListOutput } from '/@/api/admin/data-contracts'
 import { TenantApi } from '/@/api/admin/Tenant'
-import { testMobile, testEmail } from '/@/utils/test'
+import { PkgApi } from '/@/api/admin/Pkg'
+import { isMobile, testMobile, testEmail } from '/@/utils/test'
 import eventBus from '/@/utils/mitt'
 
 defineProps({
@@ -72,12 +103,23 @@ const formRef = ref()
 const state = reactive({
   showDialog: false,
   sureLoading: false,
+  pkgData: [] as PkgGetListOutput[],
   form: {} as TenantAddInput & TenantUpdateInput,
 })
 const { form } = toRefs(state)
 
+const getPkgs = async () => {
+  const res = await new PkgApi().getList().catch(() => {
+    state.pkgData = []
+  })
+
+  state.pkgData = res?.data ?? []
+}
+
 // 打开对话框
 const open = async (row: any = {}) => {
+  await getPkgs()
+
   if (row.id > 0) {
     const res = await new TenantApi().get({ id: row.id }, { loading: true }).catch(() => {
       proxy.$modal.closeLoading()
@@ -87,9 +129,16 @@ const open = async (row: any = {}) => {
       state.form = res.data as TenantAddInput & TenantUpdateInput
     }
   } else {
-    state.form = {} as TenantAddInput & TenantUpdateInput
+    state.form = { pkgIds: [] as number[], enabled: true } as TenantAddInput & TenantUpdateInput
   }
   state.showDialog = true
+}
+
+//手机号失去焦点
+const onBlurMobile = () => {
+  if (!state.form.userName && state.form.phone && isMobile(state.form.phone)) {
+    state.form.userName = state.form.phone
+  }
 }
 
 // 取消
@@ -124,13 +173,5 @@ const onSure = () => {
 
 defineExpose({
   open,
-})
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'admin/tenant/form',
 })
 </script>

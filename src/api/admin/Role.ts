@@ -14,7 +14,7 @@ import {
   PageInputRoleGetPageDto,
   ResultOutputInt64,
   ResultOutputListRoleGetListOutput,
-  ResultOutputListUserGetRoleUserListOutput,
+  ResultOutputListRoleGetRoleUserListOutput,
   ResultOutputPageOutputRoleGetPageOutput,
   ResultOutputRoleGetOutput,
   RoleAddInput,
@@ -113,7 +113,7 @@ export class RoleApi<SecurityDataType = unknown> extends HttpClient<SecurityData
     },
     params: RequestParams = {}
   ) =>
-    this.request<ResultOutputListUserGetRoleUserListOutput, any>({
+    this.request<ResultOutputListRoleGetRoleUserListOutput, any>({
       path: `/api/admin/role/get-role-user-list`,
       method: 'GET',
       query: query,
@@ -126,7 +126,7 @@ export class RoleApi<SecurityDataType = unknown> extends HttpClient<SecurityData
    *
    * @tags role
    * @name AddRoleUser
-   * @summary 新增角色用户
+   * @summary 添加角色用户
    * @request POST:/api/admin/role/add-role-user
    * @secure
    */
@@ -162,7 +162,7 @@ export class RoleApi<SecurityDataType = unknown> extends HttpClient<SecurityData
    *
    * @tags role
    * @name Add
-   * @summary 添加
+   * @summary 新增
    * @request POST:/api/admin/role/add
    * @secure
    */

@@ -2,7 +2,7 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Session, Local } from '/@/utils/storage'
 import qs from 'qs'
-import { adminTokenKey } from '/@/api/admin/http-client'
+import { adminTokenKey } from '/@/stores/userInfo'
 
 // 配置新建一个 axios 实例
 const service: AxiosInstance = axios.create({
@@ -20,8 +20,8 @@ const service: AxiosInstance = axios.create({
 service.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     // 在发送请求之前做些什么 token
-    if (Session.get('token')) {
-      config.headers!['Authorization'] = `${Session.get('token')}`
+    if (Local.get(adminTokenKey)) {
+      config.headers!['Authorization'] = `${Local.get(adminTokenKey)}`
     }
     return config
   },
@@ -48,7 +48,7 @@ service.interceptors.response.use(
       }
       return Promise.reject(service.interceptors.response)
     } else {
-      return response.data
+      return res
     }
   },
   (error) => {

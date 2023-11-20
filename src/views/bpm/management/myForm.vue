@@ -22,7 +22,9 @@
 <el-tabs v-model="state.curTab"   type="border-card"  class="my-tabs" v-loading="state.loading" >
   <el-tab-pane name="form" label="表单内容" >
   
-      <form-parser :conf="state.conf" ref="formRef" :loading="state.submitLoading" ></form-parser>
+     <!-- <form-parser :conf="state.conf" ref="formRef" :loading="state.submitLoading" ></form-parser>-->
+
+     <AiFormParser :conf="state.conf" ref="formRef" :loading="state.submitLoading" ></AiFormParser>
 
     </el-tab-pane>
     <el-tab-pane name="record" label="审批记录"  v-if="state.conf.items.length>0" > <tempate >
@@ -34,12 +36,12 @@
       :icon="getIcon(activity)" 
     >  
         <h5> {{ activity.title }} </h5>
-        <p>开始时间: {{activity.startTime}}</p>
-        <p>参与人：{{ activity.participant }}  
+        <p>开始时间: {{formatterTimeValue(activity.startTime)}}</p>
+        <p>参与人员：{{ activity.participant }}  
         </p>
         
         <p v-if="dayjs(activity.finishTime).year()>2020">
-           完成时间：{{ activity.finishTime }}
+           完成时间：{{ formatterTimeValue(activity.finishTime) }}
         
        </p>
         <p>
@@ -55,13 +57,13 @@
   </el-timeline> 
     </tempate></el-tab-pane>
     <el-tab-pane name="history" label="审批历史"  v-if="state.conf.items.length>0"> <tempate >
-      <el-table :data="state.conf.items">
+      <el-table :data="state.conf.items" style="font-size:0.9em">
         <el-table-column prop="title" label="名称" show-overflow-tooltip width="120"></el-table-column>
         <el-table-column prop="name" label="操作人" show-overflow-tooltip width="120"></el-table-column>
-        <el-table-column prop="startTime" label="开始时间" show-overflow-tooltip width="120"></el-table-column>
-        <el-table-column prop="finishTime" label="完成时间" show-overflow-tooltip width="120">
+        <el-table-column prop="startTime" label="开始时间" show-overflow-tooltip width="120"  :formatter="formatterTime" ></el-table-column>
+        <el-table-column prop="finishTime" label="完成时间" show-overflow-tooltip width="120"  :formatter="formatterTime" >
           <template #default="{ row }" > 
-            <span v-show="dayjs(row.finishTime).year()>2020">{{dayjs(row.finishTime).format('YYYY-MM-DD HH:mm')  }}</span> 
+            <span v-show="dayjs(row.finishTime).year()>2020">{{formatterTimeValue(row.finishTime)  }}</span> 
           </template>
 
         </el-table-column>
@@ -78,6 +80,11 @@
 
     </tempate></el-tab-pane>
 
+    <el-tab-pane name="chart" label="流程图"  v-if="!!state.chartData"  > 
+ 
+      <FlowChartPanel ref="flowChartPanelRef"  :data="state.chartData"  ></FlowChartPanel>
+
+    </el-tab-pane>
   </el-tabs>
       <template #footer > 
   <div style="flex: auto; background-color: #eeeeee; padding: 5px 5px 5px 5px" v-if="state.conf.activity.type">
@@ -91,17 +98,19 @@
 <ApprovePanel  :approve-setting="state.conf.approveSetting" ref="approvePanelRef"    ></ApprovePanel>
 <OptionalPanel ref="optionalPanelRef"  :optional="state.optional" ></OptionalPanel>
 
-
 </template>
  
 <script lang="ts" setup>
 import { ref, reactive, onMounted, getCurrentInstance, defineAsyncComponent, provide } from 'vue'
   import {  vnDisplayType, ActivityState,vnActivityState,nvActivityState,nvApprovalResult } from '/@/api/bpm/data-contracts'
 import { WorkflowApi } from '/@/api/bpm/Workflow'
-import dayjs from 'dayjs'
-const FormParser = defineAsyncComponent(() => import('/@/views/bpm/components/MyForm/designer/FormParser.vue'))
+
+import { WorkflowTemplateApi as TPLApi } from '/@/api/bpm/WorkflowTemplate'
+
+import dayjs from 'dayjs' 
 const ApprovePanel = defineAsyncComponent(() => import('./approvePanel.vue'))
 const OptionalPanel = defineAsyncComponent(() => import('./optionalPanel.vue'))
+const FlowChartPanel = defineAsyncComponent(() => import('./flowChart.vue'))
 
 const formRef = ref()
 const approvePanelRef = ref()
@@ -125,7 +134,8 @@ const state = reactive({
   curTab: 'form',
   isShowApprove: false,
   optional:[],
-  conf:JSON.parse(JSON.stringify(defautConf))
+  conf:JSON.parse(JSON.stringify(defautConf)),
+  chartData:null
 })
 const getState = (item) => {
 
@@ -138,6 +148,13 @@ const getType = (item) => {
    return  vnDisplayType[item.state&127].toLowerCase()
 
     
+}
+
+const formatterTimeValue = (val:any) => {
+  return dayjs(val).format('YYYY-MM-DD HH:mm:ss')
+}
+const formatterTime = (row: any, column: any, cellValue: any) => {
+  return dayjs(cellValue).format('YYYY-MM-DD HH:mm:ss')
 }
 const getIcon = (item) => {
   var state=item.state&127
@@ -220,6 +237,14 @@ const open = async (ps) => {
     state.conf.approveSetting=res.data.approveSetting??{}
     state.isShow = true
      
+  }
+  state.chartData=null
+  var tplRes=await new TPLApi().get({id: state.conf.templateId})
+  if(  tplRes.success)
+  {
+    
+    state.chartData=JSON.parse(tplRes.data?.flowSetting).chartData
+    
   }
   state.loading = false
 }

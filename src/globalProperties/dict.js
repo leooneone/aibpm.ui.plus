@@ -1,6 +1,6 @@
 import { ref, toRefs } from 'vue';
  
-import { DictionaryApi as DictApi } from '/@/api/admin/Dictionary'
+import {   DictApi } from '/@/api/admin/Dict'
 /**
  * 获取字典数据
  */

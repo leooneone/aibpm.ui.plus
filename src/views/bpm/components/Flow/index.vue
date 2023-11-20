@@ -630,6 +630,7 @@ const bindEvents = (e) => {
 }
 onMounted(() => {
   {
+    console.log('props',props.conf)
     const self = this
     const editorUiInit = EditorUi.prototype.init
     ///后续节点提示

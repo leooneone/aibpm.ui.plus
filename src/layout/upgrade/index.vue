@@ -36,7 +36,8 @@ import { reactive, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
 import { useThemeConfig } from '/@/stores/themeConfig'
-import { Local, Session } from '/@/utils/storage'
+import { Local } from '/@/utils/storage'
+import { useUserInfo } from '/@/stores/userInfo'
 
 // 定义变量内容
 const { t } = useI18n()
@@ -45,7 +46,7 @@ const { themeConfig } = storeToRefs(storesThemeConfig)
 const state = reactive({
   isUpgrade: false,
   // @ts-ignore
-  version: __VERSION__,
+  version: __NEXT_VERSION__,
   isLoading: false,
   btnTxt: '',
 })
@@ -63,8 +64,10 @@ const onUpgrade = () => {
   state.isLoading = true
   state.btnTxt = t('message.upgrade.btnTwoLoading')
   setTimeout(() => {
+    const storesUseUserInfo = useUserInfo()
+    const token = storesUseUserInfo.getToken()
     Local.clear()
-    Session.clear()
+    storesUseUserInfo.setToken(token)
     window.location.reload()
     Local.set('version', state.version)
   }, 2000)

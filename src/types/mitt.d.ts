@@ -41,6 +41,7 @@ declare type MittType<T = any> = {
   refreshPermission?: T
   refreshRole?: T
   refreshTenant?: T
+  refreshPkg?: T
   refreshUser?: T
   refreshView?: T
   refreshFile?: T

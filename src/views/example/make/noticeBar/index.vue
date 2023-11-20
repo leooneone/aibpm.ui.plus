@@ -3,14 +3,14 @@
     <el-card shadow="hover" header="滚动通知栏：默认">
       <NoticeBar
         text="🎉🎉🔥基于vue3.x 、Typescript、vite、Element plus等，适配手机、平板、pc
-				的后台开源免费模板库（vue2.x请切换vue-prev-admin分支），仓库地址：https://gitee.com/lyt-top/vue-next-admin"
+				的后台开源免费模板库（vue2.x请切换Admin.UI仓库），仓库地址：https://gitee.com/zhontai/Admin.UI"
       />
     </el-card>
 
     <el-card shadow="hover" header="滚动通知栏：设置样式" class="mt15">
       <NoticeBar
         text="🎉🎉🔥基于vue3.x 、Typescript、vite、Element plus等，适配手机、平板、pc
-				的后台开源免费模板库（vue2.x请切换vue-prev-admin分支），仓库地址：https://gitee.com/lyt-top/vue-next-admin"
+				的后台开源免费模板库（vue2.x请切换Admin.UI分支），仓库地址：https://gitee.com/zhontai/Admin.UI"
         leftIcon="iconfont icon-tongzhi2"
         rightIcon="ele-ArrowRight"
         background="#ecf5ff"
@@ -57,9 +57,9 @@ const NoticeBar = defineAsyncComponent(() => import('/@/components/noticeBar/ind
 const state = reactive({
   noticeList: [
     '🎉🎉🔥基于vue3.x 、Typescript、vite、Element plus等',
-    '适配手机、平板、pc的后台开源免费模板库（vue2.x请切换vue-prev-admin分支）',
-    '仓库地址：https://gitee.com/lyt-top/vue-next-admin',
-    '演示地址：https://lyt-top.gitee.io/vue-next-admin-preview/#/login',
+    '适配手机、平板、pc的后台开源免费模板库（vue2.x请切换Admin.UI仓库）',
+    '仓库地址：https://gitee.com/zhontai/Admin.UI',
+    '演示地址：https://admin.zhontai.net/login',
   ],
   tableData: [
     {

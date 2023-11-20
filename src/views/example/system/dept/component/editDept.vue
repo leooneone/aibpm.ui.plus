@@ -89,9 +89,9 @@ const state = reactive({
 // 打开弹窗
 const openDialog = (row: RowDeptType) => {
   row.deptLevel = ['vueNextAdmin']
-  row.person = 'lyt'
+  row.person = 'user'
   row.phone = '12345678910'
-  row.email = 'vueNextAdmin@123.com'
+  row.email = 'user@126.com'
   state.ruleForm = row
   state.isShowDialog = true
 }

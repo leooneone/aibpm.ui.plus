@@ -1,10 +1,18 @@
 <template>
   <div>
-    <el-dialog v-model="state.showDialog" destroy-on-close :title="title" draggable width="600px">
+    <el-dialog
+      v-model="state.showDialog"
+      destroy-on-close
+      :title="title"
+      draggable
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      width="600px"
+    >
       <el-form :model="form" ref="formRef" size="default" label-width="80px">
         <el-row :gutter="35">
-          <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-            <el-form-item label="上级分组">
+          <el-col v-if="form.type === 2" :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+            <el-form-item label="上级分组" prop="parentId" :rules="[{ required: true, message: '请选择上级分组', trigger: ['change'] }]">
               <el-tree-select
                 v-model="form.parentId"
                 :data="roleTreeData"
@@ -51,7 +59,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="admin/role/form">
 import { reactive, toRefs, ref, PropType } from 'vue'
 import { RoleGetListOutput, RoleUpdateInput } from '/@/api/admin/data-contracts'
 import { RoleApi } from '/@/api/admin/Role'
@@ -108,9 +116,13 @@ const onSure = () => {
     let res = {} as any
     state.form.parentId = state.form.parentId && state.form.parentId > 0 ? state.form.parentId : undefined
     if (state.form.id != undefined && state.form.id > 0) {
-      res = await new RoleApi().update(state.form, { showSuccessMessage: true })
+      res = await new RoleApi().update(state.form, { showSuccessMessage: true }).catch(() => {
+        state.sureLoading = false
+      })
     } else {
-      res = await new RoleApi().add(state.form, { showSuccessMessage: true })
+      res = await new RoleApi().add(state.form, { showSuccessMessage: true }).catch(() => {
+        state.sureLoading = false
+      })
     }
 
     state.sureLoading = false
@@ -124,13 +136,5 @@ const onSure = () => {
 
 defineExpose({
   open,
-})
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'admin/role/form',
 })
 </script>

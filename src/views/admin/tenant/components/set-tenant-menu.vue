@@ -1,5 +1,14 @@
 <template>
-  <el-dialog v-model="state.showDialog" destroy-on-close :title="innerTitle" append-to-body draggable width="780px">
+  <el-dialog
+    v-model="state.showDialog"
+    destroy-on-close
+    :title="innerTitle"
+    append-to-body
+    draggable
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+    width="780px"
+  >
     <div>
       <el-tree
         ref="permissionTreeRef"
@@ -23,7 +32,7 @@
   </el-dialog>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="admin/tenant/components/set-tenant-menu">
 import { ref, reactive, getCurrentInstance, computed } from 'vue'
 import { TenantListOutput, PermissionSaveTenantPermissionsInput } from '/@/api/admin/data-contracts'
 import { PermissionApi } from '/@/api/admin/Permission'
@@ -79,8 +88,10 @@ const close = () => {
 const onQuery = async () => {
   state.loading = true
 
-  const res = await new PermissionApi().getPermissionList()
-  if (res.data && res.data.length > 0) {
+  const res = await new PermissionApi().getPermissionList().catch(() => {
+    state.loading = false
+  })
+  if (res && res.data && res.data.length > 0) {
     state.permissionTreeData = listToTree(cloneDeep(res.data))
   } else {
     state.permissionTreeData = []
@@ -116,14 +127,6 @@ const onSure = async () => {
 defineExpose({
   open,
   close,
-})
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'admin/tenant/components/set-tenant-menu',
 })
 </script>
 

@@ -1,9 +1,9 @@
 <template>
-  <div style="padding: 0px 0px 8px 8px">
-    <el-card shadow="never" :body-style="{ paddingBottom: '0' }" style="margin-top: 8px">
-      <el-form :model="state.filterModel" :inline="true" @submit.stop.prevent>
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="state.filterModel.name" placeholder="姓名" @keyup.enter="onQuery" />
+  <div class="my-layout">
+    <el-card class="mt8" shadow="never" :body-style="{ paddingBottom: '0' }">
+      <el-form :inline="true" @submit.stop.prevent>
+        <el-form-item label="企业名称">
+          <el-input v-model="state.filter.name" placeholder="企业名称" @keyup.enter="onQuery" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="ele-Search" @click="onQuery"> 查询 </el-button>
@@ -12,20 +12,43 @@
       </el-form>
     </el-card>
 
-    <el-card shadow="never" style="margin-top: 8px">
-      <el-table v-loading="state.loading" :data="state.tenantListData" row-key="id" style="width: 100%">
+    <el-card class="my-fill mt8" shadow="never">
+      <el-table v-loading="state.loading" :data="state.tenantListData" row-key="id" height="'100%'" style="width: 100%; height: 100%">
         <el-table-column prop="name" label="企业名称" min-width="120" show-overflow-tooltip />
         <el-table-column prop="code" label="企业编码" width="120" show-overflow-tooltip />
+        <el-table-column prop="pkgNames" label="套餐" width="140" show-overflow-tooltip>
+          <template #default="{ row }">
+            {{ row.pkgNames ? row.pkgNames.join(',') : '' }}
+          </template>
+        </el-table-column>
         <el-table-column prop="realName" label="姓名" width="120" show-overflow-tooltip />
         <el-table-column prop="phone" label="手机号" width="120" show-overflow-tooltip />
-        <el-table-column prop="email" label="邮箱" min-width="120" show-overflow-tooltip />
-        <el-table-column label="操作" width="160" fixed="right" header-align="center" align="center">
+        <!-- <el-table-column prop="email" label="邮箱" min-width="180" show-overflow-tooltip /> -->
+        <el-table-column label="状态" width="80" align="center" fixed="right">
+          <template #default="{ row }">
+            <el-switch
+              v-if="auth('api:admin:tenant:set-enable')"
+              v-model="row.enabled"
+              :loading="row.loading"
+              :active-value="true"
+              :inactive-value="false"
+              inline-prompt
+              active-text="启用"
+              inactive-text="禁用"
+              :before-change="() => onSetEnable(row)"
+            />
+            <template v-else>
+              <el-tag type="success" v-if="row.enabled">启用</el-tag>
+              <el-tag type="danger" v-else>禁用</el-tag>
+            </template>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="140" header-align="center" align="center" fixed="right">
           <template #default="{ row }">
             <el-button v-auth="'api:admin:tenant:update'" icon="ele-EditPen" size="small" text type="primary" @click="onEdit(row)">编辑</el-button>
-            <my-dropdown-more v-auths="['api:admin:permission:assign', 'api:admin:tenant:delete']">
+            <my-dropdown-more v-auths="['api:admin:tenant:delete']">
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item v-if="auth('api:admin:permission:assign')" @click="onSetTenantMenu(row)">菜单权限</el-dropdown-item>
                   <el-dropdown-item v-if="auth('api:admin:tenant:delete')" @click="onDelete(row)">删除租户</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -33,6 +56,7 @@
           </template>
         </el-table-column>
       </el-table>
+
       <div class="my-flex my-flex-end" style="margin-top: 20px">
         <el-pagination
           v-model:currentPage="state.pageInput.currentPage"
@@ -49,12 +73,11 @@
     </el-card>
 
     <tenant-form ref="tenantFormRef" :title="state.tenantFormTitle"></tenant-form>
-    <set-tenant-menu ref="setTenantMenuRef"></set-tenant-menu>
   </div>
 </template>
 
-<script lang="ts" setup>
-import { ref, reactive, onMounted, getCurrentInstance, onUnmounted, defineAsyncComponent } from 'vue'
+<script lang="ts" setup name="admin/tenant">
+import { ref, reactive, onMounted, getCurrentInstance, onBeforeMount, defineAsyncComponent } from 'vue'
 import { TenantListOutput, PageInputTenantGetPageDto } from '/@/api/admin/data-contracts'
 import { TenantApi } from '/@/api/admin/Tenant'
 import eventBus from '/@/utils/mitt'
@@ -63,20 +86,18 @@ import { auth } from '/@/utils/authFunction'
 // 引入组件
 const TenantForm = defineAsyncComponent(() => import('./components/tenant-form.vue'))
 const MyDropdownMore = defineAsyncComponent(() => import('/@/components/my-dropdown-more/index.vue'))
-const SetTenantMenu = defineAsyncComponent(() => import('./components/set-tenant-menu.vue'))
 
 const { proxy } = getCurrentInstance() as any
 
 const tenantFormRef = ref()
-const setTenantMenuRef = ref()
 
 const state = reactive({
   loading: false,
   tenantFormTitle: '',
-  filterModel: {
+  total: 0,
+  filter: {
     name: '',
   },
-  total: 0,
   pageInput: {
     currentPage: 1,
     pageSize: 20,
@@ -86,21 +107,25 @@ const state = reactive({
 
 onMounted(() => {
   onQuery()
+  eventBus.off('refreshTenant')
   eventBus.on('refreshTenant', async () => {
     onQuery()
   })
 })
 
-onUnmounted(() => {
+onBeforeMount(() => {
   eventBus.off('refreshTenant')
 })
 
 const onQuery = async () => {
   state.loading = true
-  const res = await new TenantApi().getPage(state.pageInput)
+  state.pageInput.filter = state.filter
+  const res = await new TenantApi().getPage(state.pageInput).catch(() => {
+    state.loading = false
+  })
 
   state.tenantListData = res?.data?.list ?? []
-  state.total = res.data?.total ?? 0
+  state.total = res?.data?.total ?? 0
   state.loading = false
 }
 
@@ -124,6 +149,32 @@ const onDelete = (row: TenantListOutput) => {
     .catch(() => {})
 }
 
+const onSetEnable = (row: TenantListOutput & { loading: boolean }) => {
+  return new Promise((resolve, reject) => {
+    proxy.$modal
+      .confirm(`确定要${row.enabled ? '禁用' : '启用'}【${row.name}】?`)
+      .then(async () => {
+        row.loading = true
+        const res = await new TenantApi()
+          .setEnable({ tenantId: row.id, enabled: !row.enabled }, { showSuccessMessage: true })
+          .catch(() => {
+            reject(new Error('Error'))
+          })
+          .finally(() => {
+            row.loading = false
+          })
+        if (res && res.success) {
+          resolve(true)
+        } else {
+          reject(new Error('Cancel'))
+        }
+      })
+      .catch(() => {
+        reject(new Error('Cancel'))
+      })
+  })
+}
+
 const onSizeChange = (val: number) => {
   state.pageInput.pageSize = val
   onQuery()
@@ -133,22 +184,4 @@ const onCurrentChange = (val: number) => {
   state.pageInput.currentPage = val
   onQuery()
 }
-
-const onSetTenantMenu = (tenant: TenantListOutput) => {
-  if (!((tenant?.id as number) > 0)) {
-    proxy.$modal.msgWarning('请选择租户')
-    return
-  }
-  setTenantMenuRef.value.open(tenant)
-}
 </script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'admin/tenant',
-})
-</script>
-
-<style scoped lang="scss"></style>

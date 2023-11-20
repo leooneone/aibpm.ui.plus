@@ -1,7 +1,7 @@
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import { defineConfig, ConfigEnv } from 'vite'
-import vueSetupExtend from 'vite-plugin-vue-setup-extend'
+import vueSetupExtend from 'vite-plugin-vue-setup-extend-plus'
 import compression from 'vite-plugin-compression'
 import { loadEnv } from '/@/utils/vite'
 
@@ -9,9 +9,6 @@ const pathResolve = (dir: string): any => {
   return resolve(__dirname, '.', dir)
 }
 
-import vueJsx from '@vitejs/plugin-vue-jsx'
-//svg
-import { createSvg } from './src/icons/index'
 const alias: Record<string, string> = {
   '/@': pathResolve('./src/'),
   'vue-i18n': 'vue-i18n/dist/vue-i18n.cjs.js',
@@ -22,23 +19,21 @@ const viteConfig = defineConfig(({ mode, command }: ConfigEnv) => {
   return {
     plugins: [
       vue(),
-      vueJsx(),
       vueSetupExtend(),
       compression({
+        threshold: 5121,
+        disable: !env.VITE_COMPRESSION,
         deleteOriginFile: false,
-      }),// svg 引入
-      createSvg('./src/icons/svg/')
+      }),
     ],
     root: process.cwd(),
     resolve: { alias },
     base: command === 'serve' ? './' : env.VITE_PUBLIC_PATH,
     hmr: true,
-    optimizeDeps: {
-      include: ['element-plus/lib/locale/lang/zh-cn', 'element-plus/lib/locale/lang/en', 'element-plus/lib/locale/lang/zh-tw'],
-    },
+    optimizeDeps: { exclude: ['vue-demi'] },
     server: {
       host: '0.0.0.0',
-      port: env.VITE_PORT as unknown as number,
+      port: env.VITE_PORT,
       open: env.VITE_OPEN,
       proxy: {
         '/gitee': {
@@ -51,17 +46,17 @@ const viteConfig = defineConfig(({ mode, command }: ConfigEnv) => {
     },
     build: {
       outDir: 'dist',
-      sourcemap: false,
       chunkSizeWarningLimit: 1500,
+      sourcemap: false,
       rollupOptions: {
         output: {
-          entryFileNames: `assets/[name].[hash].js`,
-          chunkFileNames: `assets/[name].[hash].js`,
-          assetFileNames: `assets/[name].[hash].[ext]`,
-          compact: true,
-          manualChunks: {
-            vue: ['vue', 'vue-router', 'pinia'],
-            echarts: ['echarts'],
+          chunkFileNames: 'assets/js/[name]-[hash].js',
+          entryFileNames: 'assets/js/[name]-[hash].js',
+          assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              return id.toString().match(/\/node_modules\/(?!.pnpm)(?<moduleName>[^\/]*)\//)?.groups!.moduleName ?? 'vender'
+            }
           },
         },
       },
@@ -71,7 +66,8 @@ const viteConfig = defineConfig(({ mode, command }: ConfigEnv) => {
       __VUE_I18N_LEGACY_API__: JSON.stringify(false),
       __VUE_I18N_FULL_INSTALL__: JSON.stringify(false),
       __INTLIFY_PROD_DEVTOOLS__: JSON.stringify(false),
-      __VERSION__: JSON.stringify(process.env.npm_package_version),
+      __NEXT_VERSION__: JSON.stringify(process.env.npm_package_version),
+      __NEXT_NAME__: JSON.stringify(process.env.npm_package_name),
     },
   }
 })

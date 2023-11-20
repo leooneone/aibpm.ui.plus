@@ -16,6 +16,7 @@ import {
   ResultOutputPageOutputTenantListOutput,
   ResultOutputTenantGetOutput,
   TenantAddInput,
+  TenantSetEnableInput,
   TenantUpdateInput,
 } from './data-contracts'
 import { ContentType, HttpClient, RequestParams } from './http-client'
@@ -160,6 +161,24 @@ export class TenantApi<SecurityDataType = unknown> extends HttpClient<SecurityDa
     this.request<AxiosResponse, any>({
       path: `/api/admin/tenant/batch-soft-delete`,
       method: 'PUT',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      ...params,
+    })
+  /**
+   * No description
+   *
+   * @tags tenant
+   * @name SetEnable
+   * @summary 设置启用
+   * @request POST:/api/admin/tenant/set-enable
+   * @secure
+   */
+  setEnable = (data: TenantSetEnableInput, params: RequestParams = {}) =>
+    this.request<AxiosResponse, any>({
+      path: `/api/admin/tenant/set-enable`,
+      method: 'POST',
       body: data,
       secure: true,
       type: ContentType.Json,

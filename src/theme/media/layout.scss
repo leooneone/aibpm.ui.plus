@@ -8,6 +8,11 @@
     width: 80% !important;
   }
 
+  // 锁屏页
+  .layout-lock-screen-date-top {
+    display: none;
+  }
+
   .layout-navbars-breadcrumb-user-link-name {
     // display: none;
     max-width: 42px;
@@ -60,6 +65,16 @@
   }
   // pagination 分页中的工具栏
   .table-footer-tool {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .splitpanes__pane {
+    height: auto !important;
+  }
+
+  .splitpanes__splitter {
     display: none !important;
   }
 }

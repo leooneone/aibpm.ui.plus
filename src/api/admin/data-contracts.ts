@@ -24,6 +24,11 @@ export interface ApiAddInput {
   httpMethods?: string | null
   /** 说明 */
   description?: string | null
+  /**
+   * 排序
+   * @format int32
+   */
+  sort?: number
   /** 启用 */
   enabled?: boolean
 }
@@ -107,6 +112,11 @@ export interface ApiGetOutput {
   httpMethods?: string | null
   /** 说明 */
   description?: string | null
+  /**
+   * 排序
+   * @format int32
+   */
+  sort?: number
   /** 启用 */
   enabled?: boolean
   /**
@@ -142,6 +152,11 @@ export interface ApiListOutput {
   httpMethods?: string | null
   /** 说明 */
   description?: string | null
+  /**
+   * 排序
+   * @format int32
+   */
+  sort?: number
   /** 启用 */
   enabled?: boolean
 }
@@ -178,6 +193,11 @@ export interface ApiUpdateInput {
   httpMethods?: string | null
   /** 说明 */
   description?: string | null
+  /**
+   * 排序
+   * @format int32
+   */
+  sort?: number
   /** 启用 */
   enabled?: boolean
   /**
@@ -195,10 +215,18 @@ export interface AuthGetPasswordEncryptKeyOutput {
 }
 
 export interface AuthGetUserInfoOutput {
+  /** 用户个人信息 */
   user?: AuthUserProfileDto
-  /** 用户菜单 */
+  /** 用户菜单列表 */
   menus?: AuthUserMenuDto[] | null
-  /** 用户权限点 */
+  /** 用户权限列表 */
+  permissions?: string[] | null
+}
+
+export interface AuthGetUserPermissionsOutput {
+  /** 用户个人信息 */
+  user?: AuthUserProfileDto
+  /** 用户权限列表 */
   permissions?: string[] | null
 }
 
@@ -216,7 +244,29 @@ export interface AuthLoginInput {
   password: string
   /** 密码键 */
   passwordKey?: string | null
-  captcha?: CaptchaInput
+  /** 验证码Id */
+  captchaId?: string | null
+  /** 验证码数据 */
+  captchaData?: string | null
+}
+
+/** 手机号登录信息 */
+export interface AuthMobileLoginInput {
+  /**
+   * 手机号
+   * @minLength 1
+   */
+  mobile: string
+  /**
+   * 验证码
+   * @minLength 1
+   */
+  code: string
+  /**
+   * 验证码Id
+   * @minLength 1
+   */
+  codeId: string
 }
 
 export interface AuthUserMenuDto {
@@ -265,6 +315,7 @@ export interface AuthUserMenuDto {
   sort?: number | null
 }
 
+/** 用户个人信息 */
 export interface AuthUserProfileDto {
   /** 账号 */
   userName?: string | null
@@ -276,36 +327,20 @@ export interface AuthUserProfileDto {
   avatar?: string | null
 }
 
-export interface CaptchaInput {
-  /** 校验唯一标识 */
-  token?: string | null
-  /** 缓存键 */
-  captchaKey?: string | null
-  /** 删除缓存 */
-  deleteCache?: boolean
-  /** 数据 */
-  data?: string | null
-}
-
-/** 验证数据 */
-export interface CaptchaOutput {
-  /** 校验唯一标识 */
-  token?: string | null
-  /** 数据 */
-  data?: any
+export interface CaptchaData {
+  id?: string | null
+  backgroundImage?: string | null
+  sliderImage?: string | null
 }
 
 /**
- * 数据范围:All=1,DeptWithChild=2,Dept=3,Self=4,Custom=5
+ * 数据范围
  * @format int32
  */
 export type DataScope = 1 | 2 | 3 | 4 | 5
 
-/**
- * MySql=0,SqlServer=1,PostgreSQL=2,Oracle=3,Sqlite=4,OdbcOracle=5,OdbcSqlServer=6,OdbcMySql=7,OdbcPostgreSQL=8,Odbc=9,OdbcDameng=10,MsAccess=11,Dameng=12,OdbcKingbaseES=13,ShenTong=14,KingbaseES=15,Firebird=16,Custom=17,ClickHouse=18,GBase=19,CustomOracle=20,CustomSqlServer=21,CustomMySql=22,CustomPostgreSQL=23
- * @format int32
- */
-export type DataType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23
+/** @format int32 */
+export type DataType = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25
 
 /** 添加 */
 export interface DictionaryAddInput {
@@ -469,7 +504,7 @@ export interface DocumentAddGroupInput {
    * @format int64
    */
   parentId?: number
-  /** 文档类型:Group=1,Markdown=2 */
+  /** 文档类型 */
   type?: DocumentType
   /** 名称 */
   label?: string | null
@@ -495,7 +530,7 @@ export interface DocumentAddMenuInput {
    * @format int64
    */
   parentId?: number
-  /** 文档类型:Group=1,Markdown=2 */
+  /** 文档类型 */
   type?: DocumentType
   /** 命名 */
   name?: string | null
@@ -523,7 +558,7 @@ export interface DocumentGetGroupOutput {
    * @format int64
    */
   parentId?: number
-  /** 文档类型:Group=1,Markdown=2 */
+  /** 文档类型 */
   type?: DocumentType
   /** 名称 */
   label?: string | null
@@ -544,7 +579,7 @@ export interface DocumentGetMenuOutput {
    * @format int64
    */
   parentId?: number
-  /** 文档类型:Group=1,Markdown=2 */
+  /** 文档类型 */
   type?: DocumentType
   /** 命名 */
   name?: string | null
@@ -572,7 +607,7 @@ export interface DocumentListOutput {
   parentId?: number
   /** 名称 */
   label?: string | null
-  /** 文档类型:Group=1,Markdown=2 */
+  /** 文档类型 */
   type?: DocumentType
   /** 命名 */
   name?: string | null
@@ -583,7 +618,7 @@ export interface DocumentListOutput {
 }
 
 /**
- * 文档类型:Group=1,Markdown=2
+ * 文档类型
  * @format int32
  */
 export type DocumentType = 1 | 2
@@ -608,7 +643,7 @@ export interface DocumentUpdateGroupInput {
    * @format int64
    */
   parentId?: number
-  /** 文档类型:Group=1,Markdown=2 */
+  /** 文档类型 */
   type?: DocumentType
   /** 名称 */
   label?: string | null
@@ -629,7 +664,7 @@ export interface DocumentUpdateMenuInput {
    * @format int64
    */
   parentId?: number
-  /** 文档类型:Group=1,Markdown=2 */
+  /** 文档类型 */
   type?: DocumentType
   /** 命名 */
   name?: string | null
@@ -646,24 +681,16 @@ export interface DocumentUpdateMenuInput {
 
 export interface DynamicFilterInfo {
   field?: string | null
-  /** Contains=0,StartsWith=1,EndsWith=2,NotContains=3,NotStartsWith=4,NotEndsWith=5,Equal=6,Equals=7,Eq=8,NotEqual=9,GreaterThan=10,GreaterThanOrEqual=11,LessThan=12,LessThanOrEqual=13,Range=14,DateRange=15,Any=16,NotAny=17,Custom=18 */
   operator?: DynamicFilterOperator
   value?: any
-  /** And=0,Or=1 */
   logic?: DynamicFilterLogic
   filters?: DynamicFilterInfo[] | null
 }
 
-/**
- * And=0,Or=1
- * @format int32
- */
+/** @format int32 */
 export type DynamicFilterLogic = 0 | 1
 
-/**
- * Contains=0,StartsWith=1,EndsWith=2,NotContains=3,NotStartsWith=4,NotEndsWith=5,Equal=6,Equals=7,Eq=8,NotEqual=9,GreaterThan=10,GreaterThanOrEqual=11,LessThan=12,LessThanOrEqual=13,Range=14,DateRange=15,Any=16,NotAny=17,Custom=18
- * @format int32
- */
+/** @format int32 */
 export type DynamicFilterOperator = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18
 
 export interface FileDeleteInput {
@@ -713,7 +740,6 @@ export interface FileEntity {
   modifiedTime?: string | null
   /** 是否删除 */
   isDeleted?: boolean
-  /** Invalid=0,Minio=1,Aliyun=2,QCloud=3,Qiniu=4,HuaweiCloud=5 */
   provider?: OSSProvider
   /** 存储桶名称 */
   bucketName?: string | null
@@ -867,11 +893,8 @@ export interface LoginLogListOutput {
   createdTime?: string | null
 }
 
-/**
- * Invalid=0,Minio=1,Aliyun=2,QCloud=3,Qiniu=4,HuaweiCloud=5
- * @format int32
- */
-export type OSSProvider = 0 | 1 | 2 | 3 | 4 | 5
+/** @format int32 */
+export type OSSProvider = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
 
 /** 添加 */
 export interface OprationLogAddInput {
@@ -1259,6 +1282,38 @@ export interface PageInputLogGetPageDto {
 }
 
 /** 分页信息输入 */
+export interface PageInputPkgGetPageDto {
+  /**
+   * 当前页标
+   * @format int32
+   */
+  currentPage?: number
+  /**
+   * 每页大小
+   * @format int32
+   */
+  pageSize?: number
+  dynamicFilter?: DynamicFilterInfo
+  filter?: PkgGetPageDto
+}
+
+/** 分页信息输入 */
+export interface PageInputPkgGetPkgTenantListInput {
+  /**
+   * 当前页标
+   * @format int32
+   */
+  currentPage?: number
+  /**
+   * 每页大小
+   * @format int32
+   */
+  pageSize?: number
+  dynamicFilter?: DynamicFilterInfo
+  filter?: PkgGetPkgTenantListInput
+}
+
+/** 分页信息输入 */
 export interface PageInputRoleGetPageDto {
   /**
    * 当前页标
@@ -1406,6 +1461,28 @@ export interface PageOutputOprationLogListOutput {
 }
 
 /** 分页信息输出 */
+export interface PageOutputPkgGetPageOutput {
+  /**
+   * 数据总数
+   * @format int64
+   */
+  total?: number
+  /** 数据 */
+  list?: PkgGetPageOutput[] | null
+}
+
+/** 分页信息输出 */
+export interface PageOutputPkgGetPkgTenantListOutput {
+  /**
+   * 数据总数
+   * @format int64
+   */
+  total?: number
+  /** 数据 */
+  list?: PkgGetPkgTenantListOutput[] | null
+}
+
+/** 分页信息输出 */
 export interface PageOutputRoleGetPageOutput {
   /**
    * 数据总数
@@ -1459,6 +1536,12 @@ export interface PageOutputUserGetPageOutput {
   /** 数据 */
   list?: UserGetPageOutput[] | null
 }
+
+/**
+ * 密码加密类型
+ * @format int32
+ */
+export type PasswordEncryptType = 0 | 1
 
 export interface PermissionAddApiInput {
   /**
@@ -1647,7 +1730,7 @@ export interface PermissionEntity {
   label?: string | null
   /** 权限编码 */
   code?: string | null
-  /** 权限类型:Group=1,Menu=2,Dot=3 */
+  /** 权限类型 */
   type?: PermissionType
   /**
    * 视图Id
@@ -1859,7 +1942,7 @@ export interface PermissionListOutput {
   parentId?: number
   /** 权限名称 */
   label?: string | null
-  /** 权限类型:Group=1,Menu=2,Dot=3 */
+  /** 权限类型 */
   type?: PermissionType
   /** 路由地址 */
   path?: string | null
@@ -1893,7 +1976,7 @@ export interface PermissionSaveTenantPermissionsInput {
 }
 
 /**
- * 权限类型:Group=1,Menu=2,Dot=3
+ * 权限类型
  * @format int32
  */
 export type PermissionType = 1 | 2 | 3
@@ -2051,6 +2134,247 @@ export interface PermissionUpdateMenuInput {
   id: number
 }
 
+/** 添加 */
+export interface PkgAddInput {
+  /**
+   * 父级Id
+   * @format int64
+   */
+  parentId?: number
+  /** 名称 */
+  name?: string | null
+  /** 编码 */
+  code?: string | null
+  /** 说明 */
+  description?: string | null
+  /**
+   * 排序
+   * @format int32
+   */
+  sort?: number
+  /** 启用 */
+  enabled?: boolean
+}
+
+/** 添加套餐租户列表 */
+export interface PkgAddPkgTenantListInput {
+  /**
+   * 套餐
+   * @format int64
+   */
+  pkgId: number
+  /** 租户列表 */
+  tenantIds?: number[] | null
+}
+
+/** 套餐 */
+export interface PkgEntity {
+  /**
+   * 主键Id
+   * @format int64
+   */
+  id?: number
+  /**
+   * 创建者Id
+   * @format int64
+   */
+  createdUserId?: number | null
+  /**
+   * 创建者
+   * @maxLength 50
+   */
+  createdUserName?: string | null
+  /**
+   * 创建时间
+   * @format date-time
+   */
+  createdTime?: string | null
+  /**
+   * 修改者Id
+   * @format int64
+   */
+  modifiedUserId?: number | null
+  /**
+   * 修改者
+   * @maxLength 50
+   */
+  modifiedUserName?: string | null
+  /**
+   * 修改时间
+   * @format date-time
+   */
+  modifiedTime?: string | null
+  /** 是否删除 */
+  isDeleted?: boolean
+  /**
+   * 父级Id
+   * @format int64
+   */
+  parentId?: number
+  /** 子级列表 */
+  childs?: PkgEntity[] | null
+  /** 名称 */
+  name?: string | null
+  /** 编码 */
+  code?: string | null
+  /** 说明 */
+  description?: string | null
+  /** 启用 */
+  enabled?: boolean
+  /**
+   * 排序
+   * @format int32
+   */
+  sort?: number
+  /** 租户列表 */
+  tenants?: TenantEntity[] | null
+  /** 权限列表 */
+  permissions?: PermissionEntity[] | null
+}
+
+export interface PkgGetListOutput {
+  /**
+   * 主键
+   * @format int64
+   */
+  id?: number
+  /**
+   * 父级Id
+   * @format int64
+   */
+  parentId?: number
+  /** 名称 */
+  name?: string | null
+  /** 编码 */
+  code?: string | null
+  /**
+   * 排序
+   * @format int32
+   */
+  sort?: number
+  /** 描述 */
+  description?: string | null
+  /** 启用 */
+  enabled?: boolean
+  /**
+   * 创建时间
+   * @format date-time
+   */
+  createdTime?: string | null
+}
+
+export interface PkgGetOutput {
+  /**
+   * 父级Id
+   * @format int64
+   */
+  parentId?: number
+  /** 名称 */
+  name?: string | null
+  /** 编码 */
+  code?: string | null
+  /** 说明 */
+  description?: string | null
+  /**
+   * 排序
+   * @format int32
+   */
+  sort?: number
+  /** 启用 */
+  enabled?: boolean
+  /**
+   * 套餐Id
+   * @format int64
+   */
+  id: number
+}
+
+export interface PkgGetPageDto {
+  /** 名称 */
+  name?: string | null
+}
+
+export interface PkgGetPageOutput {
+  /**
+   * 主键
+   * @format int64
+   */
+  id?: number
+  /** 名称 */
+  name?: string | null
+  /** 编码 */
+  code?: string | null
+  /** 说明 */
+  description?: string | null
+  /**
+   * 排序
+   * @format int32
+   */
+  sort?: number
+  /** 启用 */
+  enabled?: boolean
+  /**
+   * 创建时间
+   * @format date-time
+   */
+  createdTime?: string | null
+}
+
+export interface PkgGetPkgTenantListInput {
+  /** 租户名 */
+  tenantName?: string | null
+  /**
+   * 套餐Id
+   * @format int64
+   */
+  pkgId?: number | null
+}
+
+export interface PkgGetPkgTenantListOutput {
+  /**
+   * 主键Id
+   * @format int64
+   */
+  id?: number
+  /** 租户名 */
+  name?: string | null
+  /** 租户编码 */
+  code?: string | null
+}
+
+export interface PkgSetPkgPermissionsInput {
+  /** @format int64 */
+  pkgId: number
+  permissionIds: number[]
+}
+
+/** 修改 */
+export interface PkgUpdateInput {
+  /**
+   * 父级Id
+   * @format int64
+   */
+  parentId?: number
+  /** 名称 */
+  name?: string | null
+  /** 编码 */
+  code?: string | null
+  /** 说明 */
+  description?: string | null
+  /**
+   * 排序
+   * @format int32
+   */
+  sort?: number
+  /** 启用 */
+  enabled?: boolean
+  /**
+   * 套餐Id
+   * @format int64
+   */
+  id: number
+}
+
 /** 结果输出 */
 export interface ResultOutputApiGetOutput {
   /** 是否成功标记 */
@@ -2085,15 +2409,49 @@ export interface ResultOutputAuthGetUserInfoOutput {
 }
 
 /** 结果输出 */
-export interface ResultOutputCaptchaOutput {
+export interface ResultOutputAuthGetUserPermissionsOutput {
   /** 是否成功标记 */
   success?: boolean
   /** 编码 */
   code?: string | null
   /** 消息 */
   msg?: string | null
-  /** 验证数据 */
-  data?: CaptchaOutput
+  data?: AuthGetUserPermissionsOutput
+}
+
+/** 结果输出 */
+export interface ResultOutputAuthUserProfileDto {
+  /** 是否成功标记 */
+  success?: boolean
+  /** 编码 */
+  code?: string | null
+  /** 消息 */
+  msg?: string | null
+  /** 用户个人信息 */
+  data?: AuthUserProfileDto
+}
+
+/** 结果输出 */
+export interface ResultOutputBoolean {
+  /** 是否成功标记 */
+  success?: boolean
+  /** 编码 */
+  code?: string | null
+  /** 消息 */
+  msg?: string | null
+  /** 数据 */
+  data?: boolean
+}
+
+/** 结果输出 */
+export interface ResultOutputCaptchaData {
+  /** 是否成功标记 */
+  success?: boolean
+  /** 编码 */
+  code?: string | null
+  /** 消息 */
+  msg?: string | null
+  data?: CaptchaData
 }
 
 /** 结果输出 */
@@ -2215,6 +2573,18 @@ export interface ResultOutputListApiListOutput {
 }
 
 /** 结果输出 */
+export interface ResultOutputListAuthUserMenuDto {
+  /** 是否成功标记 */
+  success?: boolean
+  /** 编码 */
+  code?: string | null
+  /** 消息 */
+  msg?: string | null
+  /** 数据 */
+  data?: AuthUserMenuDto[] | null
+}
+
+/** 结果输出 */
 export interface ResultOutputListDictionaryListOutput {
   /** 是否成功标记 */
   success?: boolean
@@ -2299,6 +2669,30 @@ export interface ResultOutputListPermissionListOutput {
 }
 
 /** 结果输出 */
+export interface ResultOutputListPkgGetListOutput {
+  /** 是否成功标记 */
+  success?: boolean
+  /** 编码 */
+  code?: string | null
+  /** 消息 */
+  msg?: string | null
+  /** 数据 */
+  data?: PkgGetListOutput[] | null
+}
+
+/** 结果输出 */
+export interface ResultOutputListPkgGetPkgTenantListOutput {
+  /** 是否成功标记 */
+  success?: boolean
+  /** 编码 */
+  code?: string | null
+  /** 消息 */
+  msg?: string | null
+  /** 数据 */
+  data?: PkgGetPkgTenantListOutput[] | null
+}
+
+/** 结果输出 */
 export interface ResultOutputListRoleGetListOutput {
   /** 是否成功标记 */
   success?: boolean
@@ -2311,6 +2705,18 @@ export interface ResultOutputListRoleGetListOutput {
 }
 
 /** 结果输出 */
+export interface ResultOutputListRoleGetRoleUserListOutput {
+  /** 是否成功标记 */
+  success?: boolean
+  /** 编码 */
+  code?: string | null
+  /** 消息 */
+  msg?: string | null
+  /** 数据 */
+  data?: RoleGetRoleUserListOutput[] | null
+}
+
+/** 结果输出 */
 export interface ResultOutputListString {
   /** 是否成功标记 */
   success?: boolean
@@ -2320,18 +2726,6 @@ export interface ResultOutputListString {
   msg?: string | null
   /** 数据 */
   data?: string[] | null
-}
-
-/** 结果输出 */
-export interface ResultOutputListUserGetRoleUserListOutput {
-  /** 是否成功标记 */
-  success?: boolean
-  /** 编码 */
-  code?: string | null
-  /** 消息 */
-  msg?: string | null
-  /** 数据 */
-  data?: UserGetRoleUserListOutput[] | null
 }
 
 /** 结果输出 */
@@ -2442,6 +2836,30 @@ export interface ResultOutputPageOutputOprationLogListOutput {
 }
 
 /** 结果输出 */
+export interface ResultOutputPageOutputPkgGetPageOutput {
+  /** 是否成功标记 */
+  success?: boolean
+  /** 编码 */
+  code?: string | null
+  /** 消息 */
+  msg?: string | null
+  /** 分页信息输出 */
+  data?: PageOutputPkgGetPageOutput
+}
+
+/** 结果输出 */
+export interface ResultOutputPageOutputPkgGetPkgTenantListOutput {
+  /** 是否成功标记 */
+  success?: boolean
+  /** 编码 */
+  code?: string | null
+  /** 消息 */
+  msg?: string | null
+  /** 分页信息输出 */
+  data?: PageOutputPkgGetPkgTenantListOutput
+}
+
+/** 结果输出 */
 export interface ResultOutputPageOutputRoleGetPageOutput {
   /** 是否成功标记 */
   success?: boolean
@@ -2546,6 +2964,17 @@ export interface ResultOutputPermissionGetMenuOutput {
 }
 
 /** 结果输出 */
+export interface ResultOutputPkgGetOutput {
+  /** 是否成功标记 */
+  success?: boolean
+  /** 编码 */
+  code?: string | null
+  /** 消息 */
+  msg?: string | null
+  data?: PkgGetOutput
+}
+
+/** 结果输出 */
 export interface ResultOutputRoleGetOutput {
   /** 是否成功标记 */
   success?: boolean
@@ -2613,6 +3042,17 @@ export interface ResultOutputUserGetOutput {
 }
 
 /** 结果输出 */
+export interface ResultOutputValidateResult {
+  /** 是否成功标记 */
+  success?: boolean
+  /** 编码 */
+  code?: string | null
+  /** 消息 */
+  msg?: string | null
+  data?: ValidateResult
+}
+
+/** 结果输出 */
 export interface ResultOutputViewGetOutput {
   /** 是否成功标记 */
   success?: boolean
@@ -2634,9 +3074,9 @@ export interface RoleAddInput {
   name?: string | null
   /** 编码 */
   code?: string | null
-  /** 角色类型:Group=1,Role=2 */
+  /** 角色类型 */
   type?: RoleType
-  /** 数据范围:All=1,DeptWithChild=2,Dept=3,Self=4,Custom=5 */
+  /** 数据范围 */
   dataScope?: DataScope
   /** 指定部门 */
   orgIds?: number[] | null
@@ -2717,9 +3157,9 @@ export interface RoleEntity {
   name?: string | null
   /** 编码 */
   code?: string | null
-  /** 角色类型:Group=1,Role=2 */
+  /** 角色类型 */
   type?: RoleType
-  /** 数据范围:All=1,DeptWithChild=2,Dept=3,Self=4,Custom=5 */
+  /** 数据范围 */
   dataScope?: DataScope
   /** 说明 */
   description?: string | null
@@ -2753,7 +3193,7 @@ export interface RoleGetListOutput {
   name?: string | null
   /** 编码 */
   code?: string | null
-  /** 角色类型:Group=1,Role=2 */
+  /** 角色类型 */
   type?: RoleType
   /**
    * 排序
@@ -2774,9 +3214,9 @@ export interface RoleGetOutput {
   name?: string | null
   /** 编码 */
   code?: string | null
-  /** 角色类型:Group=1,Role=2 */
+  /** 角色类型 */
   type?: RoleType
-  /** 数据范围:All=1,DeptWithChild=2,Dept=3,Self=4,Custom=5 */
+  /** 数据范围 */
   dataScope?: DataScope
   /** 指定部门 */
   orgIds?: number[] | null
@@ -2822,6 +3262,18 @@ export interface RoleGetPageOutput {
   createdTime?: string | null
 }
 
+export interface RoleGetRoleUserListOutput {
+  /**
+   * 主键Id
+   * @format int64
+   */
+  id?: number
+  /** 姓名 */
+  name?: string | null
+  /** 手机号 */
+  mobile?: string | null
+}
+
 /** 设置数据范围 */
 export interface RoleSetDataScopeInput {
   /**
@@ -2829,14 +3281,14 @@ export interface RoleSetDataScopeInput {
    * @format int64
    */
   roleId: number
-  /** 数据范围:All=1,DeptWithChild=2,Dept=3,Self=4,Custom=5 */
+  /** 数据范围 */
   dataScope?: DataScope
   /** 指定部门 */
   orgIds?: number[] | null
 }
 
 /**
- * 角色类型:Group=1,Role=2
+ * 角色类型
  * @format int32
  */
 export type RoleType = 1 | 2
@@ -2852,9 +3304,9 @@ export interface RoleUpdateInput {
   name?: string | null
   /** 编码 */
   code?: string | null
-  /** 角色类型:Group=1,Role=2 */
+  /** 角色类型 */
   type?: RoleType
-  /** 数据范围:All=1,DeptWithChild=2,Dept=3,Self=4,Custom=5 */
+  /** 数据范围 */
   dataScope?: DataScope
   /** 指定部门 */
   orgIds?: number[] | null
@@ -2874,11 +3326,46 @@ export interface RoleUpdateInput {
   id: number
 }
 
+/** 发送短信验证码 */
+export interface SendSmsCodeInput {
+  /**
+   * 手机号
+   * @minLength 1
+   */
+  mobile: string
+  /** 验证码Id */
+  codeId?: string | null
+  /**
+   * 验证码Id
+   * @minLength 1
+   */
+  captchaId: string
+  track: SlideTrack
+}
+
 /**
- * 性别:Unknown=0,Male=1,Female=2
+ * 性别
  * @format int32
  */
 export type Sex = 0 | 1 | 2
+
+export interface SlideTrack {
+  /** @format int32 */
+  backgroundImageWidth?: number
+  /** @format int32 */
+  backgroundImageHeight?: number
+  /** @format int32 */
+  sliderImageWidth?: number
+  /** @format int32 */
+  sliderImageHeight?: number
+  /** @format date-time */
+  startTime?: string
+  /** @format date-time */
+  endTime?: string
+  tracks?: Track[] | null
+  /** @format float */
+  percent?: number
+}
 
 /** 员工添加 */
 export interface StaffAddInput {
@@ -2886,7 +3373,7 @@ export interface StaffAddInput {
   jobNumber?: string | null
   /** 职位 */
   position?: string | null
-  /** 性别:Unknown=0,Male=1,Female=2 */
+  /** 性别 */
   sex?: Sex
   /**
    * 入职时间
@@ -2908,7 +3395,6 @@ export interface TaskAddInput {
    * @format int32
    */
   round?: number
-  /** SEC=1,RunOnDay=11,RunOnWeek=12,RunOnMonth=13,Custom=21 */
   interval?: TaskInterval
   /** 定时参数值 60,60,60,120,120,1200,1200 */
   intervalArgument?: string | null
@@ -2924,7 +3410,6 @@ export interface TaskGetOutput {
    * @format int32
    */
   round?: number
-  /** SEC=1,RunOnDay=11,RunOnWeek=12,RunOnMonth=13,Custom=21 */
   interval?: TaskInterval
   /** 定时参数值 60,60,60,120,120,1200,1200 */
   intervalArgument?: string | null
@@ -2940,10 +3425,7 @@ export interface TaskGetPageDto {
   topic?: string | null
 }
 
-/**
- * SEC=1,RunOnDay=11,RunOnWeek=12,RunOnMonth=13,Custom=21
- * @format int32
- */
+/** @format int32 */
 export type TaskInterval = 1 | 11 | 12 | 13 | 21
 
 export interface TaskListOutput {
@@ -2958,11 +3440,9 @@ export interface TaskListOutput {
    * @format int32
    */
   round?: number
-  /** SEC=1,RunOnDay=11,RunOnWeek=12,RunOnMonth=13,Custom=21 */
   interval?: TaskInterval
   /** 定时参数值 */
   intervalArgument?: string | null
-  /** Running=0,Paused=1,Completed=2 */
   status?: TaskStatus
   /**
    * 创建时间
@@ -3003,10 +3483,7 @@ export interface TaskLogGetPageDto {
   taskId?: string | null
 }
 
-/**
- * Running=0,Paused=1,Completed=2
- * @format int32
- */
+/** @format int32 */
 export type TaskStatus = 0 | 1 | 2
 
 /** 修改 */
@@ -3020,7 +3497,6 @@ export interface TaskUpdateInput {
    * @format int32
    */
   round?: number
-  /** SEC=1,RunOnDay=11,RunOnWeek=12,RunOnMonth=13,Custom=21 */
   interval?: TaskInterval
   /** 定时参数值 60,60,60,120,120,1200,1200 */
   intervalArgument?: string | null
@@ -3034,6 +3510,11 @@ export interface TaskUpdateInput {
 /** 添加 */
 export interface TenantAddInput {
   /**
+   * 租户Id
+   * @format int64
+   */
+  id?: number
+  /**
    * 企业名称
    * @minLength 1
    */
@@ -3043,21 +3524,26 @@ export interface TenantAddInput {
    * @minLength 1
    */
   code: string
+  /** 套餐Ids */
+  pkgIds?: number[] | null
   /**
    * 姓名
    * @minLength 1
    */
   realName: string
   /**
-   * 手机号码
+   * 账号
    * @minLength 1
    */
-  phone: string
+  userName: string
+  /** 密码 */
+  password?: string | null
+  /** 手机号码 */
+  phone?: string | null
   /** 邮箱地址 */
   email?: string | null
   /** 数据库注册键 */
   dbKey?: string | null
-  /** MySql=0,SqlServer=1,PostgreSQL=2,Oracle=3,Sqlite=4,OdbcOracle=5,OdbcSqlServer=6,OdbcMySql=7,OdbcPostgreSQL=8,Odbc=9,OdbcDameng=10,MsAccess=11,Dameng=12,OdbcKingbaseES=13,ShenTong=14,KingbaseES=15,Firebird=16,Custom=17,ClickHouse=18,GBase=19,CustomOracle=20,CustomSqlServer=21,CustomMySql=22,CustomPostgreSQL=23 */
   dbType?: DataType
   /** 连接字符串 */
   connectionString?: string | null
@@ -3106,28 +3592,24 @@ export interface TenantEntity {
   modifiedTime?: string | null
   /** 是否删除 */
   isDeleted?: boolean
-  /** 企业名称 */
-  name?: string | null
-  /** 编码 */
-  code?: string | null
-  /** 姓名 */
-  realName?: string | null
-  /** 手机号码 */
-  phone?: string | null
-  /** 邮箱地址 */
-  email?: string | null
   /**
    * 授权用户
    * @format int64
    */
-  userId?: number | null
+  userId?: number
   /** 用户 */
   user?: UserEntity
-  /** 租户类型:Platform=1,Tenant=2 */
+  /**
+   * 授权部门
+   * @format int64
+   */
+  orgId?: number
+  /** 组织架构 */
+  org?: OrgEntity
+  /** 租户类型 */
   tenantType?: TenantType
   /** 数据库注册键 */
   dbKey?: string | null
-  /** MySql=0,SqlServer=1,PostgreSQL=2,Oracle=3,Sqlite=4,OdbcOracle=5,OdbcSqlServer=6,OdbcMySql=7,OdbcPostgreSQL=8,Odbc=9,OdbcDameng=10,MsAccess=11,Dameng=12,OdbcKingbaseES=13,ShenTong=14,KingbaseES=15,Firebird=16,Custom=17,ClickHouse=18,GBase=19,CustomOracle=20,CustomSqlServer=21,CustomMySql=22,CustomPostgreSQL=23 */
   dbType?: DataType
   /** 连接字符串 */
   connectionString?: string | null
@@ -3135,6 +3617,8 @@ export interface TenantEntity {
   enabled?: boolean
   /** 说明 */
   description?: string | null
+  /** 套餐列表 */
+  pkgs?: PkgEntity[] | null
 }
 
 export interface TenantGetOutput {
@@ -3154,15 +3638,18 @@ export interface TenantGetOutput {
    */
   realName: string
   /**
-   * 手机号码
+   * 账号
    * @minLength 1
    */
-  phone: string
+  userName: string
+  /** 密码 */
+  password?: string | null
+  /** 手机号码 */
+  phone?: string | null
   /** 邮箱地址 */
   email?: string | null
   /** 数据库注册键 */
   dbKey?: string | null
-  /** MySql=0,SqlServer=1,PostgreSQL=2,Oracle=3,Sqlite=4,OdbcOracle=5,OdbcSqlServer=6,OdbcMySql=7,OdbcPostgreSQL=8,Odbc=9,OdbcDameng=10,MsAccess=11,Dameng=12,OdbcKingbaseES=13,ShenTong=14,KingbaseES=15,Firebird=16,Custom=17,ClickHouse=18,GBase=19,CustomOracle=20,CustomSqlServer=21,CustomMySql=22,CustomPostgreSQL=23 */
   dbType?: DataType
   /** 连接字符串 */
   connectionString?: string | null
@@ -3171,10 +3658,14 @@ export interface TenantGetOutput {
   /** 说明 */
   description?: string | null
   /**
-   * 接口Id
+   * 租户Id
    * @format int64
    */
   id: number
+  /** 套餐列表 */
+  pkgs?: PkgEntity[] | null
+  /** 套餐Ids */
+  pkgIds?: number[] | null
 }
 
 export interface TenantGetPageDto {
@@ -3188,17 +3679,21 @@ export interface TenantListOutput {
    * @format int64
    */
   id?: number
-  /** 企业编码 */
-  code?: string | null
   /** 企业名称 */
   name?: string | null
+  /** 企业编码 */
+  code?: string | null
+  pkgs?: PkgEntity[] | null
+  /** 套餐 */
+  pkgNames?: string[] | null
   /** 姓名 */
   realName?: string | null
+  /** 账号 */
+  userName?: string | null
   /** 手机号码 */
   phone?: string | null
   /** 邮箱地址 */
   email?: string | null
-  /** MySql=0,SqlServer=1,PostgreSQL=2,Oracle=3,Sqlite=4,OdbcOracle=5,OdbcSqlServer=6,OdbcMySql=7,OdbcPostgreSQL=8,Odbc=9,OdbcDameng=10,MsAccess=11,Dameng=12,OdbcKingbaseES=13,ShenTong=14,KingbaseES=15,Firebird=16,Custom=17,ClickHouse=18,GBase=19,CustomOracle=20,CustomSqlServer=21,CustomMySql=22,CustomPostgreSQL=23 */
   dbType?: DataType
   /** 数据库名称 */
   dbTypeName?: string | null
@@ -3213,8 +3708,19 @@ export interface TenantListOutput {
   createdTime?: string | null
 }
 
+/** 设置启用 */
+export interface TenantSetEnableInput {
+  /**
+   * 租户Id
+   * @format int64
+   */
+  tenantId?: number
+  /** 是否启用 */
+  enabled?: boolean
+}
+
 /**
- * 租户类型:Platform=1,Tenant=2
+ * 租户类型
  * @format int32
  */
 export type TenantType = 1 | 2
@@ -3231,21 +3737,26 @@ export interface TenantUpdateInput {
    * @minLength 1
    */
   code: string
+  /** 套餐Ids */
+  pkgIds?: number[] | null
   /**
    * 姓名
    * @minLength 1
    */
   realName: string
   /**
-   * 手机号码
+   * 账号
    * @minLength 1
    */
-  phone: string
+  userName: string
+  /** 密码 */
+  password?: string | null
+  /** 手机号码 */
+  phone?: string | null
   /** 邮箱地址 */
   email?: string | null
   /** 数据库注册键 */
   dbKey?: string | null
-  /** MySql=0,SqlServer=1,PostgreSQL=2,Oracle=3,Sqlite=4,OdbcOracle=5,OdbcSqlServer=6,OdbcMySql=7,OdbcPostgreSQL=8,Odbc=9,OdbcDameng=10,MsAccess=11,Dameng=12,OdbcKingbaseES=13,ShenTong=14,KingbaseES=15,Firebird=16,Custom=17,ClickHouse=18,GBase=19,CustomOracle=20,CustomSqlServer=21,CustomMySql=22,CustomPostgreSQL=23 */
   dbType?: DataType
   /** 连接字符串 */
   connectionString?: string | null
@@ -3254,10 +3765,19 @@ export interface TenantUpdateInput {
   /** 说明 */
   description?: string | null
   /**
-   * 接口Id
+   * 租户Id
    * @format int64
    */
   id: number
+}
+
+export interface Track {
+  /** @format int32 */
+  x?: number
+  /** @format int32 */
+  y?: number
+  /** @format int32 */
+  t?: number
 }
 
 /** 添加 */
@@ -3299,7 +3819,7 @@ export interface UserAddInput {
    * @minLength 1
    */
   password: string
-  /** 用户状态:Enabled=0,Disabled=1,WaitChangePasssword=2,WaitActive=3 */
+  /** 用户状态 */
   status?: UserStatus
 }
 
@@ -3321,7 +3841,7 @@ export interface UserAddMemberInput {
    * @minLength 1
    */
   password: string
-  /** 用户状态:Enabled=0,Disabled=1,WaitChangePasssword=2,WaitActive=3 */
+  /** 用户状态 */
   status?: UserStatus
 }
 
@@ -3394,6 +3914,8 @@ export interface UserEntity {
   userName?: string | null
   /** 密码 */
   password?: string | null
+  /** 密码加密类型 */
+  passwordEncryptType?: PasswordEncryptType
   /** 姓名 */
   name?: string | null
   /** 手机号 */
@@ -3418,10 +3940,12 @@ export interface UserEntity {
   nickName?: string | null
   /** 头像 */
   avatar?: string | null
-  /** 用户状态:Enabled=0,Disabled=1,WaitChangePasssword=2,WaitActive=3 */
+  /** 用户状态 */
   status?: UserStatus
-  /** 用户类型:Member=0,DefaultUser=1,TenantAdmin=10,PlatformAdmin=100 */
+  /** 用户类型 */
   type?: UserType
+  /** 启用 */
+  enabled?: boolean
   /** 角色列表 */
   roles?: RoleEntity[] | null
   /** 部门列表 */
@@ -3516,7 +4040,7 @@ export interface UserGetPageOutput {
   mobile?: string | null
   /** 邮箱 */
   email?: string | null
-  /** 用户类型:Member=0,DefaultUser=1,TenantAdmin=10,PlatformAdmin=100 */
+  /** 用户类型 */
   type?: UserType
   /** 角色 */
   roleNames?: string[] | null
@@ -3536,16 +4060,6 @@ export interface UserGetRoleDto {
   name?: string | null
 }
 
-export interface UserGetRoleUserListOutput {
-  /**
-   * 主键Id
-   * @format int64
-   */
-  id?: number
-  /** 姓名 */
-  name?: string | null
-}
-
 export interface UserPermissionsOutput {
   httpMethods?: string | null
   path?: string | null
@@ -3560,6 +4074,17 @@ export interface UserResetPasswordInput {
   id?: number
   /** 密码 */
   password?: string | null
+}
+
+/** 设置启用 */
+export interface UserSetEnableInput {
+  /**
+   * 用户Id
+   * @format int64
+   */
+  userId?: number
+  /** 是否启用 */
+  enabled?: boolean
 }
 
 /** 设置主管 */
@@ -3626,25 +4151,27 @@ export interface UserStaffEntity {
   position?: string | null
   /** 工号 */
   jobNumber?: string | null
-  /** 性别:Unknown=0,Male=1,Female=2 */
+  /** 性别 */
   sex?: Sex
   /**
    * 入职时间
    * @format date-time
    */
   entryTime?: string | null
+  /** 企业微信名片 */
+  workWeChatCard?: string | null
   /** 个人简介 */
   introduce?: string | null
 }
 
 /**
- * 用户状态:Enabled=0,Disabled=1,WaitChangePasssword=2,WaitActive=3
+ * 用户状态
  * @format int32
  */
-export type UserStatus = 0 | 1 | 2 | 3
+export type UserStatus = 2 | 3
 
 /**
- * 用户类型:Member=0,DefaultUser=1,TenantAdmin=10,PlatformAdmin=100
+ * 用户类型
  * @format int32
  */
 export type UserType = 0 | 1 | 10 | 100
@@ -3720,6 +4247,14 @@ export interface UserUpdateMemberInput {
    */
   id: number
 }
+
+export interface ValidateResult {
+  result?: ValidateResultType
+  message?: string | null
+}
+
+/** @format int32 */
+export type ValidateResultType = 0 | 1 | 2
 
 /** 添加 */
 export interface ViewAddInput {

@@ -58,8 +58,7 @@
 import { ref, reactive, onMounted, getCurrentInstance, defineAsyncComponent,computed } from 'vue'
 import { WorkflowTemplateApi as TPLApi } from '/@/api/bpm/WorkflowTemplate'
 
-
-import { getToken } from '/@/api/admin/http-client'
+ 
 const Test = defineAsyncComponent(() => import('./test.vue'))
 const MyForm = defineAsyncComponent(() => import('./management/myForm.vue'))
 
@@ -67,12 +66,8 @@ const { proxy } = getCurrentInstance() as any
 const { dic_bpm_group } = proxy.$dict('bpm-group')
 const formRef = ref()
 
-const uploadAction = computed(() => {
-  return import.meta.env.VITE_API_URL + '/api/admin/file/upload-file'
-})
-const uploadHeaders = computed(() => {
-  return { Authorization: 'Bearer ' + getToken() }
-})
+ 
+ 
 const state = reactive({
   loading: true,
   pageInput: {

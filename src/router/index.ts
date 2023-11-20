@@ -7,11 +7,11 @@ import { useKeepALiveNames } from '/@/stores/keepAliveNames'
 import { useRoute } from '/@/stores/route'
 import { useRoutesList } from '/@/stores/routesList'
 import { useThemeConfig } from '/@/stores/themeConfig'
-import { Session, Local } from '/@/utils/storage'
+import { Session } from '/@/utils/storage'
 import { staticRoutes, notFoundAndNoPower } from '/@/router/route'
 import { initFrontEndControlRoutes } from '/@/router/frontEnd'
 import { initBackEndControlRoutes } from '/@/router/backEnd'
-import { adminTokenKey, getToken } from '/@/api/admin/http-client'
+import { useUserInfo } from '/@/stores/userInfo'
 import { ElMessage } from 'element-plus'
 
 /**
@@ -75,7 +75,6 @@ export function formatTwoStageRoutes(arr: any) {
       newArr.push({ component: v.component, name: v.name, path: v.path, redirect: v.redirect, meta: v.meta, children: [] })
     } else {
       // 判断是否是动态路由（xx/:id/:name），用于 tagsView 等中使用
-      // 修复：https://gitee.com/lyt-top/vue-next-admin/issues/I3YX6G
       if (v.path?.indexOf('/:') > -1) {
         v.meta['isDynamic'] = true
         v.meta['isDynamicPath'] = v.path
@@ -97,14 +96,15 @@ export function formatTwoStageRoutes(arr: any) {
 router.beforeEach(async (to, from, next) => {
   NProgress.configure({ showSpinner: false })
   if (to.meta.title) NProgress.start()
-  const token = getToken()
+  const storesUseUserInfo = useUserInfo(pinia)
+  const token = storesUseUserInfo.getToken()
   if (to.path === '/login' && !token) {
     next()
     NProgress.done()
   } else {
     if (!token) {
       next(`/login?redirect=${to.path}&params=${JSON.stringify(to.query ? to.query : to.params)}`)
-      Local.remove(adminTokenKey)
+      storesUseUserInfo.removeToken()
       Session.clear()
       NProgress.done()
     } else if (token && to.path === '/login') {
@@ -121,14 +121,13 @@ router.beforeEach(async (to, from, next) => {
           const isNoPower = await initBackEndControlRoutes()
           if (isNoPower) {
             ElMessage.warning('抱歉，您没有分配权限，请联系管理员')
-            Local.remove(adminTokenKey)
+            storesUseUserInfo.removeToken()
             Session.clear()
           }
           // 解决刷新时，一直跳 404 页面问题，关联问题 No match found for location with path 'xxx'
           // to.query 防止页面刷新时，普通路由带参数时，参数丢失。动态路由（xxx/:id/:name"）isDynamic 无需处理
           next({ path: to.path, query: to.query })
         } else {
-          // https://gitee.com/lyt-top/vue-next-admin/issues/I5F1HP
           await initFrontEndControlRoutes()
           next({ path: to.path, query: to.query })
         }

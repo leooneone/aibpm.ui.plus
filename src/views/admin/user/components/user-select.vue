@@ -1,5 +1,14 @@
 <template>
-  <el-dialog v-model="state.showDialog" destroy-on-close :title="title" append-to-body draggable width="780px">
+  <el-dialog
+    v-model="state.showDialog"
+    destroy-on-close
+    :title="title"
+    append-to-body
+    draggable
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+    width="780px"
+  >
     <div style="padding: 0px 0px 8px 8px; background-color: var(--ba-bg-color)">
       <el-row :gutter="8" style="width: 100%">
         <el-col :xs="24" :sm="9">
@@ -9,9 +18,9 @@
         </el-col>
         <el-col :xs="24" :sm="15">
           <el-card shadow="never" :body-style="{ paddingBottom: '0' }" style="margin-top: 8px">
-            <el-form :model="state.filterModel" :inline="true" @submit.stop.prevent>
+            <el-form :model="state.filter" :inline="true" @submit.stop.prevent>
               <el-form-item label="姓名" prop="name">
-                <el-input v-model="state.filterModel.name" placeholder="姓名" @keyup.enter="onQuery" />
+                <el-input v-model="state.filter.name" placeholder="姓名" @keyup.enter="onQuery" />
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" icon="ele-Search" @click="onQuery"> 查询 </el-button>
@@ -31,6 +40,7 @@
               :highlight-current-row="!multiple"
               @row-click="onRowClick"
               @row-dblclick="onRowDbClick"
+              @current-change="onTableCurrentChange"
             >
               <el-table-column v-if="multiple" type="selection" width="55" />
               <el-table-column prop="name" label="姓名" min-width="80" show-overflow-tooltip />
@@ -63,7 +73,7 @@
   </el-dialog>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="admin/user/components/user-select">
 import { ref, reactive, defineAsyncComponent } from 'vue'
 import { ElTable } from 'element-plus'
 import { UserGetPageOutput, PageInputUserGetPageDto, OrgListOutput } from '/@/api/admin/data-contracts'
@@ -94,7 +104,7 @@ const userTableRef = ref<InstanceType<typeof ElTable>>()
 const state = reactive({
   showDialog: false,
   loading: false,
-  filterModel: {
+  filter: {
     name: '',
   },
   total: 0,
@@ -125,10 +135,17 @@ const close = () => {
 
 const onQuery = async () => {
   state.loading = true
-  const res = await new UserApi().getPage(state.pageInput)
+  state.pageInput.dynamicFilter = {
+    field: 'name',
+    operator: 0,
+    value: state.filter.name,
+  }
+  const res = await new UserApi().getPage(state.pageInput).catch(() => {
+    state.loading = false
+  })
 
   state.userListData = res?.data?.list ?? []
-  state.total = res.data?.total ?? 0
+  state.total = res?.data?.total ?? 0
   state.loading = false
 }
 
@@ -162,6 +179,11 @@ const onRowDbClick = () => {
   }
 }
 
+const currentRow = ref()
+const onTableCurrentChange = (row: UserGetPageOutput) => {
+  currentRow.value = row
+}
+
 // 取消
 const onCancel = () => {
   state.showDialog = false
@@ -169,21 +191,17 @@ const onCancel = () => {
 
 // 确定
 const onSure = () => {
-  const selectionRows = userTableRef.value!.getSelectionRows() as UserGetPageOutput[]
-  emits('sure', props.multiple ? selectionRows : selectionRows.length > 0 ? selectionRows[0] : null)
+  if (props.multiple) {
+    const selectionRows = userTableRef.value!.getSelectionRows() as UserGetPageOutput[]
+    emits('sure', selectionRows)
+  } else {
+    emits('sure', currentRow.value)
+  }
 }
 
 defineExpose({
   open,
   close,
-})
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'admin/user/components/user-select',
 })
 </script>
 

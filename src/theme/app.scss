@@ -126,16 +126,16 @@ body,
   .el-scrollbar {
     width: 100%;
   }
-  .layout-el-aside-br-color {
-    border-right: 1px solid var(--el-border-color-light, #ebeef5);
-    .el-scrollbar {
-      border-left: 1px solid var(--el-border-color-light, #ebeef5);
-    }
-  }
   // pc端左侧导航样式
   .layout-aside-pc-220 {
     width: 220px !important;
     transition: width 0.3s ease;
+  }
+  .layout-el-aside-br-color {
+    border-right: 1px solid var(--el-border-color-light, #ebeef5);
+    &.layout-aside-pc-220 {
+      width: 221px !important;
+    }
   }
   .layout-aside-pc-64 {
     width: 64px !important;
@@ -144,6 +144,8 @@ body,
   .layout-aside-pc-1 {
     width: 1px !important;
     transition: width 0.3s ease;
+    position: relative;
+    margin-left: -1px;
   }
   .layout-aside-pc-0 {
     width: 0px !important;

@@ -1,5 +1,14 @@
 <template>
-  <el-dialog v-model="state.showDialog" destroy-on-close :title="innerTitle" append-to-body draggable width="780px">
+  <el-dialog
+    v-model="state.showDialog"
+    destroy-on-close
+    :title="innerTitle"
+    append-to-body
+    draggable
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+    width="780px"
+  >
     <el-form :model="form" ref="formRef" size="default" label-width="80px" label-position="top">
       <el-row :gutter="35">
         <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
@@ -30,7 +39,7 @@
   </el-dialog>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="admin/role/components/set-role-data-scope">
 import { ref, toRefs, reactive, computed, defineAsyncComponent } from 'vue'
 import { RoleGetListOutput, RoleSetDataScopeInput } from '/@/api/admin/data-contracts'
 import { RoleApi } from '/@/api/admin/Role'
@@ -112,14 +121,6 @@ const onSure = async () => {
 defineExpose({
   open,
   close,
-})
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'admin/role/components/set-role-data-scope',
 })
 </script>
 

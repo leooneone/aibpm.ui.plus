@@ -37,7 +37,7 @@
   </el-drawer>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="admin/taskLog">
 import { reactive } from 'vue'
 import { ResultOutputPageOutputTaskLog, PageInputTaskLogGetPageDto, TaskListOutput } from '/@/api/admin/data-contracts'
 import { TaskLogApi } from '/@/api/admin/TaskLog'
@@ -71,10 +71,12 @@ const formatterTime = (row: any, column: any, cellValue: any) => {
 
 const onQuery = async () => {
   state.loading = true
-  const res = await new TaskLogApi().getPage(state.pageInput)
+  const res = await new TaskLogApi().getPage(state.pageInput).catch(() => {
+    state.loading = false
+  })
 
   state.taskLogListData = res?.data?.list ?? []
-  state.total = res.data?.total ?? 0
+  state.total = res?.data?.total ?? 0
   state.loading = false
 }
 const onSizeChange = (val: number) => {
@@ -101,14 +103,6 @@ const onCancel = () => {
 
 defineExpose({
   open,
-})
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'admin/taskLog',
 })
 </script>
 

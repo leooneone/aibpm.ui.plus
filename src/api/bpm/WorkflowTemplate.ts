@@ -50,12 +50,12 @@ export class WorkflowTemplateApi<SecurityDataType = unknown> extends HttpClient<
    * No description
    *
    * @tags workflow-template
-   * @name GetList
+   * @name GetBizList
    * @summary 获取可用业务列表
-   * @request GET:/api/bpm/workflow-template/get-list
+   * @request GET:/api/bpm/workflow-template/get-biz-list
    * @secure
    */
-  getList = (
+  getBizList = (
     query?: {
       /** @format int64 */
       id?: number
@@ -63,7 +63,7 @@ export class WorkflowTemplateApi<SecurityDataType = unknown> extends HttpClient<
     params: RequestParams = {}
   ) =>
     this.request<ResultOutputIListString, any>({
-      path: `/api/bpm/workflow-template/get-list`,
+      path: `/api/bpm/workflow-template/get-biz-list`,
       method: 'GET',
       query: query,
       secure: true,

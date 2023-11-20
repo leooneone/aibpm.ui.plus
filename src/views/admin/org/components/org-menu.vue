@@ -1,9 +1,9 @@
 <template>
-  <el-card shadow="never" style="margin-top: 8px">
+  <el-card shadow="never" style="margin-top: 8px" body-style="padding:0px;" class="my-fill">
     <template #header>
       <el-input v-model="state.filterText" placeholder="筛选部门" clearable />
     </template>
-    <div v-loading="state.loading">
+    <el-scrollbar v-loading="state.loading" height="100%" max-height="100%" :always="false" wrap-style="padding:var(--el-card-padding)">
       <el-tree
         ref="orgMenuRef"
         :data="state.orgTreeData"
@@ -19,11 +19,11 @@
         @node-click="onNodeClick"
         @check-change="onCheckChange"
       />
-    </div>
+    </el-scrollbar>
   </el-card>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="admin/org/menu">
 import { onMounted, reactive, ref, watch, nextTick } from 'vue'
 import { OrgListOutput } from '/@/api/admin/data-contracts'
 import { OrgApi } from '/@/api/admin/Org'
@@ -86,11 +86,13 @@ const onCheckChange = () => {
 
 const initData = async () => {
   state.loading = true
-  const res = await new OrgApi().getList()
+  const res = await new OrgApi().getList().catch(() => {
+    state.loading = false
+  })
   state.loading = false
   if (res?.success && res.data && res.data.length > 0) {
     state.orgTreeData = listToTree(res.data)
-    if (props.selectFirstNode) {
+    if (state.orgTreeData.length > 0 && props.selectFirstNode) {
       nextTick(() => {
         const firstNode = state.orgTreeData[0]
         orgMenuRef.value?.setCurrentKey(firstNode.id)
@@ -104,13 +106,5 @@ const initData = async () => {
 
 defineExpose({
   orgMenuRef,
-})
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'admin/org/menu',
 })
 </script>

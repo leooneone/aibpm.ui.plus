@@ -24,7 +24,7 @@ import commonFunction from '/@/utils/commonFunction'
 // 定义变量内容
 const { copyText } = commonFunction()
 const state = reactive({
-  copyVal: 'https://gitee.com/lyt-top/vue-next-admin',
+  copyVal: 'https://gitee.com/zhontai/admin.ui.plus',
   shearVal: '',
 })
 </script>

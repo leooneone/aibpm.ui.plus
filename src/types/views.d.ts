@@ -325,5 +325,37 @@ declare type TableDemoState = {
     }
     search: TableSearchType[]
     param: EmptyObjectType
+    printName: string
   }
+}
+
+declare type ComponentEnum = 'el-input'
+declare type OperatorEnum =
+  | 'Contains'
+  | 'StartsWith'
+  | 'EndsWith'
+  | 'NotContains'
+  | 'NotStartsWith'
+  | 'NotEndsWith'
+  | 'Equal'
+  | 'Equals'
+  | 'Eq'
+  | 'NotEqual'
+  | 'GreaterThan'
+  | 'GreaterThanOrEqual'
+  | 'LessThan'
+  | 'LessThanOrEqual'
+  | 'Range'
+  | 'DateRange'
+  | 'Any'
+  | 'NotAny'
+  | 'Custom'
+
+declare type DynamicFilterInfo = {
+  field: string
+  operator: OperatorEnum = 'Eq'
+  value: string
+  description: string
+  defaultSelect: boolean
+  componentName: ComponentEnum = 'el-input'
 }

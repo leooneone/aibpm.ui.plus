@@ -2,8 +2,6 @@ import { defineStore } from 'pinia'
 
 /**
  * 布局配置
- * 修复：https://gitee.com/lyt-top/vue-next-admin/issues/I567R1，感谢@lanbao123
- * 2020.05.28 by lyt 优化。开发时配置不生效问题
  * 修改配置时：
  * 1、需要每次都清理 `window.localStorage` 浏览器永久缓存
  * 2、或者点击布局配置最底部 `一键恢复默认` 按钮即可看到效果
@@ -72,7 +70,7 @@ export const useThemeConfig = defineStore('themeConfig', {
       // 初始化变量，用于更新菜单 el-scrollbar 的高度，请勿删除
       isFixedHeaderChange: false,
       // 是否开启经典布局分割菜单（仅经典布局生效）
-      isClassicSplitMenu: false,
+      isClassicSplitMenu: true,
       // 是否开启自动锁屏
       isLockScreen: false,
       // 开启自动锁屏倒计时(s/秒)
@@ -106,9 +104,9 @@ export const useThemeConfig = defineStore('themeConfig', {
       // 是否开启色弱模式
       isInvert: false,
       // 是否开启水印
-      isWartermark: false,
+      isWatermark: false,
       // 水印文案
-      wartermarkText: 'AILICLOUD',
+      watermarkText: 'AIBPM',
 
       /**
        * 其它设置
@@ -125,11 +123,11 @@ export const useThemeConfig = defineStore('themeConfig', {
 
       /**
        * 布局切换
-       * 注意：为了演示，切换布局时，颜色会被还原成默认，代码位置：/@/layout/navBars/breadcrumb/setings.vue
+       * 注意：为了演示，切换布局时，颜色会被还原成默认，代码位置：/@/layout/navBars/topBar/setings.vue
        * 中的 `initSetLayoutChange(设置布局切换，重置主题样式)` 方法
        */
       // 布局切换：可选值"<默认 defaults | 经典 classic | 横向 transverse | 分栏 columns>"，默认 defaults
-      layout: 'defaults',
+      layout: 'classic',
 
       /**
        * 后端控制路由
@@ -145,7 +143,7 @@ export const useThemeConfig = defineStore('themeConfig', {
       // 网站副标题（登录页顶部文字）
       globalViceTitle: 'AIBPM',
       // 网站副标题（登录页顶部文字）
-      globalViceTitleMsg: '图形操作工作流系统',
+      globalViceTitleMsg: '后台权限管理框架',
       // 默认初始语言，可选值"<zh-cn|en|zh-tw>"，默认 zh-cn
       globalI18n: 'zh-cn',
       // 默认全局组件大小，可选值"<large|'default'|small>"，默认 'large'

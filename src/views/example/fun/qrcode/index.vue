@@ -32,7 +32,7 @@ const qrcodeRef = ref()
 // 初始化生成二维码
 const initQrcode = () => {
   new QRCode(qrcodeRef.value, {
-    text: `https://lyt-top.gitee.io/vue-next-admin-preview/#/login?t=${new Date().getTime()}`,
+    text: `https://admin.zhontai.net/login?t=${new Date().getTime()}`,
     width: 125,
     height: 125,
     colorDark: '#000000',

@@ -9,7 +9,7 @@
         :xl="6"
         v-for="(v, k) in state.homeOne"
         :key="k"
-        :class="{ 'home-media home-media-lg': k > 1, 'home-media-sm':             k === 1 }"
+        :class="{ 'home-media home-media-lg': k > 1, 'home-media-sm': k === 1 }"
       >
         <div class="home-card-item flex">
           <div class="flex-margin flex w100" :class="` home-one-animation${k}`">

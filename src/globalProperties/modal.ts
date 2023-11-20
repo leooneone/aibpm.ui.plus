@@ -8,19 +8,31 @@ let loadingInstance: any
 export default {
   // 消息提示
   msg(content: any) {
-    ElMessage.info(content)
+    ElMessage.info({
+      message: content,
+      grouping: true,
+    })
   },
   // 错误消息
   msgError(content: any) {
-    ElMessage.error(content)
+    ElMessage.error({
+      message: content,
+      grouping: true,
+    })
   },
   // 成功消息
   msgSuccess(content: any) {
-    ElMessage.success(content)
+    ElMessage.success({
+      message: content,
+      grouping: true,
+    })
   },
   // 警告消息
   msgWarning(content: any) {
-    ElMessage.warning(content)
+    ElMessage.warning({
+      message: content,
+      grouping: true,
+    })
   },
   // 弹出提示
   alert(content: any) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="layout-columns-aside my-flex-column">
+  <div v-show="!isTagsViewCurrenFull" class="layout-columns-aside my-flex-column">
     <div v-if="setShowLogo" class="layout-logo">
       <img :src="logoMini" class="layout-logo-medium-img" />
     </div>
@@ -8,7 +8,7 @@
         <li
           v-for="(v, k) in state.columnsAsideList"
           :key="k"
-          @click="onColumnsAsideMenuClick(v, k)"
+          @click="onColumnsAsideMenuClick(v)"
           @mouseenter="onColumnsAsideMenuMouseenter(v, k)"
           :ref="
             (el) => {
@@ -54,6 +54,7 @@ import { storeToRefs } from 'pinia'
 import pinia from '/@/stores/index'
 import { useRoutesList } from '/@/stores/routesList'
 import { useThemeConfig } from '/@/stores/themeConfig'
+import { useTagsViewRoutes } from '/@/stores/tagsViewRoutes'
 import mittBus from '/@/utils/mitt'
 import logoMini from '/@/assets/logo-mini.svg'
 
@@ -62,8 +63,10 @@ const columnsAsideOffsetTopRefs = ref<RefType>([])
 const columnsAsideActiveRef = ref()
 const stores = useRoutesList()
 const storesThemeConfig = useThemeConfig()
+const storesTagsViewRoutes = useTagsViewRoutes()
 const { routesList, isColumnsMenuHover, isColumnsNavHover } = storeToRefs(stores)
 const { themeConfig } = storeToRefs(storesThemeConfig)
+const { isTagsViewCurrenFull } = storeToRefs(storesTagsViewRoutes)
 const route = useRoute()
 const router = useRouter()
 const state = reactive<ColumnsAsideState>({
@@ -84,15 +87,20 @@ const setShowLogo = computed(() => {
 
 // 设置菜单高亮位置移动
 const setColumnsAsideMove = (k: number) => {
+  if (k === undefined) return false
   state.liIndex = k
   columnsAsideActiveRef.value.style.top = `${columnsAsideOffsetTopRefs.value[k].offsetTop + state.difference}px`
 }
 // 菜单高亮点击事件
-const onColumnsAsideMenuClick = (v: RouteItem, k: number) => {
-  setColumnsAsideMove(k)
+const onColumnsAsideMenuClick = async (v: RouteItem) => {
   let { path, redirect } = v
   if (redirect) router.push(redirect)
   else router.push(path)
+
+  // 一个路由设置自动收起菜单
+  // if (!v.children) themeConfig.value.isCollapse = true
+  // else if (v.children.length > 1) themeConfig.value.isCollapse = false
+  // !v.children || v.children.length < 1 ? (themeConfig.value.isCollapse = true) : (themeConfig.value.isCollapse = false)
 }
 // 鼠标移入时，显示当前的子级菜单
 const onColumnsAsideMenuMouseenter = (v: RouteRecordRaw, k: number) => {
@@ -107,6 +115,7 @@ const onColumnsAsideMenuMouseenter = (v: RouteRecordRaw, k: number) => {
 }
 // 鼠标移走时，显示原来的子级菜单
 const onColumnsAsideMenuMouseleave = async () => {
+  if (!themeConfig.value.isColumnsMenuHoverPreload) return false
   await stores.setColumnsNavHover(false)
   // 添加延时器，防止拿到的 store.state.routesList 值不是最新的
   setTimeout(() => {
@@ -125,6 +134,10 @@ const setFilterRoutes = () => {
   const resData: MittMenu = setSendChildren(route.path)
   if (Object.keys(resData).length <= 0) return false
   onColumnsAsideDown(resData.item?.k)
+  // 刷新时，初始化一个路由设置自动收起菜单
+  // resData.children.length <= 1 ? (themeConfig.value.isCollapse = true) : (themeConfig.value.isCollapse = false)
+  // 刷新时，初始化无路由设置自动收起菜单
+  !resData.children || resData.children.length < 1 ? (themeConfig.value.isCollapse = true) : (themeConfig.value.isCollapse = false)
   mittBus.emit('setSendColumnsChildren', resData)
 }
 // 传送当前子级数据到菜单中
@@ -208,7 +221,8 @@ watch(
   background: var(--next-bg-columnsMenuBar);
   ul {
     position: relative;
-    .layout-columns-active {
+    .layout-columns-active,
+    .layout-columns-active a {
       color: var(--next-color-columnsMenuBarActiveColor) !important;
       transition: 0.3s ease-in-out;
     }

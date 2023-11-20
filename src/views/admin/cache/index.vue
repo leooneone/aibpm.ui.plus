@@ -1,6 +1,6 @@
 <template>
-  <div style="padding: 8px">
-    <el-card shadow="never">
+  <div class="my-layout">
+    <el-card class="my-fill mt8" shadow="never">
       <el-table v-loading="state.loading" :data="state.cacheListData" row-key="id" style="width: 100%">
         <el-table-column type="index" width="80" label="#" />
         <el-table-column prop="description" label="缓存名" />
@@ -16,7 +16,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="admin/cache">
 import { reactive, onMounted, getCurrentInstance } from 'vue'
 import { CacheApi } from '/@/api/admin/Cache'
 const { proxy } = getCurrentInstance() as any
@@ -39,7 +39,9 @@ onMounted(() => {
 
 const onQuery = async () => {
   state.loading = true
-  const res = await new CacheApi().getList()
+  const res = await new CacheApi().getList().catch(() => {
+    state.loading = false
+  })
   state.cacheListData = res?.data ?? []
   state.loading = false
 }
@@ -53,14 +55,6 @@ const onClear = (row: any) => {
     })
     .catch(() => {})
 }
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'admin/cache',
-})
 </script>
 
 <style scoped lang="scss"></style>

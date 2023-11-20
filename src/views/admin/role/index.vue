@@ -1,11 +1,11 @@
 <template>
-  <div style="padding: 0px 0px 8px 8px">
-    <el-row :gutter="8" style="width: 100%">
-      <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-        <el-card shadow="never" :body-style="{ paddingBottom: '0' }" style="margin-top: 8px">
-          <el-form :model="state.filterModel" :inline="true" @submit.stop.prevent>
-            <el-form-item label="角色名称" prop="name">
-              <el-input v-model="state.filterModel.name" placeholder="角色名称" @keyup.enter="onQuery" />
+  <my-layout>
+    <pane size="50" min-size="30" max-size="70">
+      <div class="my-flex-column w100 h100">
+        <el-card class="mt8" shadow="never" :body-style="{ paddingBottom: '0' }">
+          <el-form :inline="true" @submit.stop.prevent>
+            <el-form-item label="角色名称">
+              <el-input v-model="state.filter.roleName" placeholder="角色名称" @keyup.enter="onQuery" />
             </el-form-item>
             <el-form-item>
               <el-button type="primary" icon="ele-Search" @click="onQuery"> 查询 </el-button>
@@ -24,7 +24,7 @@
           </el-form>
         </el-card>
 
-        <el-card shadow="never" style="margin-top: 8px">
+        <el-card class="my-fill mt8" shadow="never">
           <el-table
             ref="roleTableRef"
             v-loading="state.loading"
@@ -69,12 +69,14 @@
             </el-table-column>
           </el-table>
         </el-card>
-      </el-col>
-      <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-        <el-card shadow="never" :body-style="{ paddingBottom: '0' }" style="margin-top: 8px">
-          <el-form :model="state.filterModel" :inline="true" @submit.stop.prevent>
-            <el-form-item label="姓名" prop="name">
-              <el-input v-model="state.filterModel.name" placeholder="姓名" @keyup.enter="onGetRoleUserList" />
+      </div>
+    </pane>
+    <pane>
+      <div class="my-flex-column w100 h100">
+        <el-card class="mt8" shadow="never" :body-style="{ paddingBottom: '0' }">
+          <el-form :inline="true" @submit.stop.prevent>
+            <el-form-item label="姓名">
+              <el-input v-model="state.filter.name" placeholder="姓名" @keyup.enter="onGetRoleUserList" />
             </el-form-item>
             <el-form-item>
               <el-button type="primary" icon="ele-Search" @click="onGetRoleUserList"> 查询 </el-button>
@@ -84,7 +86,7 @@
           </el-form>
         </el-card>
 
-        <el-card shadow="never" style="margin-top: 8px">
+        <el-card class="my-fill mt8" shadow="never">
           <el-table
             ref="userTableRef"
             v-loading="state.userListLoading"
@@ -94,30 +96,37 @@
             @row-click="onUserRowClick"
           >
             <el-table-column type="selection" width="55" />
-            <el-table-column prop="name" label="姓名" show-overflow-tooltip />
-            <!-- <el-table-column prop="mobile" label="手机号" width="120" show-overflow-tooltip />
-            <el-table-column prop="email" label="邮箱" min-width="120" show-overflow-tooltip /> -->
+            <el-table-column prop="name" label="姓名" min-width="120" show-overflow-tooltip />
+            <el-table-column prop="mobile" label="手机号" min-width="120" show-overflow-tooltip />
+            <!-- <el-table-column prop="email" label="邮箱" min-width="120" show-overflow-tooltip /> -->
           </el-table>
         </el-card>
-      </el-col>
-    </el-row>
+      </div>
+    </pane>
 
     <role-form ref="roleFormRef" :title="state.roleFormTitle" :role-tree-data="state.roleFormTreeData"></role-form>
-    <user-select ref="userSelectRef" title="添加员工" multiple :sure-loading="state.sureLoading" @sure="onSureUser"></user-select>
+    <user-select
+      ref="userSelectRef"
+      :title="`添加【${state.roleName}】员工`"
+      multiple
+      :sure-loading="state.sureLoading"
+      @sure="onSureUser"
+    ></user-select>
     <set-role-menu ref="setRoleMenuRef"></set-role-menu>
     <set-role-data-scope ref="setRoleDataScopeRef"></set-role-data-scope>
-  </div>
+  </my-layout>
 </template>
 
-<script lang="ts" setup>
-import { ref, reactive, onMounted, getCurrentInstance, onUnmounted, nextTick, defineAsyncComponent } from 'vue'
-import { RoleGetListOutput, UserGetRoleUserListOutput, UserGetPageOutput, RoleAddRoleUserListInput, RoleType } from '/@/api/admin/data-contracts'
+<script lang="ts" setup name="admin/role">
+import { ref, reactive, onMounted, getCurrentInstance, onBeforeMount, nextTick, defineAsyncComponent } from 'vue'
+import { RoleGetListOutput, RoleGetRoleUserListOutput, UserGetPageOutput, RoleAddRoleUserListInput, RoleType } from '/@/api/admin/data-contracts'
 import { RoleApi } from '/@/api/admin/Role'
-import { listToTree } from '/@/utils/tree'
+import { listToTree, filterTree } from '/@/utils/tree'
 import { ElTable } from 'element-plus'
 import { cloneDeep } from 'lodash-es'
 import eventBus from '/@/utils/mitt'
 import { auth } from '/@/utils/authFunction'
+import { Pane } from 'splitpanes'
 
 // 引入组件
 const RoleForm = defineAsyncComponent(() => import('./components/role-form.vue'))
@@ -125,6 +134,7 @@ const SetRoleMenu = defineAsyncComponent(() => import('./components/set-role-men
 const SetRoleDataScope = defineAsyncComponent(() => import('./components/set-role-data-scope.vue'))
 const UserSelect = defineAsyncComponent(() => import('/@/views/admin/user/components/user-select.vue'))
 const MyDropdownMore = defineAsyncComponent(() => import('/@/components/my-dropdown-more/index.vue'))
+const MyLayout = defineAsyncComponent(() => import('/@/components/my-layout/index.vue'))
 
 const { proxy } = getCurrentInstance() as any
 
@@ -140,33 +150,38 @@ const state = reactive({
   userListLoading: false,
   sureLoading: false,
   roleFormTitle: '',
-  filterModel: {
+  filter: {
     name: '',
+    roleName: '',
   },
   roleTreeData: [] as any,
   roleFormTreeData: [] as any,
-  userListData: [] as UserGetRoleUserListOutput[],
+  userListData: [] as RoleGetRoleUserListOutput[],
   roleId: undefined as number | undefined,
+  roleName: '' as string | null | undefined,
 })
 
 onMounted(() => {
   onQuery()
+  eventBus.off('refreshRole')
   eventBus.on('refreshRole', async () => {
     onQuery()
   })
 })
 
-onUnmounted(() => {
+onBeforeMount(() => {
   eventBus.off('refreshRole')
 })
 
 const onQuery = async () => {
   state.loading = true
-  const res = await new RoleApi().getList()
-  if (res.data && res.data.length > 0) {
-    state.roleTreeData = listToTree(cloneDeep(res.data))
+  const res = await new RoleApi().getList().catch(() => {
+    state.loading = false
+  })
+  if (res && res.data && res.data.length > 0) {
+    state.roleTreeData = filterTree(listToTree(cloneDeep(res.data)), state.filter.roleName)
     state.roleFormTreeData = listToTree(cloneDeep(res.data).filter((a) => a.parentId === 0))
-    if (state.roleTreeData[0].children?.length > 0) {
+    if (state.roleTreeData.length > 0 && state.roleTreeData[0].children?.length > 0) {
       nextTick(() => {
         roleTableRef.value!.setCurrentRow(state.roleTreeData[0].children[0])
       })
@@ -187,7 +202,7 @@ const onAdd = (type: RoleType, row: RoleGetListOutput | undefined = undefined) =
       break
     case 2:
       state.roleFormTitle = '新增角色'
-      roleFormRef.value.open({ type: 2, parentId: row?.id })
+      roleFormRef.value.open({ type: 2, parentId: row?.id, dataScope: 1 })
       break
   }
 }
@@ -216,7 +231,9 @@ const onDelete = (row: RoleGetListOutput) => {
 
 const onGetRoleUserList = async () => {
   state.userListLoading = true
-  const res = await new RoleApi().getRoleUserList({ RoleId: state.roleId })
+  const res = await new RoleApi().getRoleUserList({ RoleId: state.roleId, Name: state.filter.name }).catch(() => {
+    state.userListLoading = false
+  })
   state.userListLoading = false
   if (res?.success) {
     if (res.data && res.data.length > 0) {
@@ -244,11 +261,12 @@ const onCurrentChange = (currentRow: RoleGetListOutput, oldCurrentRow: RoleGetLi
 
   if ((currentRow?.parentId as number) !== 0 && (oldCurrentRow?.parentId as number) !== 0 && (currentRow?.id as number) > 0) {
     state.roleId = currentRow.id
+    state.roleName = currentRow.name
     onGetRoleUserList()
   }
 }
 
-const onUserRowClick = (row: UserGetRoleUserListOutput) => {
+const onUserRowClick = (row: RoleGetRoleUserListOutput) => {
   // TODO: improvement typing when refactor table
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
@@ -296,7 +314,9 @@ const onSureUser = async (users: UserGetPageOutput[]) => {
   state.sureLoading = true
   const userIds = users?.map((a) => a.id)
   const input = { roleId: state.roleId, userIds } as RoleAddRoleUserListInput
-  await new RoleApi().addRoleUser(input, { showSuccessMessage: true })
+  await new RoleApi().addRoleUser(input, { showSuccessMessage: true }).catch(() => {
+    state.sureLoading = false
+  })
   state.sureLoading = false
   userSelectRef.value.close()
   onGetRoleUserList()
@@ -317,14 +337,6 @@ const onSetRoleDataScope = (role: RoleGetListOutput) => {
   }
   setRoleDataScopeRef.value.open(role)
 }
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'admin/role',
-})
 </script>
 
 <style scoped lang="scss"></style>

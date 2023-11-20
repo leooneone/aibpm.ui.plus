@@ -1,9 +1,9 @@
 <template>
-  <div style="padding: 0px 0px 8px 8px">
-    <el-card shadow="never" :body-style="{ paddingBottom: '0' }" style="margin-top: 8px">
-      <el-form :model="state.filterModel" :inline="true" @submit.stop.prevent>
-        <el-form-item prop="name">
-          <el-input v-model="state.filterModel.topic" placeholder="任务名称" @keyup.enter="onQuery" />
+  <div class="my-layout">
+    <el-card class="mt8" shadow="never" :body-style="{ paddingBottom: '0' }">
+      <el-form :inline="true" @submit.stop.prevent>
+        <el-form-item>
+          <el-input v-model="state.filter.topic" placeholder="任务名称" @keyup.enter="onQuery" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="ele-Search" @click="onQuery"> 查询 </el-button>
@@ -11,7 +11,7 @@
       </el-form>
     </el-card>
 
-    <el-card shadow="never" style="margin-top: 8px">
+    <el-card class="my-fill mt8" shadow="never">
       <el-table v-loading="state.loading" :data="state.taskListData" row-key="id" style="width: 100%">
         <el-table-column prop="id" label="任务编号" width="126" />
         <el-table-column prop="topic" label="任务名称" min-width="120" show-overflow-tooltip />
@@ -79,7 +79,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="admin/task">
 import { ref, reactive, onMounted, getCurrentInstance, defineAsyncComponent } from 'vue'
 import { TaskListOutput, PageInputTaskGetPageDto } from '/@/api/admin/data-contracts'
 import { TaskApi } from '/@/api/admin/Task'
@@ -95,7 +95,7 @@ const taskLogsRef = ref()
 const state = reactive({
   loading: false,
   taskFormTitle: '',
-  filterModel: {
+  filter: {
     topic: '',
   },
   total: 0,
@@ -144,10 +144,13 @@ const formatterTime = (row: any, column: any, cellValue: any) => {
 
 const onQuery = async () => {
   state.loading = true
-  const res = await new TaskApi().getPage(state.pageInput)
+  state.pageInput.filter = state.filter
+  const res = await new TaskApi().getPage(state.pageInput).catch(() => {
+    state.loading = false
+  })
 
   state.taskListData = res?.data?.list ?? []
-  state.total = res.data?.total ?? 0
+  state.total = res?.data?.total ?? 0
   state.loading = false
 }
 
@@ -206,14 +209,6 @@ const onCurrentChange = (val: number) => {
   state.pageInput.currentPage = val
   onQuery()
 }
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'admin/task',
-})
 </script>
 
 <style scoped lang="scss"></style>

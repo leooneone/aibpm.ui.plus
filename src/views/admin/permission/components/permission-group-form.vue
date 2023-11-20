@@ -1,6 +1,14 @@
 <template>
   <div>
-    <el-dialog v-model="state.showDialog" destroy-on-close :title="title" draggable width="600px">
+    <el-dialog
+      v-model="state.showDialog"
+      destroy-on-close
+      :title="title"
+      draggable
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      width="600px"
+    >
       <el-form :model="form" ref="formRef" size="default" label-width="80px">
         <el-row :gutter="35">
           <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
@@ -101,7 +109,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="admin/permission/permission-group-form">
 import { reactive, toRefs, getCurrentInstance, ref, PropType, defineAsyncComponent } from 'vue'
 import { PermissionListOutput, PermissionUpdateGroupInput, ViewListOutput } from '/@/api/admin/data-contracts'
 import { PermissionApi } from '/@/api/admin/Permission'
@@ -147,7 +155,9 @@ const open = async (row: any = {}) => {
   proxy.$modal.loading()
   await getViews()
   if (row.id > 0) {
-    const res = await new PermissionApi().getGroup({ id: row.id })
+    const res = await new PermissionApi().getGroup({ id: row.id }).catch(() => {
+      proxy.$modal.closeLoading()
+    })
 
     if (res?.success) {
       let formData = res.data as PermissionUpdateGroupInput
@@ -180,9 +190,13 @@ const onSure = () => {
     let res = {} as any
     state.form.parentId = state.form.parentId && state.form.parentId > 0 ? state.form.parentId : undefined
     if (state.form.id != undefined && state.form.id > 0) {
-      res = await new PermissionApi().updateGroup(state.form, { showSuccessMessage: true })
+      res = await new PermissionApi().updateGroup(state.form, { showSuccessMessage: true }).catch(() => {
+        state.sureLoading = false
+      })
     } else {
-      res = await new PermissionApi().addGroup(state.form, { showSuccessMessage: true })
+      res = await new PermissionApi().addGroup(state.form, { showSuccessMessage: true }).catch(() => {
+        state.sureLoading = false
+      })
     }
 
     state.sureLoading = false
@@ -196,13 +210,5 @@ const onSure = () => {
 
 defineExpose({
   open,
-})
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'admin/permission/permission-group-form',
 })
 </script>

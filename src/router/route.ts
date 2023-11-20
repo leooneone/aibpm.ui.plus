@@ -42,7 +42,7 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
     path: '/',
     name: '/',
     component: () => import('/@/layout/index.vue'),
-    redirect: '/bpm/dashboard/index',
+    redirect: '/platform/workbench',
     meta: {
       isKeepAlive: true,
     },
@@ -1234,22 +1234,24 @@ export const notFoundAndNoPower = [
  * @description 前端控制直接改 dynamicRoutes 中的路由，后端控制不需要修改，请求接口路由数据时，会覆盖 dynamicRoutes 第一个顶级 children 的内容（全屏，不包含 layout 中的路由出口）
  * @returns 返回路由菜单数据
  */
-export const staticRoutes: Array<RouteRecordRaw> = [ {
-  path: '/test',
-  name: 'test',
-  component: () => import('../views/test/index.vue'), 
-  meta: {
-    title: 'tests',
-  },
-},  
-{
-  path: '/bpm/designer',
-  name: 'designer',
-  component: () => import('../views/bpm/admin/designer.vue'), 
-  meta: {
-    title: 'kanban',
-  },
-}, 
+export const staticRoutes: Array<RouteRecordRaw> = [
+
+  // {
+  //   path: '/test',
+  //   name: 'test',
+  //   component: () => import('/@/views/bpm/test/index.vue'), 
+  //   meta: {
+  //     title: 'tests',
+  //   },
+  // },  
+  {
+    path: '/bpm/designer',
+    name: 'designer',
+    component: () => import('/@/views/bpm/admin/designer.vue'), 
+    meta: {
+      title: 'kanban',
+    },
+  }, 
   {
     path: '/login',
     name: 'login',

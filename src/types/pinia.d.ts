@@ -3,15 +3,17 @@
  */
 
 // 用户信息
-declare interface UserInfosState<T = any> {
-  userInfos: {
-    authBtnList: string[]
-    photo: string
-    roles: string[]
-    time: number
-    userName: string
-    [key: string]: T
-  }
+declare interface UserInfos<T = any> {
+  token: string
+  authBtnList: string[]
+  photo: string
+  roles: string[]
+  time: number
+  userName: string
+  [key: string]: T
+}
+declare interface UserInfosState {
+  userInfos: UserInfos
 }
 
 // 路由缓存列表
@@ -75,8 +77,8 @@ declare interface ThemeConfigState {
     isGrayscale: boolean
     isInvert: boolean
     isIsDark: boolean
-    isWartermark: boolean
-    wartermarkText: string
+    isWatermark: boolean
+    watermarkText: string
     tagsStyle: string
     animation: string
     columnsAsideStyle: string

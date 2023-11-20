@@ -41,7 +41,6 @@
       margin-bottom: 18px !important;
     }
   }
-  // https://gitee.com/lyt-top/vue-next-admin/issues/I5K1PM
   .el-form-item .el-form-item__label .el-icon {
     margin-right: 0px;
   }
@@ -148,12 +147,12 @@
     background: var(--next-bg-topBar);
     .el-menu-item,
     .el-sub-menu {
-      height: 50px !important;
-      line-height: 50px !important;
+      height: 48px !important;
+      line-height: 48px !important;
       color: var(--next-bg-topBarColor);
       .el-sub-menu__title {
-        height: 50px !important;
-        line-height: 50px !important;
+        height: 48px !important;
+        line-height: 48px !important;
         color: var(--next-bg-topBarColor);
       }
       .el-popper.is-pure.is-light {
@@ -180,12 +179,24 @@
   width: 100% !important;
   .el-menu-item,
   .el-sub-menu__title {
-    height: 50px !important;
+    height: 48px !important;
     color: var(--next-bg-topBarColor);
   }
   .el-menu-item:not(.is-active):hover,
   .el-sub-menu:not(.is-active):hover .el-sub-menu__title {
     color: var(--next-bg-topBarColor);
+  }
+}
+// 菜单收起时，图标不居中问题
+.el-menu--collapse {
+  .el-menu-item .iconfont,
+  .el-sub-menu .iconfont,
+  .el-menu-item .fa,
+  .el-sub-menu .fa {
+    margin-right: 0 !important;
+  }
+  .el-sub-menu__title {
+    padding-right: 0 !important;
   }
 }
 
@@ -232,9 +243,9 @@
     .el-dialog {
       margin: 0 auto !important;
       position: absolute;
-      .el-dialog__body {
-        padding: 20px !important;
-      }
+      // .el-dialog__body {
+      //   padding: 20px !important;
+      // }
     }
   }
 }
@@ -246,9 +257,9 @@
 
 /* Card 卡片
 ------------------------------- */
-.el-card__header {
-  padding: 15px 20px;
-}
+// .el-card__header {
+//   padding: 15px 20px;
+// }
 
 /* Table 表格 element plus 2.2.0 版本
 ------------------------------- */

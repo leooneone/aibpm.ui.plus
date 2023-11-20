@@ -1,45 +1,47 @@
 <template>
-  <div class="login-container flex">
-    <div class="login-left">
-      <div class="login-left-logo">
-        
-        <div class="login-left-logo-text">
-          <span>{{ getThemeConfig.globalViceTitle }}</span>
-          <span class="login-left-logo-text-msg">{{ getThemeConfig.globalViceTitleMsg }}</span>
+  <el-scrollbar>
+    <div class="login-container flex">
+      <div class="login-left">
+        <div class="login-left-logo">
+          <img :src="logoMini" />
+          <div class="login-left-logo-text">
+            <span>{{ getThemeConfig.globalViceTitle }}</span>
+            <span class="login-left-logo-text-msg">{{ getThemeConfig.globalViceTitleMsg }}</span>
+          </div>
         </div>
+        <div class="login-left-img">
+          <img :src="loginMain" />
+        </div>
+        <img :src="loginBg" class="login-left-waves" />
       </div>
-      <div class="login-left-img">
-        <img :src="loginMain"  />
-      </div>
-      <img :src="loginBg" class="login-left-waves" />
-    </div>
-    <div class="login-right flex">
-      <div class="login-right-warp flex-margin">
-        <span class="login-right-warp-one"></span>
-        <span class="login-right-warp-two"></span>
-        <div class="login-right-warp-mian">
-          <div class="login-right-warp-main-title">{{ getThemeConfig.globalTitle }} 欢迎您！</div>
-          <div class="login-right-warp-main-form">
-            <div v-if="!state.isScan">
-              <el-tabs v-model="state.tabsActiveName">
-                <el-tab-pane :label="$t('message.label.one1')" name="account">
-                  <Account />
-                </el-tab-pane>
-                <el-tab-pane :label="$t('message.label.two2')" name="mobile">
-                  <Mobile />
-                </el-tab-pane>
-              </el-tabs>
-            </div>
-            <Scan v-if="state.isScan" />
-            <div class="login-content-main-sacn" @click="state.isScan = !state.isScan">
-              <i class="iconfont" :class="state.isScan ? 'icon-diannao1' : 'icon-barcode-qr'"></i>
-              <div class="login-content-main-sacn-delta"></div>
+      <div class="login-right flex">
+        <div class="login-right-warp flex-margin">
+          <span class="login-right-warp-one"></span>
+          <span class="login-right-warp-two"></span>
+          <div class="login-right-warp-mian">
+            <div class="login-right-warp-main-title">{{ getThemeConfig.globalTitle }} 欢迎您！</div>
+            <div class="login-right-warp-main-form">
+              <div v-if="!state.isScan">
+                <el-tabs v-model="state.tabsActiveName">
+                  <el-tab-pane :label="$t('message.label.one1')" name="account">
+                    <Account />
+                  </el-tab-pane>
+                  <el-tab-pane :label="$t('message.label.two2')" name="mobile">
+                    <Mobile />
+                  </el-tab-pane>
+                </el-tabs>
+              </div>
+              <Scan v-if="state.isScan" />
+              <div class="login-content-main-sacn" @click="state.isScan = !state.isScan">
+                <i class="iconfont" :class="state.isScan ? 'icon-diannao1' : 'icon-barcode-qr'"></i>
+                <div class="login-content-main-sacn-delta"></div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </el-scrollbar>
 </template>
 
 <script setup lang="ts" name="loginIndex">
@@ -75,8 +77,14 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+:deep() {
+  .el-scrollbar__view {
+    height: 100%;
+  }
+}
 .login-container {
   height: 100%;
+  min-height: 500px;
   background: var(--el-color-white);
   .login-left {
     flex: 1;
@@ -101,11 +109,11 @@ onMounted(() => {
         span {
           margin-left: 10px;
           font-size: 28px;
-          color: #26a59a;
+          color: var(--el-color-primary);
         }
         .login-left-logo-text-msg {
           font-size: 12px;
-          color: #32a99e;
+          color: var(--el-color-primary);
         }
       }
     }
@@ -125,7 +133,8 @@ onMounted(() => {
     .login-left-waves {
       position: absolute;
       top: 0;
-      right: -100px;
+      left: 100%;
+      height: 100%;
     }
   }
   .login-right {

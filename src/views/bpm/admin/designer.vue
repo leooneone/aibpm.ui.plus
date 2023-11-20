@@ -6,6 +6,7 @@
       </template>
     </el-result>
     <div v-else class="design-page" v-auth="'api:bpm:template:publish'">
+   
       <header class="page__header">
         <div class="page-actions">
           <div style="border-right: 1px solid #c5c5c5; cursor: pointer" @click="exit">
@@ -33,15 +34,24 @@
           <el-button size="small" class="publish-btn" @click="submit(true)">发布</el-button>
         </el-button-group>
       </header>
-      <section class="page__content" v-if="state.data">
-        <BasicSetting ref="basicSetting" :conf="state.data.basicSetting" v-show="state.activeStep === 'basicSetting'" tabName="basicSetting" />
+      <section class="page__content" v-if="state.data" >
+        <BasicSetting ref="basicSetting" :conf="state.data.basicSetting" v-show="state.activeStep === 'basicSetting'"   />
 
         <AdvancedSetting ref="advancedSetting" :conf="state.data.advancedSetting" v-show="state.activeStep === 'advancedSetting'" />
 
-        <FlowChart ref="flowDesign" :conf="state.data.flowSetting" :fields="state.fields" :conditions="state.conditions" v-show="state.activeStep === 'flowDesign'" />
+       <!--<FlowChart ref="flowDesign" 
+        :conf="state.data.flowSetting" :fields="state.fields" 
+        :conditions="state.conditions" v-show="state.activeStep === 'flowDesign'" />
+-->  
+         <ai-form-designer :show-header="false" v-show="state.activeStep === 'formDesign'" ref="formDesign"
+         
+         :conf="state.data.formSetting" @ok="onOk"  @change="updateFormItemList"  >
+        </ai-form-designer> 
+        <AiWorkflowDesigner  v-show="state.activeStep === 'flowDesign'"   :conf="state.data.flowSetting" 
+        :fields="state.fields" :conditions="state.conditions" ref="flowDesign"
+        
+        ></AiWorkflowDesigner> 
 
-        <MyForm  ref="formDesign" :conf="state.data.formSetting" @ok="onOk" v-show="state.activeStep === 'formDesign'" tabName="formDesign" />
-   
       </section>
     </div>
  
@@ -50,21 +60,28 @@
 
 
 <script  lang="ts" setup>
-import { defineAsyncComponent, reactive, computed,   onBeforeMount,   ref, getCurrentInstance, provide } from 'vue'
+import { defineAsyncComponent, reactive, computed,   onBeforeMount,   ref, getCurrentInstance, provide,onMounted } from 'vue'
 import { WorkflowTemplateApi as TPLApi } from '/@/api/bpm/WorkflowTemplate'
- 
-import {    ElMessageBox } from 'element-plus'
+
+import { NextLoading } from '/@/utils/loading'
+import { ElMessageBox } from 'element-plus'
 import { useRoute } from 'vue-router' 
  
 
 const { proxy } = getCurrentInstance() as any
 const route = useRoute()
 
-const MyForm = defineAsyncComponent(() => import('../components/MyForm/designer/index.vue'))
+onMounted(()=>{
+
+
+  NextLoading.done()
+})
+//const MyForm = defineAsyncComponent(() => import('../components/MyForm/designer/index.vue'))
 import BasicSetting from '../components/BasicSetting/index.vue'
 const AdvancedSetting = defineAsyncComponent(() => import('../components/AdvancedSetting/index.vue'))
 
-const FlowChart = defineAsyncComponent(() => import('../components/Flow/index.vue'))
+//import AiWorkflowDesigner from '../components/FlowSetting/AiWorkflowDesigner/index.vue'
+//const FlowChart = defineAsyncComponent(() => import('../components/Flow/index.vue'))
 
  
 
@@ -88,18 +105,175 @@ provide('updateFormItemList', updateFormItemList)
 
 
 provide('getInitSetting', getInitSetting)
-const props = defineProps({
-  title: {
-    type: String,
-    default: () => '模板名称12',
-  },
-})
+ 
 const formDesign = ref(null)
 const flowDesign = ref(null)
 const basicSetting = ref(null)
 const advancedSetting = ref(null)
+const state=reactive({
+conf:{
+    "nodes": {
+        "11": {
+            "title": "开始",
+            "id": "11",
+            "type": "start",
+            "permission": [
+                {
+                    "fieldId": "field1678727077034",
+                    "required": true,
+                    "label": "开关",
+                    "formOperate": 1
+                }
+            ],
+            "operation": {
+                "particpants": {}
+            }
+        },
+        "12": {
+            "title": "审批_12",
+            "id": "12",
+            "type": "approve",
+            "approve": {
+                "participants": {
+                    "user": [
+                        {
+                            "id": 161223411986501,
+                            "userName": "admin",
+                            "name": "admin",
+                            "mobile": "13122223333",
+                            "email": "xiaoxue@zhontai.com",
+                            "type": 100,
+                            "roleNames": [
+                                "主管理员"
+                            ],
+                            "isManager": false,
+                            "createdTime": "2023-09-08 17:30:47",
+                            "tagName": "user",
+                            "tagType": "success"
+                        }
+                    ],
+                    "role": [],
+                    "org": []
+                },
+                "ouType": "0",
+                "level": 0,
+                "isDirectorIn": false,
+                "assigneeType": "user",
+                "formOperates": [],
+                "SignType": "string",
+                "optionalMultiUser": false,
+                "optionalRange": "ALL"
+            },
+            "permission": [
+                {
+                    "fieldId": "field1678727077034",
+                    "required": true,
+                    "label": "开关",
+                    "formOperate": 1
+                }
+            ],
+            "operation": {
+                "particpants": {}
+            }
+        },
+        "13": {
+            "title": "审批_13",
+            "id": "13",
+            "type": "approve",
+            "approve": {
+                "participants": {
+                    "user": [],
+                    "role": [
+                        {
+                            "id": 340428577087557,
+                            "parentId": 336557508276293,
+                            "name": "IT",
+                            "code": "it",
+                            "type": 2,
+                            "sort": 2,
+                            "description": "",
+                            "tagName": "role",
+                            "tagType": "danger"
+                        }
+                    ],
+                    "org": []
+                },
+                "ouType": "0",
+                "level": 0,
+                "isDirectorIn": false,
+                "assigneeType": "role",
+                "formOperates": [],
+                "SignType": "string",
+                "optionalMultiUser": false,
+                "optionalRange": "ALL"
+            },
+            "permission": [
+                {
+                    "fieldId": "field1678727077034",
+                    "required": true,
+                    "label": "开关",
+                    "formOperate": 1
+                }
+            ],
+            "operation": {
+                "particpants": {}
+            }
+        },
+        "15": {
+            "title": "",
+            "id": "15",
+            "type": "condition",
+            "approve": {},
+            "condition": {},
+            "permission": []
+        },
+        "17": {
+            "title": "结束",
+            "id": "17",
+            "type": "end",
+            "approve": {},
+            "condition": {},
+            "permission": []
+        },
+        "18": {
+            "title": "",
+            "id": "18",
+            "type": "condition",
+            "approve": {},
+            "condition": {},
+            "permission": []
+        },
+        "19": {
+            "title": "",
+            "id": "19",
+            "type": "condition",
+            "approve": {},
+            "condition": {},
+            "permission": []
+        }
+    },
+    "lines": [
+        {
+            "id": "15",
+            "fromId": "12",
+            "toId": "13"
+        },
+        {
+            "id": "18",
+            "fromId": "11",
+            "toId": "12"
+        },
+        {
+            "id": "19",
+            "fromId": "13",
+            "toId": "17"
+        }
+    ],
+    "startActivityId": "11",
+    "chartData": "<mxGraphModel grid=\"1\" gridSize=\"10\" guides=\"1\" tooltips=\"1\" connect=\"1\" arrows=\"1\" fold=\"1\" page=\"1\" pageScale=\"1\" pageWidth=\"827\" pageHeight=\"1169\"><root><mxCell id=\"0\"/><mxCell id=\"1\" parent=\"0\"/><mxCell id=\"18\" value=\"\" style=\"edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;\" edge=\"1\" parent=\"1\" source=\"11\" target=\"12\"><mxGeometry relative=\"1\" as=\"geometry\"/></mxCell><mxCell id=\"11\" value=\"开始\" style=\"shape=bpmShape;type=start;verticalLabelPosition=bottom;;strokeWidth=2\" vertex=\"1\" parent=\"1\"><mxGeometry x=\"435\" y=\"10\" width=\"50\" height=\"50\" as=\"geometry\"/></mxCell><mxCell id=\"15\" value=\"\" style=\"edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;\" edge=\"1\" parent=\"1\" source=\"12\" target=\"13\"><mxGeometry relative=\"1\" as=\"geometry\"/></mxCell><mxCell id=\"12\" value=\"审批_12\" style=\"rounded=1;whiteSpace=wrap;html=1;type=approve;strokeWidth=2\" vertex=\"1\" parent=\"1\"><mxGeometry x=\"400\" y=\"170\" width=\"120\" height=\"50\" as=\"geometry\"/></mxCell><mxCell id=\"19\" value=\"\" style=\"edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;\" edge=\"1\" parent=\"1\" source=\"13\" target=\"17\"><mxGeometry relative=\"1\" as=\"geometry\"/></mxCell><mxCell id=\"13\" value=\"审批_13\" style=\"rounded=1;whiteSpace=wrap;html=1;type=approve;strokeWidth=2\" vertex=\"1\" parent=\"1\"><mxGeometry x=\"400\" y=\"270\" width=\"120\" height=\"50\" as=\"geometry\"/></mxCell><mxCell id=\"17\" value=\"结束\" style=\"shape=bpmShape;type=end;verticalLabelPosition=bottom;;strokeWidth=2\" vertex=\"1\" parent=\"1\"><mxGeometry x=\"435\" y=\"390\" width=\"50\" height=\"50\" as=\"geometry\"/></mxCell></root></mxGraphModel>"
+},
 
-const state = reactive({
+ 
   isShowResult: false,
   fields: [],
   conditions:[],
@@ -167,7 +341,9 @@ provide('isInUsed',isInUsed)
 const submit = async (isPublish: Boolean) => {
   // basicSetting  formDesign flowDesign 返回的是Promise 因为要做校验
   // advancedSetting返回的就是值
-
+console.log('basicSetting.value',basicSetting.value)
+console.log('formDesign.value',formDesign.value)
+console.log('flowDesign.value',flowDesign.value)
   var isvalid = true
   var resBasic = await basicSetting.value?.getSetting().catch((err) => {
     state.activeStep = 'basicSetting'

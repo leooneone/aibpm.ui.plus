@@ -1,41 +1,42 @@
 <template>
-  <el-form size="large" class="login-content-form">
-    <el-form-item class="login-animation1">
-      <el-input
-        text
-        :placeholder="$t('message.account.accountPlaceholder1')"
-        v-model="state.ruleForm.userName"
-        clearable
-        autocomplete="off"
-        @keyup.enter="onSignIn"
-      >
-        <template #prefix>
-          <el-icon class="el-input__icon"><ele-User /></el-icon>
-        </template>
-      </el-input>
-    </el-form-item>
-    <el-form-item class="login-animation2">
-      <el-input
-        :type="state.isShowPassword ? 'text' : 'password'"
-        :placeholder="$t('message.account.accountPlaceholder2')"
-        v-model="state.ruleForm.password"
-        autocomplete="off"
-        @keyup.enter="onSignIn"
-      >
-        <template #prefix>
-          <el-icon class="el-input__icon"><ele-Unlock /></el-icon>
-        </template>
-        <template #suffix>
-          <i
-            class="iconfont el-input__icon login-content-password"
-            :class="state.isShowPassword ? 'icon-yincangmima' : 'icon-xianshimima'"
-            @click="state.isShowPassword = !state.isShowPassword"
-          >
-          </i>
-        </template>
-      </el-input>
-    </el-form-item>
-    <!-- <el-form-item class="login-animation3">
+  <div>
+    <el-form ref="formRef" :model="state.ruleForm" size="large" class="login-content-form">
+      <el-form-item class="login-animation1" prop="userName" :rules="[{ required: true, message: '请输入用户名', trigger: ['blur', 'change'] }]">
+        <el-input
+          text
+          :placeholder="$t('message.account.accountPlaceholder1')"
+          v-model="state.ruleForm.userName"
+          clearable
+          autocomplete="off"
+          @keyup.enter="onSignIn"
+        >
+          <template #prefix>
+            <el-icon class="el-input__icon"><ele-User /></el-icon>
+          </template>
+        </el-input>
+      </el-form-item>
+      <el-form-item class="login-animation2" prop="password" :rules="[{ required: true, message: '请输入密码', trigger: ['blur', 'change'] }]">
+        <el-input
+          :type="state.isShowPassword ? 'text' : 'password'"
+          :placeholder="$t('message.account.accountPlaceholder2')"
+          v-model="state.ruleForm.password"
+          autocomplete="off"
+          @keyup.enter="onSignIn"
+        >
+          <template #prefix>
+            <el-icon class="el-input__icon"><ele-Unlock /></el-icon>
+          </template>
+          <template #suffix>
+            <i
+              class="iconfont el-input__icon login-content-password"
+              :class="state.isShowPassword ? 'icon-yincangmima' : 'icon-xianshimima'"
+              @click="state.isShowPassword = !state.isShowPassword"
+            >
+            </i>
+          </template>
+        </el-input>
+      </el-form-item>
+      <!-- <el-form-item class="login-animation3">
       <el-col :span="15">
         <el-input
           text
@@ -55,16 +56,26 @@
         <el-button class="login-content-code" v-waves>1234</el-button>
       </el-col>
     </el-form-item> -->
-    <el-form-item class="login-animation4">
-      <el-button type="primary" class="login-content-submit" round v-waves @click="onSignIn" :loading="state.loading.signIn">
-        <span>{{ $t('message.account.accountBtnText') }}</span>
-      </el-button>
-    </el-form-item>
-  </el-form>
+      <el-form-item class="login-animation4">
+        <el-button
+          type="primary"
+          class="login-content-submit"
+          round
+          v-waves
+          @click="onSignIn"
+          :disabled="state.disabled.signIn"
+          :loading="state.loading.signIn"
+        >
+          <span>{{ $t('message.account.accountBtnText') }}</span>
+        </el-button>
+      </el-form-item>
+    </el-form>
+    <MyCaptchaDialog ref="myCaptchaDialogRef" v-model="state.showDialog" @ok="onOk" />
+  </div>
 </template>
 
 <script setup lang="ts" name="loginAccount">
-import { reactive, computed } from 'vue'
+import { reactive, computed, ref, defineAsyncComponent } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { useI18n } from 'vue-i18n'
@@ -73,12 +84,14 @@ import { useI18n } from 'vue-i18n'
 // import { useThemeConfig } from '/@/stores/themeConfig'
 // import { initFrontEndControlRoutes } from '/@/router/frontEnd'
 import { initBackEndControlRoutes } from '/@/router/backEnd'
-import { Local, Session } from '/@/utils/storage'
+import { Session } from '/@/utils/storage'
 import { formatAxis } from '/@/utils/formatTime'
 import { NextLoading } from '/@/utils/loading'
 import { AuthApi } from '/@/api/admin/Auth'
 import { AuthLoginInput } from '/@/api/admin/data-contracts'
-import { adminTokenKey } from '/@/api/admin/http-client'
+import { useUserInfo } from '/@/stores/userInfo'
+
+const MyCaptchaDialog = defineAsyncComponent(() => import('/@/components/my-captcha/dialog.vue'))
 
 // 定义变量内容
 const { t } = useI18n()
@@ -86,14 +99,22 @@ const { t } = useI18n()
 // const { themeConfig } = storeToRefs(storesThemeConfig)
 const route = useRoute()
 const router = useRouter()
+const formRef = ref()
+const myCaptchaDialogRef = ref()
+
 const state = reactive({
+  showDialog: false,
   isShowPassword: false,
   ruleForm: {
-    userName: 'admin',
-    password: '111111',
-    //code: '1234',
+    userName: '',
+    password: '',
+    captchaId: '',
+    captchaData: '',
   } as AuthLoginInput,
   loading: {
+    signIn: false,
+  },
+  disabled: {
     signIn: false,
   },
 })
@@ -102,8 +123,18 @@ const state = reactive({
 const currentTime = computed(() => {
   return formatAxis(new Date())
 })
-// 登录
-const onSignIn = async () => {
+
+//验证通过
+const onOk = (data: any) => {
+  state.showDialog = false
+  //开始登录
+  state.ruleForm.captchaId = data.captchaId
+  state.ruleForm.captchaData = JSON.stringify(data.track)
+  login()
+}
+
+//登录
+const login = async () => {
   state.loading.signIn = true
   const res = await new AuthApi().login(state.ruleForm).catch(() => {
     state.loading.signIn = false
@@ -114,18 +145,41 @@ const onSignIn = async () => {
   }
 
   const token = res.data?.token
-  Local.set(adminTokenKey, token)
-  Session.set('token', token)
+  useUserInfo().setToken(token)
   // 添加完动态路由，再进行 router 跳转，否则可能报错 No match found for location with path "/"
   const isNoPower = await initBackEndControlRoutes()
   // 执行完 initBackEndControlRoutes，再执行 signInSuccess
   signInSuccess(isNoPower)
 }
+
+// 点击登录
+const onSignIn = async () => {
+  formRef.value.validate(async (valid: boolean) => {
+    if (!valid) return
+
+    //检查是否开启验证码登录
+    state.disabled.signIn = true
+    const res = await new AuthApi()
+      .isCaptcha()
+      .catch(() => {})
+      .finally(() => {
+        state.disabled.signIn = false
+      })
+
+    if (res?.success) {
+      if (res.data) {
+        state.showDialog = true
+        //刷新滑块拼图
+        myCaptchaDialogRef.value?.refresh()
+      } else login()
+    }
+  })
+}
 // 登录成功后的跳转
 const signInSuccess = (isNoPower: boolean | undefined) => {
   if (isNoPower) {
     ElMessage.warning('抱歉，您没有分配权限，请联系管理员')
-    Local.remove(adminTokenKey)
+    useUserInfo().removeToken()
     Session.clear()
   } else {
     // 初始化登录成功时间问候语

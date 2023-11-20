@@ -14,6 +14,7 @@
                 :show-file-list="false"
                 :before-upload="
                   () => {
+                    state.token = storesUserInfo.getToken()
                     state.avatarLoading = true
                   }
                 "
@@ -143,13 +144,16 @@ import { UserGetBasicOutput } from '/@/api/admin/data-contracts'
 import { useUserInfo } from '/@/stores/userInfo'
 import pinia from '/@/stores/index'
 import { storeToRefs } from 'pinia'
-import { getToken } from '/@/api/admin/http-client'
 import { AxiosResponse } from 'axios'
 
 // 引入组件
 const ChangePasswordForm = defineAsyncComponent(() => import('./components/change-password-form.vue'))
 
 const { proxy } = getCurrentInstance() as any
+const changePasswordFormRef = ref()
+const formRef = ref()
+const storesUserInfo = useUserInfo(pinia)
+const { userInfos } = storeToRefs(storesUserInfo)
 
 // 定义变量内容
 const state = reactive({
@@ -169,13 +173,10 @@ const state = reactive({
   },
   avatarLoading: false,
   updateLoading: false,
+  token: storesUserInfo.getToken(),
 })
 
-const changePasswordFormRef = ref()
-const formRef = ref()
 const { personalInfo, personalForm } = toRefs(state)
-const storesUserInfo = useUserInfo(pinia)
-const { userInfos } = storeToRefs(storesUserInfo)
 
 // 当前时间提示语
 const currentTime = computed(() => {
@@ -184,15 +185,12 @@ const currentTime = computed(() => {
 
 // 上传头像请求头部
 const avatarHeaders = computed(() => {
-  return { Authorization: 'Bearer ' + getToken() }
+  return { Authorization: 'Bearer ' + state.token }
 })
 
 // 头像地址
 const avatar = computed(() => {
-  return (
-    (userInfos.value.photo && `${import.meta.env.VITE_API_URL}/upload/admin/avatar/${userInfos.value.photo}`) ||
-    'https://img2.baidu.com/it/u=1978192862,2048448374&fm=253&fmt=auto&app=138&f=JPEG?w=504&h=500'
-  )
+  return userInfos.value.photo || 'https://img2.baidu.com/it/u=1978192862,2048448374&fm=253&fmt=auto&app=138&f=JPEG?w=504&h=500'
 })
 
 // 上传头像请求url
@@ -207,7 +205,9 @@ onMounted(() => {
 // 初始化数据
 const initData = async () => {
   state.loading = true
-  const res = await new UserApi().getBasic()
+  const res = await new UserApi().getBasic().catch(() => {
+    state.loading = false
+  })
   if (res?.success) {
     state.personalForm.name = res.data?.name as string
     state.personalForm.nickName = res.data?.nickName as string
@@ -230,14 +230,17 @@ const onAvatarSuccess = (res: AxiosResponse) => {
 }
 
 // 上传头像失败
-const onAvatarError = (err: any) => {
+const onAvatarError = (error: any) => {
   state.avatarLoading = false
-  if (err.message) {
-    const res = JSON.parse(err.message) as AxiosResponse
-    if (!res?.success && res.msg) {
-      proxy.$modal.msgError(res.msg)
+  let message = ''
+  if (error.message) {
+    try {
+      message = JSON.parse(error.message)?.msg
+    } catch (err) {
+      message = error.message || ''
     }
   }
+  if (message) proxy.$modal.msgError(message)
 }
 
 // 更新个人信息

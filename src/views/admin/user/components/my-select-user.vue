@@ -15,7 +15,7 @@
   <user-select ref="userSelectRef" title="选择直属主管" :modal="true" @sure="onSureUser" v-bind="$attrs"></user-select>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="admin/user/components/my-select-user">
 import { ref, reactive, PropType, defineAsyncComponent } from 'vue'
 import { UserGetPageOutput } from '/@/api/admin/data-contracts'
 
@@ -51,14 +51,6 @@ const onSureUser = async (user: UserGetPageOutput) => {
     emits('update:modelValue', user.id)
   }
 }
-</script>
-
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'admin/user/components/my-select-user',
-})
 </script>
 
 <style scoped lang="scss"></style>

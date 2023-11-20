@@ -14,6 +14,7 @@ import {
   PageInputUserGetPageDto,
   ResultOutputIListUserPermissionsOutput,
   ResultOutputInt64,
+  ResultOutputObject,
   ResultOutputPageOutputUserGetPageOutput,
   ResultOutputString,
   ResultOutputUserGetBasicOutput,
@@ -22,6 +23,7 @@ import {
   UserAddMemberInput,
   UserChangePasswordInput,
   UserResetPasswordInput,
+  UserSetEnableInput,
   UserSetManagerInput,
   UserUpdateBasicInput,
   UserUpdateInput,
@@ -130,6 +132,24 @@ export class UserApi<SecurityDataType = unknown> extends HttpClient<SecurityData
    * No description
    *
    * @tags user
+   * @name Update
+   * @summary 修改用户
+   * @request PUT:/api/admin/user/update
+   * @secure
+   */
+  update = (data: UserUpdateInput, params: RequestParams = {}) =>
+    this.request<AxiosResponse, any>({
+      path: `/api/admin/user/update`,
+      method: 'PUT',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      ...params,
+    })
+  /**
+   * No description
+   *
+   * @tags user
    * @name AddMember
    * @summary 新增会员
    * @request POST:/api/admin/user/add-member
@@ -157,24 +177,6 @@ export class UserApi<SecurityDataType = unknown> extends HttpClient<SecurityData
   updateMember = (data: UserUpdateMemberInput, params: RequestParams = {}) =>
     this.request<AxiosResponse, any>({
       path: `/api/admin/user/update-member`,
-      method: 'PUT',
-      body: data,
-      secure: true,
-      type: ContentType.Json,
-      ...params,
-    })
-  /**
-   * No description
-   *
-   * @tags user
-   * @name Update
-   * @summary 修改用户
-   * @request PUT:/api/admin/user/update
-   * @secure
-   */
-  update = (data: UserUpdateInput, params: RequestParams = {}) =>
-    this.request<AxiosResponse, any>({
-      path: `/api/admin/user/update`,
       method: 'PUT',
       body: data,
       secure: true,
@@ -248,6 +250,24 @@ export class UserApi<SecurityDataType = unknown> extends HttpClient<SecurityData
   setManager = (data: UserSetManagerInput, params: RequestParams = {}) =>
     this.request<AxiosResponse, any>({
       path: `/api/admin/user/set-manager`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      ...params,
+    })
+  /**
+   * No description
+   *
+   * @tags user
+   * @name SetEnable
+   * @summary 设置启用
+   * @request POST:/api/admin/user/set-enable
+   * @secure
+   */
+  setEnable = (data: UserSetEnableInput, params: RequestParams = {}) =>
+    this.request<AxiosResponse, any>({
+      path: `/api/admin/user/set-enable`,
       method: 'POST',
       body: data,
       secure: true,
@@ -368,6 +388,29 @@ export class UserApi<SecurityDataType = unknown> extends HttpClient<SecurityData
       body: data,
       secure: true,
       type: ContentType.FormData,
+      format: 'json',
+      ...params,
+    })
+  /**
+   * No description
+   *
+   * @tags user
+   * @name OneClickLogin
+   * @summary 一键登录用户
+   * @request GET:/api/admin/user/one-click-login
+   * @secure
+   */
+  oneClickLogin = (
+    query: {
+      userName: string
+    },
+    params: RequestParams = {}
+  ) =>
+    this.request<ResultOutputObject, any>({
+      path: `/api/admin/user/one-click-login`,
+      method: 'GET',
+      query: query,
+      secure: true,
       format: 'json',
       ...params,
     })

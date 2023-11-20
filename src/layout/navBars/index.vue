@@ -1,6 +1,6 @@
 <template>
   <div class="layout-navbars-container">
-    <BreadcrumbIndex />
+    <TopBarIndex />
     <TagsView v-if="setShowTagsView" />
   </div>
 </template>
@@ -11,7 +11,7 @@ import { storeToRefs } from 'pinia'
 import { useThemeConfig } from '/@/stores/themeConfig'
 
 // 引入组件
-const BreadcrumbIndex = defineAsyncComponent(() => import('/@/layout/navBars/breadcrumb/index.vue'))
+const TopBarIndex = defineAsyncComponent(() => import('/@/layout/navBars/topBar/index.vue'))
 const TagsView = defineAsyncComponent(() => import('/@/layout/navBars/tagsView/tagsView.vue'))
 
 // 定义变量内容
