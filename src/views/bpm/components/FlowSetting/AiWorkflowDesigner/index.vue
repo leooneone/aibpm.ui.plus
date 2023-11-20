@@ -1,25 +1,14 @@
 <template> 
-  <div class="editMainContainer" style="height: 100vh">
+  <div class="editMainContainer" >
    
-    <div 
-      v-show="state.isPropPanel"
-      style="
-        position: absolute;
-        top: 41px;
-        right: 0px;
-        z-index: 20;
-        font-size: 12px !important;
-        width: 640px;
-        background-color: white;
-      "
-    >
+   
       <NodeProp
         ref="propPanelRef"
         :node="state.curNode"
         :fields="props.fields"
         :conditions="props.conditions"
       />
-    </div>
+    
     <div class="editLegendHeader" v-if="props.enableEditing">
       <div @click="handleThumbnail" class="legendItem">
         <img :src="coordinateSvg" width="10" alt="" />
@@ -27,9 +16,12 @@
       </div>
 
       <div class="legendItem">
-        <el-tooltip effect="light">
-          <template #content>
-            <div style="font-size: 22px">🦉🦉🦉🦉🦉🦉🦉🦉</div>
+        <div style="color:red"> 按住Alt键(Mac 为cmd键)点击元素可以配置节点属性</div>
+        <!--   <el-tooltip effect="light">
+          
+           
+      
+        <template #content>  <div style="font-size: 22px">🦉🦉🦉🦉🦉🦉🦉🦉</div>
             <div>点击图形中节点/元素后</div>
             <div>如果当前设置为审批面板，则弹出审批设置面板</div>
             <div>如果当前设置为格式面板，则显示图形格式调整面板</div>
@@ -47,7 +39,7 @@
             active-text="审批面板"
             inactive-text="格式面板"
           />
-        </el-tooltip>
+        </el-tooltip>--> 
       </div>
     </div>
     <div
@@ -625,10 +617,11 @@ const setCellLabel = (id, label) => {
   const cell = getCell(id);
   if (cell !== null) state.graph.cellLabelChanged(cell, label);
 };
-const activeCell = (id) => {
+const activeCell = (id,evt) => { 
+
   if (state.nodes[id]) {
     state.curNode = state.nodes[id];
-    if (state.isShowApproval) openPropPanel();
+    if (state.isShowApproval&&evt?.evt?.altKey) openPropPanel();
   }
 };
 
@@ -882,14 +875,14 @@ const Run = () => {
               state.curNode = undefined;
               return;
             } else if (evt.state.cell.edge) {
-              activeCell(evt.state.cell.id);
+              activeCell(evt.state.cell.id,evt);
               return;
             }
             const cell = evt.state.cell;
 
             let clickNormalType = false;
 
-            activeCell(cell.id);
+            activeCell(cell.id,evt);
             if (cell.style !== undefined) {
               clickNormalType = cell.style.includes("normalType");
             }
