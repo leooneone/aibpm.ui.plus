@@ -18,7 +18,7 @@
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-vue": "^5.1.12",
     "ai-bpm": "^0.1.2",
-    "ai-form": "^0.9.3",
+    "ai-form": "^0.9.8",
     "axios": "^1.5.0",
     "countup.js": "^2.8.0",
     "cropperjs": "^1.6.1",

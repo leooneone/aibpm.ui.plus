@@ -20,7 +20,7 @@ const initQrcode = () => {
   nextTick(() => {
     ;(<HTMLElement>qrcodeRef.value).innerHTML = ''
     new QRCode(qrcodeRef.value, {
-      text: `https://qm.qq.com/cgi-bin/qm/qr?k=iNzyqsBsyQKuIxGEznL3PYwLzWOcqmJE&jump_from=webapi`,
+      text: `https://jq.qq.com/?_wv=1027&k=S36Tm7gj`,
       width: 260,
       height: 260,
       colorDark: '#000000',

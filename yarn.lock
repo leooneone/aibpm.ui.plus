@@ -656,10 +656,10 @@
     "vue" "^3.3.4"
     "vue-i18n" "^9.6.5"
 
-"ai-form@^0.9.3":
-  "integrity" "sha512-sqE/fNk/jqC+fZT7Tzw1z8RfUmfozFch//b6lhiyYG20OynPMcaDcNgPb2l1zVhDceh9hRq5u5wc48kcGJV20Q=="
-  "resolved" "https://registry.npmjs.org/ai-form/-/ai-form-0.9.3.tgz"
-  "version" "0.9.3"
+"ai-form@^0.9.8":
+  "integrity" "sha512-e8aCw9b/pOh8+5YG3gAVnkNLLzZcfyuQZRnqFLhrdjRepgvcS7uh8jlBSHQxb8r0YZwo0Najstsm0/RlZVDAig=="
+  "resolved" "https://registry.npmjs.org/ai-form/-/ai-form-0.9.8.tgz"
+  "version" "0.9.8"
   dependencies:
     "element-plus" "^2.3.14"
     "fast-glob" "^3.3.1"

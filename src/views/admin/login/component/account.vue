@@ -106,8 +106,8 @@ const state = reactive({
   showDialog: false,
   isShowPassword: false,
   ruleForm: {
-    userName: '',
-    password: '',
+    userName: 'admin',
+    password: '111111',
     captchaId: '',
     captchaData: '',
   } as AuthLoginInput,

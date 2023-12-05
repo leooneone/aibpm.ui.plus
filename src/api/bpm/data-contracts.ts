@@ -145,7 +145,10 @@ export interface ApproveSetting {
 
 /** 流程分组 */
 export interface BPMSettingEntity {
-  /** @format int64 */
+  /**
+   * 主键Id
+   * @format int64
+   */
   id?: number
   adminName?: string | null
   /** @format int64 */
