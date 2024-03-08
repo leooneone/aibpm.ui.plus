@@ -280,7 +280,8 @@ const addEventHandler = () => {
       NodeUtils.changeLine(
         state.lines,
         edge.id,
-        { id: edge.id, fromId: edge.source.id, toId: edge.target.id } 
+        { id: edge.id, fromId: edge.source.id, toId: edge.target.id },
+        state.nodes
       );
     }
   });

@@ -328,18 +328,27 @@ export class NodeUtils {
  * @param {id} id - 待移除线的id
  */
   static removeLine(lines, id, nodes) {
-    var indx = lines.findIndex(item => item.id === id)
-    lines.splice(indx, 1)
+    this.removeLineOnly(lines)
     if (nodes[id])
      delete nodes[id]
+  }
+  /**
+ * 仅移除线 不对节点进行处理
+ * @param {Node[]} lines  - 线容器
+ * @param {id} id - 待移除线的id
+ */
+  static removeLineOnly(lines, id) {
+    var indx = lines.findIndex(item => item.id === id)
+    lines.splice(indx, 1)
+     
   }
   /**
 * 线变更连接节点
 * @param {Node[]} lines  - 线容器
 * @param {id} id - 待修改线的id
 */
-  static changeLine(lines, id, newLine,nodes) {
-    this.removeLine(lines, id,nodes)
+  static changeLine(lines, id, newLine) {
+    this.removeLineOnly(lines, id)
     this.addLine(lines, newLine)
      
 
