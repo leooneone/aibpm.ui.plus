@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts" name="app">
-import { defineAsyncComponent, computed, ref, onBeforeMount, onMounted, onUnmounted, nextTick, watch } from 'vue'
+import { defineAsyncComponent, computed, ref, onBeforeMount, onMounted, onUnmounted, nextTick, watch,provide  } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { storeToRefs } from 'pinia'
@@ -20,6 +20,7 @@ import { Local, Session } from '/@/utils/storage'
 import mittBus from '/@/utils/mitt'
 import setIntroduction from '/@/utils/setIconfont'
 
+import { useUserInfo } from '/@/stores/userInfo'
 // 引入组件
 const LockScreen = defineAsyncComponent(() => import('/@/layout/lockScreen/index.vue'))
 const Setings = defineAsyncComponent(() => import('/@/layout/navBars/topBar/setings.vue'))
@@ -39,7 +40,16 @@ const getLockScreen = computed(() => {
   // 防止锁屏后，刷新出现不相关界面
   return themeConfig.value.isLockScreen ? themeConfig.value.lockScreenTime > 1 : themeConfig.value.lockScreenTime >= 0
 })
+const storeUseUserInfo = useUserInfo()
+const getToken=()=>{
+  console.log('getToken')
 
+var token= storeUseUserInfo.getToken()
+  if (!token) return ''
+  return token
+
+}
+provide('getToken',getToken)
 // 获取版本号
 const getVersion = computed(() => {
   let isVersion = false
