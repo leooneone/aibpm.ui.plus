@@ -1,0 +1,1 @@
+import{_ as e,W as t,X as c,$ as n}from"./framework-cb8f0348.js";const s={},_=n("p",null,"作者编写中，如果有兴趣，请 watch & star",-1),o=[_];function a(r,l){return t(),c("div",null,o)}const i=e(s,[["render",a],["__file","index.html.vue"]]);export{i as default};

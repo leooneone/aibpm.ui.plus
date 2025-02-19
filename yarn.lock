@@ -656,10 +656,10 @@ ai-bpm@^0.1.2:
     vue "^3.3.4"
     vue-i18n "^9.6.5"
 
-ai-form@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/ai-form/-/ai-form-1.0.1.tgz"
-  integrity sha512-Oi9FzSitvoE1T/GFiTpT7K1qROHwjIIeYpGya96uKPcXkkr2uKRmmr5dweuV1Q/JLLBeSd+ipfOX7sG4ZayoqA==
+ai-form@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/ai-form/-/ai-form-1.0.2.tgz"
+  integrity sha512-73aRdwUPNb7Pf0cJMVHrIpuu0Q7kEuPA2ObbOjbc1FGwwYQPGTz+5Xtv+9QDYyCu6Ra4HiYsVnmam32vAB7J3A==
   dependencies:
     element-plus "^2.3.14"
     fast-glob "^3.3.1"
