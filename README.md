@@ -26,7 +26,7 @@ AIBPM是一个开源的工作流引擎。基于 vue3.x + CompositionAPI setup �
 
 #### ⛱️ 线上预览
 
-- vue3.x 版本预览（aibpm.ui.plus）<a href="https://demo.aibpm.ailicloud.com" target="_blank">https://demo.aibpm.ailicloud.com</a>
+- vue3.x 版本预览（aibpm.ui.plus）<a href="https://demo.aibpm.ailicloud.com" target="_blank">https://demo.aibpm.ailicloud.com(已关闭后台，仅文档页面可用，请自行部署后台测试)</a>
 
 #### 📸部分截图：
 ![dashboard.png](https://raw.githubusercontent.com/leooneone/aibpm.ui.plus/main/src/assets/demo/dashboard.PNG)
